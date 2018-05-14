@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Rotating sidebar - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/rotating-sidebar.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_sidebar.html">Sidebar</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/transformorigin.html" class="nav-link">TransformOrigin</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/toggle.html" class="nav-link">Toggle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/tapped.html" class="nav-link">Tapped</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Rotating sidebar</h1>
+
+          <div class="example-content-preview example-content-preview-slot-8">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we're making a fancy rotating sidebar, as shown below:</p>
+<hr />
+<p>Update: <a href="https://www.youtube.com/watch?v=J2guDLZ3vcs&amp;list=PLdlqWm6b-XALJgM3fGa4q95Yipsgb8Q1o&amp;index=3">Watch a video of Jake going through this example</a>.</p>
+<p>We begin by creating our main panel. Since we want it to rotate around its top-left corner when the sidebar appears, we set <code>TransformOrigin=&quot;TopLeft&quot;</code>.</p>
+<!-- snippet-begin:code/MainView.ux:TransformOrigin -->
+<pre><code>&lt;Panel ux:Name=&quot;content&quot; TransformOrigin=&quot;TopLeft&quot;&gt;
+    ... the content of our app ...
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Next up – the sidebar. Since we want the buttons to transition in from the left, we horizontally offset it by -130pt so it's off-screen.</p>
+<!-- snippet-begin:code/MainView.ux:Sidebar -->
+<pre><code>&lt;StackPanel Offset=&quot;-130,0&quot; Alignment=&quot;BottomLeft&quot; Margin=&quot;0,0,0,50&quot;&gt;
+    &lt;DockPanel ux:Class=&quot;IconAndLabel&quot; Margin=&quot;30&quot;&gt;
+        &lt;string ux:Property=&quot;Text&quot; /&gt;
+        &lt;Text Value=&quot;{ReadProperty Text}&quot; Dock=&quot;Bottom&quot; Color=&quot;#fffa&quot; FontSize=&quot;14&quot; Alignment=&quot;HorizontalCenter&quot; Margin=&quot;0,10,0,0&quot; Font=&quot;RobotoBold&quot; /&gt;
+    &lt;/DockPanel&gt;
+
+    &lt;IconAndLabel ux:Name=&quot;profileButton&quot; Text=&quot;PROFILE&quot;&gt;
+        &lt;SidebarIcon&gt;
+            &lt;AccountIcon /&gt;
+        &lt;/SidebarIcon&gt;
+
+        &lt;Clicked&gt;
+            &lt;Set showMenu.Value=&quot;false&quot; /&gt;
+        &lt;/Clicked&gt;
+    &lt;/IconAndLabel&gt;
+
+    &lt;IconAndLabel ux:Name=&quot;stickersButton&quot; Text=&quot;STICKERS&quot;&gt;
+        &lt;SidebarIcon&gt;
+            &lt;StickersIcon /&gt;
+        &lt;/SidebarIcon&gt;
+
+        &lt;Clicked&gt;
+            &lt;Set showMenu.Value=&quot;false&quot; /&gt;
+        &lt;/Clicked&gt;
+    &lt;/IconAndLabel&gt;
+
+    &lt;IconAndLabel ux:Name=&quot;addButton&quot; Text=&quot;ADD STICKER&quot;&gt;
+        &lt;SidebarIcon&gt;
+            &lt;AddIcon /&gt;
+        &lt;/SidebarIcon&gt;
+
+        &lt;Clicked&gt;
+            &lt;Set showMenu.Value=&quot;false&quot; /&gt;
+        &lt;/Clicked&gt;
+    &lt;/IconAndLabel&gt;
+&lt;/StackPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Now, for the menu button in the top-left corner. This is offset by half its size, so that we only see a quarter of it. The icons are placed in the left and right bottom corners, so we can rotate the whole thing by 90° to alternate between them.</p>
+<!-- snippet-begin:code/MainView.ux:MenuButton -->
+<pre><code>&lt;Panel ux:Name=&quot;menuButton&quot; Width=&quot;170&quot; Height=&quot;170&quot; Alignment=&quot;TopLeft&quot; Offset=&quot;-85,-85&quot; Padding=&quot;40&quot;&gt;
+    &lt;Circle Layer=&quot;Background&quot; Color=&quot;#EE8485&quot; /&gt;
+    &lt;HamburgerIcon Alignment=&quot;BottomRight&quot;/&gt;
+    &lt;CloseIcon Alignment=&quot;BottomLeft&quot; /&gt;
+
+    &lt;Clicked&gt;
+        &lt;Toggle Target=&quot;showMenu&quot; /&gt;
+    &lt;/Clicked&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And finally – the animation! You may have noticed the <code>Clicked</code> triggers in the two previous sections. They toggle the following <code>WhileTrue</code> trigger that animates the main panel, the menu button and the sidebar buttons.</p>
+<!-- snippet-begin:code/MainView.ux:ShowMenu -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;showMenu&quot;&gt;
+    &lt;Rotate Target=&quot;content&quot; Degrees=&quot;-45&quot;
+            Duration=&quot;0.45&quot;    Easing=&quot;ExponentialInOut&quot;
+            DurationBack=&quot;0.6&quot; EasingBack=&quot;BounceIn&quot; /&gt;
+
+    &lt;Rotate Target=&quot;menuButton&quot; Degrees=&quot;-90&quot;
+            Duration=&quot;0.45&quot;    Easing=&quot;ExponentialInOut&quot;
+            DurationBack=&quot;0.6&quot; EasingBack=&quot;BounceIn&quot; /&gt;
+
+    &lt;Move Target=&quot;profileButton&quot; X=&quot;120&quot;
+          Delay=&quot;0.3&quot;   Duration=&quot;0.6&quot;     Easing=&quot;ElasticOut&quot;
+          DelayBack=&quot;0&quot; DurationBack=&quot;0.3&quot; EasingBack=&quot;QuarticInOut&quot; /&gt;
+
+    &lt;Move Target=&quot;stickersButton&quot; X=&quot;150&quot;
+          Delay=&quot;0.32&quot;  Duration=&quot;0.65&quot;    Easing=&quot;ElasticOut&quot;
+          DelayBack=&quot;0&quot; DurationBack=&quot;0.3&quot; EasingBack=&quot;QuarticInOut&quot; /&gt;
+
+    &lt;Move Target=&quot;addButton&quot; X=&quot;180&quot;
+          Delay=&quot;0.34&quot;  Duration=&quot;0.7&quot;     Easing=&quot;ElasticOut&quot;
+          DelayBack=&quot;0&quot; DurationBack=&quot;0.3&quot; EasingBack=&quot;QuarticInOut&quot; /&gt;
+
+    &lt;Change statusBarConfig.IsVisible=&quot;false&quot; Delay=&quot;.25&quot; /&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>When the icons in the sidebar are clicked, an animated circle appears which grows outwards from the icon. This animation is achieved with:</p>
+<!-- snippet-begin:code/MainView.ux:Tapped -->
+<pre><code>&lt;Tapped&gt;
+    &lt;Scale Target=&quot;tapAnimationCircle&quot; Factor=&quot;5&quot;
+           Duration=&quot;0.5&quot; Easing=&quot;QuarticOut&quot;
+           DurationBack=&quot;0&quot; /&gt;
+
+    &lt;Change tapAnimationCircle.Opacity=&quot;0&quot;
+            Duration=&quot;0.5&quot; Easing=&quot;QuarticOut&quot;
+            DurationBack=&quot;0&quot; /&gt;
+
+    &lt;Change tapAnimationCircle.Smoothness=&quot;10&quot;
+            Duration=&quot;0.5&quot; Easing=&quot;QuarticOut&quot;
+            DurationBack=&quot;0&quot; /&gt;
+
+    &lt;Change tapAnimationStroke.Width=&quot;0&quot;
+            Duration=&quot;0.5&quot; Easing=&quot;ExponentialOut&quot;
+            DurationBack=&quot;0&quot; /&gt;
+&lt;/Tapped&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

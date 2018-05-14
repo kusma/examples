@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Tabs using LayoutMaster - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/tabs-layoutmaster.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_layout.html">Layout</a>, <a href="../tag_tabs.html">Tabs</a>, <a href="../tag_menu.html">Menu</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/layoutcontrol/setlayoutmaster_084fadc8.html" class="nav-link">LayoutMaster</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/uno/ux/resource.html#global-resources-ux-global" class="nav-link">ux:Global</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/grid.html" class="nav-link">Grid</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/statusbarbackground.html" class="nav-link">StatusBarBackground</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/bottombarbackground.html" class="nav-link">BottomBarBackground</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Tabs using LayoutMaster</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how one can achieve a tabview with an animated indicator showing which tab is selected. The example achieves this by changing the <code>LayoutMaster</code> of an element along with a <code>LayoutAnimation</code> trigger, which allows one to animate elements between different layouts.</p>
+<!-- snippet-begin:code/MainView.ux:AppUX -->
+<pre><code>&lt;App Background=&quot;#eee&quot;&gt;
+
+    &lt;Font ux:Global=&quot;RobotoMedium&quot; File=&quot;Roboto-Medium.ttf&quot; /&gt;
+
+    &lt;Panel ux:Class=&quot;Tab&quot; ClipToBounds=&quot;false&quot; Margin=&quot;0,0,0,4&quot; Background=&quot;#bdc3c7&quot;&gt;
+        &lt;string ux:Property=&quot;Text&quot; /&gt;
+        &lt;Text Value=&quot;{ReadProperty Text}&quot; Color=&quot;#FFF&quot; Font=&quot;RobotoMedium&quot; Alignment=&quot;Center&quot; /&gt;
+    &lt;/Panel&gt;
+
+    &lt;Rectangle ux:Name=&quot;indicator&quot; LayoutMaster=&quot;page1Tab&quot; Alignment=&quot;Bottom&quot; Height=&quot;4&quot; Color=&quot;#6c7a89&quot;&gt;
+        &lt;LayoutAnimation&gt;
+            &lt;Move RelativeTo=&quot;WorldPositionChange&quot; X=&quot;1&quot; Duration=&quot;0.4&quot; Easing=&quot;BackIn&quot;/&gt;
+        &lt;/LayoutAnimation&gt;
+    &lt;/Rectangle&gt;
+
+    &lt;Text ux:Class=&quot;WelcomeText&quot; FontSize=&quot;30&quot; Alignment=&quot;Center&quot;/&gt;
+
+    &lt;DockPanel&gt;
+        &lt;StatusBarBackground Dock=&quot;Top&quot; /&gt;
+        &lt;BottomBarBackground Dock=&quot;Bottom&quot; /&gt;
+
+        &lt;Grid Dock=&quot;Top&quot; ColumnCount=&quot;3&quot; Height=&quot;50&quot; Background=&quot;#bdc3c7&quot;&gt;
+            &lt;Panel ux:Name=&quot;page1Tab&quot;&gt;
+                &lt;Tab Text=&quot;Page 1&quot;&gt;
+                    &lt;Clicked&gt;
+                        &lt;Set navigation.Active=&quot;page1&quot; /&gt;
+                    &lt;/Clicked&gt;
+                &lt;/Tab&gt;
+            &lt;/Panel&gt;
+            &lt;Panel ux:Name=&quot;page2Tab&quot;&gt;
+                &lt;Tab Text=&quot;Page 2&quot;&gt;
+                    &lt;Clicked&gt;
+                        &lt;Set navigation.Active=&quot;page2&quot; /&gt;
+                    &lt;/Clicked&gt;
+                &lt;/Tab&gt;
+            &lt;/Panel&gt;
+            &lt;Panel ux:Name=&quot;page3Tab&quot;&gt;
+                &lt;Tab Text=&quot;Page 3&quot;&gt;
+                    &lt;Clicked&gt;
+                        &lt;Set navigation.Active=&quot;page3&quot; /&gt;
+                    &lt;/Clicked&gt;
+                &lt;/Tab&gt;
+            &lt;/Panel&gt;
+        &lt;/Grid&gt;
+
+        &lt;PageControl ux:Name=&quot;navigation&quot;&gt;
+            &lt;Page ux:Name=&quot;page1&quot; Background=&quot;#eee&quot;&gt;
+                &lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+                    &lt;Set indicator.LayoutMaster=&quot;page1Tab&quot; /&gt;
+                &lt;/WhileActive&gt;
+                &lt;WelcomeText&gt;Welcome to Page 1&lt;/WelcomeText&gt;
+            &lt;/Page&gt;
+            &lt;Page ux:Name=&quot;page2&quot; Background=&quot;#abb7b7&quot;&gt;
+                &lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+                    &lt;Set indicator.LayoutMaster=&quot;page2Tab&quot; /&gt;
+                &lt;/WhileActive&gt;
+                &lt;WelcomeText&gt;Welcome to Page 2&lt;/WelcomeText&gt;
+            &lt;/Page&gt;
+            &lt;Page ux:Name=&quot;page3&quot; Background=&quot;#f2f1ef&quot;&gt;
+                &lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+                    &lt;Set indicator.LayoutMaster=&quot;page3Tab&quot; /&gt;
+                &lt;/WhileActive&gt;
+                &lt;WelcomeText&gt;Welcome to Page 3&lt;/WelcomeText&gt;
+            &lt;/Page&gt;
+        &lt;/PageControl&gt;
+
+    &lt;/DockPanel&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Navigation animation - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/navigation-animation.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customnavigation.html">Custom navigation</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/enteringanimation.html" class="nav-link">EnteringAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/exitinganimation.html" class="nav-link">ExitingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/keyframe.html" class="nav-link">Keyframe</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/rotate.html" class="nav-link">Rotate</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/resources/fileimagesource.html" class="nav-link">FileImageSource</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/bottombarbackground.html" class="nav-link">BottomBarBackground</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/javascript.html" class="nav-link">data-model</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Navigation animation</h1>
+
+          <div class="example-content-preview example-content-preview-slot-4">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we are using <code>Entering-</code> and <code>ExitingAnimation</code> to make an interesting card swipe mechanism.</p>
+<h3>The card class</h3
+<p>We define a class for our cards using the <code>ux:Class</code> syntax.</p>
+<!-- snippet-begin:code/Card.ux:CardClass -->
+<pre><code>&lt;Panel ux:Class=&quot;Card&quot; Height=&quot;256&quot; Width=&quot;256&quot; Alignment=&quot;Bottom&quot; ux:Name=&quot;p&quot;&gt;
+    &lt;Rectangle Color=&quot;#eee&quot; Opacity=&quot;0&quot; ux:Name=&quot;overlayRect&quot; CornerRadius=&quot;25&quot; Layer=&quot;Overlay&quot;/&gt;
+    &lt;EnteringAnimation Scale=&quot;0.35&quot;&gt;
+        &lt;Move X=&quot;-4&quot; RelativeTo=&quot;Size&quot; /&gt;
+    &lt;/EnteringAnimation&gt;
+    &lt;ExitingAnimation Scale=&quot;0.1&quot;&gt;
+        &lt;Move RelativeTo=&quot;Size&quot; Easing=&quot;QuadraticOut&quot; Y=&quot;-1.3&quot; Duration=&quot;1&quot;/&gt;
+        &lt;Move RelativeTo=&quot;Size&quot; KeyframeInterpolation=&quot;CatmullRom&quot;&gt;
+            &lt;Keyframe X=&quot;0.15&quot; Time=&quot;0.15&quot;/&gt;
+            &lt;Keyframe X=&quot;0.2&quot; Time=&quot;0.3&quot;/&gt;
+            &lt;Keyframe X=&quot;0.25&quot; Time=&quot;0.45&quot;/&gt;
+            &lt;Keyframe X=&quot;0.2&quot; Time=&quot;0.6&quot;/&gt;
+            &lt;Keyframe X=&quot;0&quot; Time=&quot;1&quot;/&gt;
+        &lt;/Move&gt;
+
+        &lt;Change overlayRect.Opacity=&quot;1&quot; Duration=&quot;1&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+
+        &lt;Scale Factor=&quot;0.4&quot; Duration=&quot;1&quot; /&gt;
+        &lt;Rotate Degrees=&quot;-50&quot; Duration=&quot;1&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+    &lt;/ExitingAnimation&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Navigation animation</h4
+<p>We assign the <code>Scale</code>-property of our <code>EnteringAnimation</code> and <code>ExitingAnimation</code> in order to achieve the longer navigation animation. We use <code>Move</code> together with <code>Rotate</code> in order to achieve the curly movement. Keyframes are used to tweak this curl a bit further. It allows us to define a custom path for our animation.</p>
+<!-- snippet-begin:code/Card.ux:ExitingAnimation -->
+<pre><code>&lt;ExitingAnimation Scale=&quot;0.1&quot;&gt;
+    &lt;Move RelativeTo=&quot;Size&quot; Easing=&quot;QuadraticOut&quot; Y=&quot;-1.3&quot; Duration=&quot;1&quot;/&gt;
+    &lt;Move RelativeTo=&quot;Size&quot; KeyframeInterpolation=&quot;CatmullRom&quot;&gt;
+        &lt;Keyframe X=&quot;0.15&quot; Time=&quot;0.15&quot;/&gt;
+        &lt;Keyframe X=&quot;0.2&quot; Time=&quot;0.3&quot;/&gt;
+        &lt;Keyframe X=&quot;0.25&quot; Time=&quot;0.45&quot;/&gt;
+        &lt;Keyframe X=&quot;0.2&quot; Time=&quot;0.6&quot;/&gt;
+        &lt;Keyframe X=&quot;0&quot; Time=&quot;1&quot;/&gt;
+    &lt;/Move&gt;
+
+    &lt;Change overlayRect.Opacity=&quot;1&quot; Duration=&quot;1&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+
+    &lt;Scale Factor=&quot;0.4&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Rotate Degrees=&quot;-50&quot; Duration=&quot;1&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+&lt;/ExitingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>Our resources</h3
+<p>Our cards content is just an image asset. This is just to make the example smaller, since the focus is to illustrate the use of <code>EnteringAnimation</code> and <code>ExitingAnimation</code>.</p>
+<p>You can check out these examples to learn more about layout:</p>
+<ul>
+<li><a href="layout.html">Layout example</a></li>
+<li><a href="inbox.html">Inbox</a></li>
+<li><a href="reveal-actions.html">Reveal actions</a></li>
+</ul>
+<p>Notice how we generate our items in JavaScript, and we data-bind directly to the file paths relative to project root.
+We can do that, because we have included the images in our bundle by adding this to our <code>.unoproj</code> file <code>&quot;Includes&quot;</code> section: <code>&quot;Assets/*.png:Bundle</code>.</p>
+<!-- snippet-begin:code/MainView.ux:MainView -->
+<pre><code>&lt;App Background=&quot;#eeeeeeff&quot;&gt;
+    &lt;DockPanel&gt;
+        &lt;JavaScript&gt;
+            var Observable = require(&quot;FuseJS/Observable&quot;);
+
+            var profiles = Observable(
+                { resource : &quot;Assets/profile_1.png&quot; },
+                { resource : &quot;Assets/profile_2.png&quot; },
+                { resource : &quot;Assets/profile_3.png&quot; },
+                { resource : &quot;Assets/profile_6.png&quot; },
+                { resource : &quot;Assets/profile_4.png&quot; },
+                { resource : &quot;Assets/profile_5.png&quot; },
+                { resource : &quot;Assets/profile_2.png&quot; },
+                { resource : &quot;Assets/profile_5.png&quot; },
+                { resource : &quot;Assets/profile_4.png&quot; },
+                { resource : &quot;Assets/profile_1.png&quot; },
+                { resource : &quot;Assets/profile_7.png&quot; },
+                { resource : &quot;Assets/profile_3.png&quot; },
+                { resource : &quot;Assets/profile_2.png&quot; },
+                { resource : &quot;Assets/profile_5.png&quot; },
+                { resource : &quot;Assets/profile_4.png&quot; },
+                { resource : &quot;Assets/profile_1.png&quot; },
+                { resource : &quot;Assets/profile_7.png&quot; },
+                { resource : &quot;Assets/profile_3.png&quot; }
+            );
+
+              module.exports = {
+                  profiles : profiles
+              }
+        &lt;/JavaScript&gt;
+
+        ... the rest ...
+
+        &lt;BottomBarBackground DockPanel.Dock=&quot;Bottom&quot; /&gt;
+    &lt;/DockPanel&gt;
+&lt;/App&gt;
+
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

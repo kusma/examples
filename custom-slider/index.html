@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Custom slider - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/custom-slider.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_javascript.html">JavaScript</a>, <a href="../tag_reusablecomponents.html">Reusable components</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/attractorconfig.html" class="nav-link">AttractorConfig</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/clientpanel.html" class="nav-link">ClientPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/properties.html" class="nav-link">ux:Property</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle.html" class="nav-link">Rectangle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rangecontrol.html" class="nav-link">RangeControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/linearrangebehavior.html" class="nav-link">LinearRangeBehavior</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/curve.html" class="nav-link">Curve</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/curvepoint.html" class="nav-link">CurvePoint</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/whilepressed.html" class="nav-link">WhilePressed</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Custom slider</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example, we're creating a custom slider component, inspired by this beautifully designed <a href="https://dribbble.com/shots/3868232-ios-Fluid-Slider-ui-ux">Fluid Slider</a> by <a href="https://dribbble.com/virgilpana">Virgil Pana</a>.</p>
+<p>The last time we published custom sliders was in our <a href="https://www.fusetools.com/examples/halftone-effect">Halftone effect</a> example, so it's time for a re-do. With this new one we especially liked the gooey animation when the circle leaves the slider. Since we've introduced the <code>Curve</code> element in Fuse, we can make it work almost exactly like that. Let's dive in!</p>
+<h3>Create the slider component</h3
+<p>We start out by creating a <code>ux:Class</code> with a set of properties that allows us to configure our new slider component.</p>
+<pre><code>&lt;DockPanel ux:Class=&quot;GooeySlider&quot;&gt;
+    &lt;float ux:Property=&quot;SliderHeight&quot; /&gt;
+    &lt;string ux:Property=&quot;Label&quot; /&gt;
+    &lt;float ux:Property=&quot;Min&quot; /&gt;
+    &lt;float ux:Property=&quot;Max&quot; /&gt;
+    &lt;float4 ux:Property=&quot;TintColor&quot; /&gt;
+    &lt;float4 ux:Property=&quot;FaceColor&quot; /&gt;
+    &lt;object ux:Property=&quot;Val&quot; /&gt;
+
+    &lt;Text ux:Name=&quot;label&quot; Value=&quot;{ReadProperty Label}&quot; Color=&quot;{ReadProperty TintColor}&quot; Width=&quot;width(this)&quot;
+        TextWrapping=&quot;Wrap&quot; Alignment=&quot;Center&quot; TextAlignment=&quot;Center&quot; Margin=&quot;8&quot; /&gt;
+
+&lt;/DockPanel&gt;
+</code></pre>
+<p>Next, we add labels on the left and right sides of the slider component to show the <code>Min</code> and <code>Max</code> values. In the middle, we put a <code>RangeControl</code> that occupies the remaining available space between the two labels. You can see how we take advantage of <a href="https://www.fusetools.com/docs/ux-markup/expressions">UX expressions</a> to dynamically calculate the <code>Margin</code> for the <code>RangeControl</code>: <code>Margin=&quot;{ReadProperty SliderHeight}/2,0&quot;</code>.</p>
+<pre><code>&lt;DockPanel Dock=&quot;Bottom&quot; Height=&quot;{ReadProperty SliderHeight}&quot;&gt;
+    &lt;Panel Dock=&quot;Left&quot; Width=&quot;60&quot;&gt;
+        &lt;Text Value=&quot;{ReadProperty Min}&quot; Alignment=&quot;Center&quot; TextColor=&quot;{ReadProperty FaceColor}&quot; /&gt;
+        &lt;Rectangle Width=&quot;1&quot; Color=&quot;{ReadProperty FaceColor}&quot; Alignment=&quot;Right&quot; Margin=&quot;0,8&quot; /&gt;
+    &lt;/Panel&gt;
+    &lt;Panel Dock=&quot;Right&quot; Width=&quot;60&quot;&gt;
+        &lt;Text Value=&quot;{ReadProperty Max}&quot; Alignment=&quot;Center&quot; TextColor=&quot;{ReadProperty FaceColor}&quot; /&gt;
+        &lt;Rectangle Width=&quot;1&quot; Color=&quot;{ReadProperty FaceColor}&quot; Alignment=&quot;Left&quot; Margin=&quot;0,8&quot; /&gt;
+    &lt;/Panel&gt;
+
+    &lt;RangeControl ux:Name=&quot;range&quot; Value=&quot;{Property Val}&quot; Minimum=&quot;{ReadProperty Min}&quot; Maximum=&quot;{ReadProperty Max}&quot; UserStep=&quot;10&quot; Margin=&quot;{ReadProperty SliderHeight}/2,0&quot;&gt;
+        &lt;LinearRangeBehavior /&gt;
+    &lt;/RangeControl&gt;
+
+    &lt;Rectangle Layer=&quot;Background&quot; CornerRadius=&quot;4&quot; Color=&quot;{ReadProperty TintColor}&quot; /&gt;
+&lt;/DockPanel&gt;
+</code></pre>
+<h3>Customize the RangeControl</h3
+<p>Let's take a closer look at the <code>RangeControl</code> configuration:</p>
+<pre><code>&lt;RangeControl ux:Name=&quot;range&quot; Value=&quot;{Property Val}&quot; Minimum=&quot;{ReadProperty Min}&quot; Maximum=&quot;{ReadProperty Max}&quot; UserStep=&quot;10&quot; Margin=&quot;{ReadProperty SliderHeight}/2,0&quot;&gt;
+    &lt;LinearRangeBehavior /&gt;
+&lt;/RangeControl&gt;
+</code></pre>
+<p>We see <code>Value=&quot;{Property Val}&quot;</code> here, which means that we have a two-way property-binding to the <code>Val</code> property passed to our slider. If we're passing an Observable, it gets updated as we move the slider left and right. Note that we also set <code>UserStep=&quot;10&quot;</code> property, which means that the value will be incremented by 10 per step.</p>
+<p>With that cleared up, let's move on to the fun part :)</p>
+<h3>Move the handle</h3
+<p>Inside of the <code>RangeControl</code>, we need to have a handle that the slider can be moved by. The handle is a white circle that has the current slider value as a label on it, so that's exactly what we make:</p>
+<pre><code>&lt;RangeControl ux:Name=&quot;range&quot; Value=&quot;{Property Val}&quot; Minimum=&quot;{ReadProperty Min}&quot; Maximum=&quot;{ReadProperty Max}&quot; UserStep=&quot;10&quot; Margin=&quot;{ReadProperty SliderHeight}/2,0&quot;&gt;
+    &lt;LinearRangeBehavior /&gt;
+
+    &lt;Circle ux:Name=&quot;handle&quot; Width=&quot;{ReadProperty SliderHeight}&quot; Alignment=&quot;Left&quot; Anchor=&quot;50%,50%&quot; X=&quot;attract({Property range.RelativeValue}, RangeSnap) * 100%&quot;&gt;
+        &lt;Text Value=&quot;{= round({ReadProperty range.Value})}&quot; FontSize=&quot;13&quot; Alignment=&quot;Center&quot; TextColor=&quot;{ReadProperty TintColor}&quot; /&gt;
+        &lt;Circle Margin=&quot;8&quot; Color=&quot;{ReadProperty FaceColor}&quot; /&gt;
+        &lt;Circle Margin=&quot;4&quot; Color=&quot;{ReadProperty TintColor}&quot; /&gt;
+    &lt;/Circle&gt;
+
+&lt;/RangeControl&gt;
+</code></pre>
+<p>The interesting bit on the handle is how we set the <code>X</code> position of it to a UX expression: <code>X=&quot;attract({Property range.RelativeValue}, RangeSnap) * 100%&quot;</code>. As the docs state, the <a href="https://www.fusetools.com/docs/ux-markup/expressions#misc">attract() UX expression</a> <em>animates the change in a value by using an <code>AttractorConfig</code> to define the animation style</em>. In our use-case, this means that whenever the <code>Value</code> of our <code>RangeControl</code> changes by an increment of 10, the <code>RelativeValue</code> of it is updated too. This in turn changes the <code>X</code> coordinate of the handle with a smooth, snappy animation defined by the <code>AttractorConfig</code> that we have in our <code>MainView.ux</code>:</p>
+<pre><code>&lt;AttractorConfig ux:Global=&quot;RangeSnap&quot; Unit=&quot;Normalized&quot; Type=&quot;SmoothSnap&quot; /&gt;
+</code></pre>
+<h3>Bend the Curve</h3
+<p>What about the gooey animation where the background caves in at edges? This is what we use <code>Curve</code> for. Inside of our handle, we draw a trapezoid shape using <code>Curve</code> and four <code>CurvePoint</code> elements. A really cool thing that we can specify on <code>CurvePoint</code> is incoming and outgoing tangents. Since these describe <em>how</em> the curve should bend, that's exactly what we're going to animate.</p>
+<pre><code>&lt;Circle ux:Name=&quot;handle&quot; Width=&quot;{ReadProperty SliderHeight}&quot; Alignment=&quot;Left&quot; Anchor=&quot;50%,50%&quot; X=&quot;attract({Property range.RelativeValue}, RangeSnap) * 100%&quot;&gt;
+    &lt;Text Value=&quot;{= round({ReadProperty range.Value})}&quot; FontSize=&quot;13&quot; Alignment=&quot;Center&quot; TextColor=&quot;{ReadProperty TintColor}&quot; /&gt;
+    &lt;Circle Margin=&quot;8&quot; Color=&quot;{ReadProperty FaceColor}&quot; /&gt;
+    &lt;Circle Margin=&quot;4&quot; Color=&quot;{ReadProperty TintColor}&quot; /&gt;
+    &lt;Curve Color=&quot;{ReadProperty TintColor}&quot; Close=&quot;Auto&quot;&gt;
+        &lt;CurvePoint ux:Name=&quot;t1&quot; At=&quot;-0.5,1&quot; TangentIn=&quot;0,0&quot; TangentOut=&quot;1,0&quot; /&gt;
+        &lt;CurvePoint ux:Name=&quot;t2&quot; At=&quot;0.1,0.5&quot; TangentIn=&quot;0,-0.5&quot; TangentOut=&quot;0,0&quot; /&gt;
+        &lt;CurvePoint ux:Name=&quot;t3&quot; At=&quot;0.9,0.5&quot; TangentIn=&quot;0,0&quot; TangentOut=&quot;0,0.5&quot; /&gt;
+        &lt;CurvePoint ux:Name=&quot;t4&quot; At=&quot;1.5,1&quot; TangentIn=&quot;1,0&quot; TangentOut=&quot;0,0&quot; /&gt;
+    &lt;/Curve&gt;
+&lt;/Circle&gt;
+</code></pre>
+<p>As for the animation, it happens when we press on the control. All we need to do is move the handle up above the slider, animate the tangents on the <code>Curve</code> and hide the label:</p>
+<pre><code>&lt;WhilePressed&gt;
+    &lt;Move Target=&quot;handle&quot; Y=&quot;-1&quot; RelativeTo=&quot;ParentSize&quot;
+        Duration=&quot;0.24&quot; Easing=&quot;CircularOut&quot;
+        DelayBack=&quot;0&quot; EasingBack=&quot;ExponentialOut&quot; /&gt;
+    &lt;Change t2.TangentIn=&quot;-1,-2&quot;
+        Duration=&quot;0.92&quot; Delay=&quot;0.16&quot; Easing=&quot;ElasticOut&quot;
+        DurationBack=&quot;0.24&quot; EasingBack=&quot;Linear&quot; /&gt;
+    &lt;Change t3.TangentOut=&quot;-1,2&quot;
+        Duration=&quot;0.92&quot; Delay=&quot;0.16&quot; Easing=&quot;ElasticOut&quot;
+        DurationBack=&quot;0.24&quot; EasingBack=&quot;Linear&quot; /&gt;
+    &lt;Change label.Opacity=&quot;0&quot; Duration=&quot;0.16&quot; DelayBack=&quot;0.16&quot; /&gt;
+&lt;/WhilePressed&gt;
+</code></pre>
+<p>And with that, our beautiful gooey custom slider is done. Go ahead, download the source and make your own crazy animated shapes!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>A circular menu button - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/circle-menu.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_menu.html">Menu</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/removinganimation.html" class="nav-link">RemovingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whilefalse.html" class="nav-link">WhileFalse</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#map-func-item" class="nav-link">Observable.map</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/javascript.html" class="nav-link">data-model</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>A circular menu button</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>Here is another awesome design we found by <a href="https://dribbble.com/madebyanton">Anton Aheichanka</a> that we felt obligated to implement with Fuse. We used the free UI kit from <a href="http://www.invisionapp.com/do">InVision</a> for the assets.</p>
+<h4>The animations</h4
+<p>This example implements two separate animations:</p>
+<ol>
+<li>Clicking the pink plus-button makes it expand, revealing more options.</li>
+<li>Clicking the avatar in the top right corner triggers the calendar page to animate.</li>
+</ol>
+<p>In this example we handle them separately.</p>
+<h4>Defining the resources</h4
+<p>We start by defining some resources. We are using several icons, so we define a common base class for them:</p>
+<!-- snippet-begin:code/Resources.ux:IconClass -->
+<pre><code>&lt;Image ux:Class=&quot;Icon&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The only reason we subclass here is to have a semantic type called &quot;Icon&quot;. This makes it easier for us to perform styling later on.</p>
+<p>We then create classes for the other icons:</p>
+<!-- snippet-begin:code/Resources.ux:TheOtherIcons -->
+<pre><code>&lt;Icon ux:Class=&quot;ClockIcon&quot; File=&quot;Assets/icon_clock.png&quot; /&gt;
+&lt;Icon ux:Class=&quot;TalkIcon&quot; File=&quot;Assets/icon_talk.png&quot; /&gt;
+&lt;Icon ux:Class=&quot;LocationIcon&quot; File=&quot;Assets/icon_location.png&quot; /&gt;
+&lt;Icon ux:Class=&quot;SunnyIcon&quot; File=&quot;Assets/icon_sunny.png&quot; /&gt;
+&lt;Icon ux:Class=&quot;SmallAvatarIcon&quot; File=&quot;Assets/small_avatar.png&quot; /&gt;
+&lt;Icon ux:Class=&quot;HamburgerIcon&quot; File=&quot;Assets/icon_hamburger.png&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We also want to apply a common style for our text, so we define a couple of text classes:</p>
+<!-- snippet-begin:code/Resources.ux:TextClasses -->
+<pre><code>&lt;Text ux:Class=&quot;DefaultText&quot; Color=&quot;#fffd&quot; /&gt;
+&lt;Text ux:Class=&quot;MutedText&quot; Color=&quot;#fff8&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We include the Resources.ux file in our MainView.ux with the <code>&lt;ux:Include /&gt;</code> tag.</p>
+<h5>The calendar item</h5
+<p>Each item in the calendar can contain 1 to 3 items. We define just one class and let it handle all the cases by just hiding the unused fields using <code>WhileTrue</code>-triggers.</p>
+<!-- snippet-begin:code/Resources.ux:CalendarItem -->
+<pre><code>&lt;Grid ux:Class=&quot;CalendarItem&quot; Columns=&quot;1*,4*&quot;&gt;
+    &lt;AddingAnimation&gt;
+        &lt;Move X=&quot;1&quot; Duration=&quot;0.4&quot; RelativeTo=&quot;Size&quot; Easing=&quot;CircularInOut&quot; DelayBack=&quot;{delay}&quot; /&gt;
+        &lt;Move Target=&quot;underline&quot; X=&quot;1&quot; Duration=&quot;0.4&quot; RelativeTo=&quot;Size&quot; Easing=&quot;CircularInOut&quot; DelayBack=&quot;{lineDelay}&quot; /&gt;
+    &lt;/AddingAnimation&gt;
+    &lt;RemovingAnimation&gt;
+        &lt;Move X=&quot;1&quot; Duration=&quot;0.4&quot; RelativeTo=&quot;Size&quot; Easing=&quot;CircularInOut&quot; DelayBack=&quot;{delay}&quot; /&gt;
+        &lt;Move Target=&quot;underline&quot; X=&quot;1&quot; Duration=&quot;0.4&quot; RelativeTo=&quot;Size&quot; Easing=&quot;CircularInOut&quot; DelayBack=&quot;{lineDelay}&quot; /&gt;
+    &lt;/RemovingAnimation&gt;
+    &lt;StackPanel Alignment=&quot;TopLeft&quot; Width=&quot;40&quot; Margin=&quot;0,15,0,0&quot;&gt;
+        &lt;DefaultText FontSize=&quot;25&quot; Value=&quot;{item.time}&quot; TextAlignment=&quot;Center&quot; /&gt;
+        &lt;MutedText FontSize=&quot;10&quot; Value=&quot;{item.ampm}&quot; TextAlignment=&quot;Center&quot;/&gt;
+    &lt;/StackPanel&gt;
+    &lt;Panel Margin=&quot;0,18&quot;&gt;
+
+        &lt;Panel&gt;
+            &lt;StackPanel Alignment=&quot;VerticalCenter&quot;&gt;
+                &lt;WhileTrue Value=&quot;{hasTitle}&quot;&gt;
+                    &lt;DefaultText Value=&quot;{item.title}&quot; /&gt;
+                &lt;/WhileTrue&gt;
+                &lt;WhileTrue Value=&quot;{hasProject}&quot;&gt;
+                    &lt;MutedText Value=&quot;{item.project}&quot; FontSize=&quot;14&quot; Margin=&quot;0,2&quot; /&gt;
+                &lt;/WhileTrue&gt;
+                &lt;WhileTrue Value=&quot;{hasPeople}&quot;&gt;
+                    &lt;WrapPanel Margin=&quot;0,8,0,0&quot;&gt;
+                        &lt;Each Items=&quot;{item.people}&quot;&gt;
+                            &lt;Image File=&quot;{picture}&quot; Width=&quot;30&quot; Height=&quot;30&quot; Margin=&quot;5,0&quot; /&gt;
+                        &lt;/Each&gt;
+                    &lt;/WrapPanel&gt;
+                &lt;/WhileTrue&gt;
+            &lt;/StackPanel&gt;
+        &lt;/Panel&gt;
+    &lt;/Panel&gt;
+    &lt;WhileFalse Value=&quot;{isLast}&quot;&gt;
+        &lt;Rectangle ux:Name=&quot;underline&quot; Height=&quot;1&quot; Color=&quot;#fff3&quot; Alignment=&quot;Bottom&quot; Column=&quot;1&quot; /&gt;
+    &lt;/WhileFalse&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We define a data-model for the item in JavaScript, and use it to populate each item with data:</p>
+<!-- snippet-begin:code/MainView.js:CalendarItemData -->
+<pre><code>function Person(picture){
+    this.picture = picture;
+}
+
+function Item(time, ampm, title, project, people){
+    this.time = time;
+    this.ampm = ampm;
+    this.title = title;
+    this.project = project;
+    this.people = people;
+}
+
+var items = Observable(
+    new Item(8, &quot;AM&quot;, &quot;Finish Home Screen&quot;, &quot;Use Macaw&quot;, Observable()),
+    new Item(11, &quot;AM&quot;, &quot;Lunch Break&quot;, &quot;&quot;, Observable()),
+    new Item(2, &quot;PM&quot;, &quot;Finish prototype&quot;, &quot;InVision&quot;, [new Person(&quot;Assets/avatarcalendar3.png&quot;), new Person(&quot;Assets/avatarcalendar2.png&quot;), new Person(&quot;Assets/avatarcalendar.png&quot;)])
+);
+</code></pre>
+<!-- snippet-end -->
+<p>We then map over the <code>items</code> variable in order to assign some more view-related fields, like animation delays and boolean values for hiding unused fields as discussed above. Notice that since we are mapping with a function which takes two arguments, the second argument is the index of the item. This allows us to have different delays based on the position in the <code>Observable</code>.</p>
+<!-- snippet-begin:code/MainView.js:MapWithIndex -->
+<pre><code>var itemsView = items.map(function(item, index){
+    return {
+        item : item, delay : index * 0.08,
+        lineDelay : (items.length - index + 1) * 0.1,
+        isLast : index === items.length - 1,
+        hasTitle : item.title.length &gt; 0,
+        hasProject : item.project.length &gt; 0,
+        hasPeople : item.people.length &gt; 0
+    };
+});
+</code></pre>
+<!-- snippet-end -->
+<h5>The plus-button</h5
+<p>The plus-button is defined in MainView.ux as a class called <code>WobbleButton</code>. It has two circles. The first one has a pink <code>Color</code>. The second one has its <code>Opacity</code> set to 0 and a slightly darker <code>Color</code>. When the button is clicked, we scale the first one and animate the second ones <code>Opacity</code> to 1.</p>
+<!-- snippet-begin:code/MainView.ux:TheTwoCircles -->
+<pre><code>&lt;Circle ux:Name=&quot;overlayCircle&quot; Color=&quot;#0004&quot; Opacity=&quot;0&quot; Width=&quot;20%&quot; Height=&quot;20%&quot; Alignment=&quot;Center&quot; &gt;
+    &lt;Clicked&gt;
+        &lt;Toggle Target=&quot;expanded&quot; /&gt;
+    &lt;/Clicked&gt;
+&lt;/Circle&gt;
+&lt;Circle ux:Name=&quot;circle&quot; Color=&quot;#F23363&quot; Width=&quot;20%&quot; Height=&quot;20%&quot; &gt;
+
+&lt;/Circle&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>There are three icons which are revealed when the button is scaled. Their rest-state is defined to be in a circular arrangement in the top left area of the button. By default, they have an <code>Opacity</code> of 0, and a <code>Translation</code>.</p>
+<p>When the button is expanded, the translations on all the icons are animated back to 0, and the opacity of each one is also animated to 1.</p>
+<!-- snippet-begin:code/MainView.ux:TheButtonIcons -->
+<pre><code>&lt;ClockIcon ux:Name=&quot;icon1&quot; Margin=&quot;40,30,0,20&quot; Width=&quot;30&quot; Height=&quot;30&quot; Alignment=&quot;Left&quot; Opacity=&quot;0&quot; IsEnabled=&quot;false&quot;&gt;
+    &lt;Translation ux:Name=&quot;trans1&quot; X=&quot;1.5&quot; RelativeTo=&quot;Size&quot; /&gt;
+    &lt;Clicked&gt;
+        &lt;Toggle Target=&quot;expanded&quot; /&gt;
+    &lt;/Clicked&gt;
+&lt;/ClockIcon&gt;
+&lt;TalkIcon ux:Name=&quot;icon2&quot; Margin=&quot;70,70,0,0&quot; Width=&quot;30&quot; Height=&quot;30&quot; Alignment=&quot;TopLeft&quot; Opacity=&quot;0&quot; IsEnabled=&quot;false&quot;&gt;
+    &lt;Translation ux:Name=&quot;trans2&quot; X=&quot;1&quot; Y=&quot;1&quot; RelativeTo=&quot;Size&quot; /&gt;
+    &lt;Clicked&gt;
+        &lt;Toggle Target=&quot;expanded&quot; /&gt;
+    &lt;/Clicked&gt;
+&lt;/TalkIcon&gt;
+&lt;LocationIcon ux:Name=&quot;icon3&quot; Margin=&quot;30,40,20,0&quot; Width=&quot;30&quot; Height=&quot;30&quot; Alignment=&quot;Top&quot; Opacity=&quot;0&quot; IsEnabled=&quot;false&quot;&gt;
+    &lt;Translation ux:Name=&quot;trans3&quot; Y=&quot;1.5&quot; RelativeTo=&quot;Size&quot; /&gt;
+    &lt;Clicked&gt;
+        &lt;Toggle Target=&quot;expanded&quot; /&gt;
+    &lt;/Clicked&gt;
+&lt;/LocationIcon&gt;
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.ux:AnimatingTheButton -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;expanded&quot;&gt;
+    &lt;Change circle.Height=&quot;100&quot; Easing=&quot;CubicInOut&quot; Duration=&quot;0.2&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change circle.Width=&quot;100&quot; Easing=&quot;CubicInOut&quot; Duration=&quot;0.2&quot;  DelayBack=&quot;0&quot;/&gt;
+
+    &lt;Change enableOptions.Value=&quot;true&quot; Delay=&quot;0.1&quot; /&gt;
+    &lt;Change overlayCircle.Opacity=&quot;1&quot; Delay=&quot;0.1&quot; Duration=&quot;0.1&quot; /&gt;
+    &lt;Rotate Target=&quot;cross&quot; Degrees=&quot;-45&quot; Duration=&quot;0.2&quot; Easing=&quot;CubicInOut&quot; /&gt;
+
+    &lt;Change trans1.X=&quot;0&quot; Delay=&quot;0&quot; Duration=&quot;0.4&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;QuadraticInOut&quot; DurationBack=&quot;0.2&quot;    DelayBack=&quot;0&quot;/&gt;
+    &lt;Change trans2.X=&quot;0&quot; Delay=&quot;0.05&quot; Duration=&quot;0.4&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;QuadraticInOut&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change trans2.Y=&quot;0&quot; Delay=&quot;0.05&quot; Duration=&quot;0.4&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;QuadraticInOut&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change trans3.Y=&quot;0&quot; Delay=&quot;0.1&quot; Duration=&quot;0.4&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;QuadraticInOut&quot; DurationBack=&quot;0.2&quot;  DelayBack=&quot;0&quot;/&gt;
+
+    &lt;Change icon1.Opacity=&quot;1&quot; Delay=&quot;0.1&quot; Duration=&quot;0.1&quot; Easing=&quot;QuadraticInOut&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change icon2.Opacity=&quot;1&quot; Delay=&quot;0.1&quot; Duration=&quot;0.1&quot; Easing=&quot;QuadraticInOut&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change icon3.Opacity=&quot;1&quot; Delay=&quot;0.1&quot; Duration=&quot;0.1&quot; Easing=&quot;QuadraticInOut&quot; DelayBack=&quot;0&quot;/&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

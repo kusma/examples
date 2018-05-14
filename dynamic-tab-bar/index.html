@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>A dynamic tab bar - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/dynamic-tab-bar.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_tabs.html">Tabs</a>, <a href="../tag_navigation.html">Navigation</a>, <a href="../tag_gesture.html">Gesture</a>, <a href="../tag_reusablecomponents.html">Reusable components</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/visual/zoffset.html" class="nav-link">ZOffset</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/set_1.html" class="nav-link">Set</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/whileactive.html" class="nav-link">WhileActive</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/motion/navigationmotion.html" class="nav-link">NavigationMotion</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>A dynamic tab bar</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we are using <code>WhileActive</code> and <code>ActivatingAnimation</code> to create a dynamic tab bar. The design was inspired by <a href="https://dribbble.com/shots/2702517-Review-App-Concept">this awesome concept</a> by <a href="https://dribbble.com/ne_toy">Sergii Ganushchak</a>.
+Icons are from Google's excellent <a href="https://design.google.com/icons/">Material Icons</a> and the font is <a href="https://github.com/google/roboto">Roboto</a>. The placeholder graphics is from Sergii's <a href="https://dribbble.com/shots/2702517-Review-App-Concept/attachments/546093">original Form prototype</a>.</p>
+<h4>The tab bar</h4
+<p>We use a regular <code>PageControl</code> for the navigation and make sure to set its <code>TransitionEasing</code> to <code>BackOut</code>.</p>
+<p>The tab bar itself is defined as follows:</p>
+<!-- snippet-begin:code/MainView.ux:TabBar -->
+<pre><code>&lt;Panel Dock=&quot;Top&quot; Height=&quot;60&quot; &gt;
+    &lt;Rectangle ux:Name=&quot;indicator&quot; CornerRadius=&quot;30&quot; Color=&quot;color0&quot; LayoutMaster=&quot;p1&quot; Margin=&quot;0,10&quot; Width=&quot;100%&quot; ZOffset=&quot;0.1&quot;/&gt;
+    &lt;Grid ColumnCount=&quot;5&quot; Margin=&quot;-30,0&quot;&gt;
+        &lt;Panel ux:Name=&quot;p1&quot; Column=&quot;0&quot; ColumnSpan=&quot;2&quot;/&gt;
+        &lt;Panel ux:Name=&quot;p4&quot; Column=&quot;3&quot; ColumnSpan=&quot;2&quot;/&gt;
+    &lt;/Grid&gt;
+
+    &lt;Grid ZOffset=&quot;1&quot; Margin=&quot;-20,0&quot;&gt;
+        &lt;Column ux:Name=&quot;col1&quot; Width=&quot;1&quot; WidthMetric=&quot;Proportion&quot;/&gt;
+        &lt;Column ux:Name=&quot;col2&quot; Width=&quot;1&quot; WidthMetric=&quot;Proportion&quot;/&gt;
+        &lt;Column ux:Name=&quot;col3&quot; Width=&quot;1&quot; WidthMetric=&quot;Proportion&quot;/&gt;
+        &lt;Column ux:Name=&quot;col4&quot; Width=&quot;1&quot; WidthMetric=&quot;Proportion&quot;/&gt;
+
+        &lt;Text ux:Class=&quot;TabHeader&quot; Color=&quot;White&quot; Alignment=&quot;CenterLeft&quot; Opacity=&quot;0&quot; Margin=&quot;20,0,0,0&quot; MinWidth=&quot;100&quot;/&gt;
+        &lt;Image ux:Class=&quot;TabIcon&quot; Width=&quot;25&quot; Height=&quot;25&quot; /&gt;
+
+        &lt;Panel HitTestMode=&quot;LocalBounds&quot;&gt;
+            &lt;Grid Columns=&quot;auto,1*&quot; Margin=&quot;40,0&quot; Alignment=&quot;Left&quot;&gt;
+                &lt;TabIcon ux:Name=&quot;c1&quot; File=&quot;Assets/basket.png&quot; Color=&quot;color0&quot;/&gt;
+                &lt;TabHeader ux:Name=&quot;h1&quot; Value=&quot;Products&quot; /&gt;
+            &lt;/Grid&gt;
+            &lt;Clicked&gt;
+                &lt;Set nav.Active=&quot;page1&quot; /&gt;
+            &lt;/Clicked&gt;
+        &lt;/Panel&gt;
+        &lt;Panel HitTestMode=&quot;LocalBounds&quot;&gt;
+            &lt;Grid Columns=&quot;auto,1*&quot; Margin=&quot;30,0&quot; Alignment=&quot;Left&quot;&gt;
+                &lt;TabIcon ux:Name=&quot;c2&quot; File=&quot;Assets/accountbalance.png&quot; Color=&quot;color1&quot;/&gt;
+                &lt;TabHeader ux:Name=&quot;h2&quot; Value=&quot;Places&quot;/&gt;
+            &lt;/Grid&gt;
+            &lt;Clicked&gt;
+                &lt;Set nav.Active=&quot;page2&quot; /&gt;
+            &lt;/Clicked&gt;
+        &lt;/Panel&gt;
+        &lt;Panel HitTestMode=&quot;LocalBounds&quot;&gt;
+            &lt;Grid Columns=&quot;auto,1*&quot; Margin=&quot;30,0&quot; Alignment=&quot;Left&quot;&gt;
+                &lt;TabIcon ux:Name=&quot;c3&quot; File=&quot;Assets/play.png&quot; Color=&quot;color2&quot;/&gt;
+                &lt;TabHeader ux:Name=&quot;h3&quot; Value=&quot;Reviews&quot;/&gt;
+
+            &lt;/Grid&gt;
+            &lt;Clicked&gt;
+                &lt;Set nav.Active=&quot;page3&quot; /&gt;
+            &lt;/Clicked&gt;
+        &lt;/Panel&gt;
+        &lt;Panel HitTestMode=&quot;LocalBounds&quot;&gt;
+            &lt;Grid Columns=&quot;auto,1*&quot; Margin=&quot;30,0&quot; Alignment=&quot;Left&quot;&gt;
+                &lt;TabIcon ux:Name=&quot;c4&quot; File=&quot;Assets/person.png&quot; Color=&quot;color3&quot; /&gt;
+                &lt;TabHeader ux:Name=&quot;h4&quot; Value=&quot;Friends&quot;/&gt;
+            &lt;/Grid&gt;
+            &lt;Clicked&gt;
+                &lt;Set nav.Active=&quot;page4&quot; /&gt;
+            &lt;/Clicked&gt;
+        &lt;/Panel&gt;
+    &lt;/Grid&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The indicator itself is just <code>Rectangle</code> with a <code>CornerRadius</code> of 30. Notice that there are two grids defined beneath it. The first one is just used to guide the animation of the indicator, while the second one actually contains the tab bar items.</p>
+<p>The indicator has its <code>LayoutMaster</code> set to the first child of the guide grid. It is then animated by the page progress using a <code>ActivatingAnimation</code>:</p>
+<pre><code>&lt;ActivatingAnimation Scale=&quot;0.333&quot;&gt;
+	&lt;Move Target=&quot;indicator&quot; X=&quot;1&quot; RelativeTo=&quot;PositionOffset&quot; RelativeNode=&quot;p4&quot;/&gt;
+&lt;/ActivatingAnimation&gt;
+</code></pre>
+<p>Notice that we set its <code>Scale</code> to 0.333. This is because it should be activated across all 4 pages (minus the first one). The <code>Move</code> animator has its <code>RelativeNode</code> property set to the second element of the guide grid. This is how we use the guide grid to define the end points of the indicator animation.</p>
+<p>The contents of the <code>PageControl</code> (the pages themselves) consists mostly of animators changing the color of the background, title text, indicator and the tab bar items.</p>
+<p>The actual contents are just <code>Image</code> placeholders and outside the scope of this example.</p>
+<!-- snippet-begin:code/MainView.ux:PageControl -->
+<pre><code>&lt;PageControl ux:Name=&quot;nav&quot;&gt;
+    &lt;NavigationMotion GotoEasing=&quot;BackOut&quot; /&gt;
+    &lt;Attractor ux:Name=&quot;indicatorColorAttractor&quot; Target=&quot;indicator.Color&quot; Value=&quot;color0&quot; /&gt;
+    &lt;Rectangle ux:Name=&quot;bgColor&quot; Layer=&quot;Background&quot; Color=&quot;color0&quot; Opacity=&quot;0.12&quot;/&gt;
+    &lt;Attractor ux:Name=&quot;bgColorAttractor&quot; Target=&quot;bgColor.Color&quot; Value=&quot;color0&quot; /&gt;
+    &lt;Attractor ux:Name=&quot;titleTextAttractor&quot; Target=&quot;titleText.Color&quot; Value=&quot;color0&quot; /&gt;
+
+    &lt;WhileTrue ux:Name=&quot;shrinkIndicatorWidth&quot;&gt;
+        &lt;Change indicator.Width=&quot;90&quot; Duration=&quot;0.25&quot;/&gt;
+    &lt;/WhileTrue&gt;
+
+    &lt;Image ux:Class=&quot;PagePlaceholder&quot; Margin=&quot;8,10,8,0&quot; StretchMode=&quot;UniformToFill&quot; ContentAlignment=&quot;Top&quot;/&gt;
+
+    &lt;Page ux:Name=&quot;page1&quot;&gt;
+        &lt;PagePlaceholder File=&quot;Assets/screen1.png&quot;/&gt;
+        &lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+            &lt;Set shrinkIndicatorWidth.Value=&quot;false&quot; /&gt;
+            &lt;Set indicatorColorAttractor.Value=&quot;color0&quot; /&gt;
+            &lt;Set bgColorAttractor.Value=&quot;color0&quot; /&gt;
+            &lt;Set titleTextAttractor.Value=&quot;color0&quot; /&gt;
+        &lt;/WhileActive&gt;
+        &lt;ActivatingAnimation&gt;
+            &lt;Change h1.Opacity=&quot;1&quot; /&gt;
+            &lt;Change col1.Width=&quot;2&quot; /&gt;
+            &lt;Change c1.Color=&quot;White&quot; /&gt;
+        &lt;/ActivatingAnimation&gt;
+    &lt;/Page&gt;
+    &lt;Page ux:Name=&quot;page2&quot;&gt;
+        &lt;PagePlaceholder File=&quot;Assets/screen2.png&quot; /&gt;
+        &lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+            &lt;Set shrinkIndicatorWidth.Value=&quot;true&quot; /&gt;
+            &lt;Set indicatorColorAttractor.Value=&quot;color1&quot; /&gt;
+            &lt;Set bgColorAttractor.Value=&quot;color1&quot; /&gt;
+            &lt;Set titleTextAttractor.Value=&quot;color1&quot; /&gt;
+        &lt;/WhileActive&gt;
+        &lt;ActivatingAnimation&gt;
+            &lt;Change h2.Opacity=&quot;1&quot; /&gt;
+            &lt;Change col2.Width=&quot;2&quot; /&gt;
+            &lt;Change c2.Color=&quot;White&quot; /&gt;
+        &lt;/ActivatingAnimation&gt;
+    &lt;/Page&gt;
+    &lt;Page ux:Name=&quot;page3&quot;&gt;
+        &lt;PagePlaceholder File=&quot;Assets/screen3.png&quot; /&gt;
+        &lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+            &lt;Set shrinkIndicatorWidth.Value=&quot;true&quot; /&gt;
+            &lt;Set indicatorColorAttractor.Value=&quot;color2&quot; /&gt;
+            &lt;Set bgColorAttractor.Value=&quot;color2&quot; /&gt;
+            &lt;Set titleTextAttractor.Value=&quot;color2&quot; /&gt;
+        &lt;/WhileActive&gt;
+        &lt;ActivatingAnimation&gt;
+            &lt;Change h3.Opacity=&quot;1&quot; /&gt;
+            &lt;Change col3.Width=&quot;2&quot; /&gt;
+            &lt;Change c3.Color=&quot;White&quot; /&gt;
+        &lt;/ActivatingAnimation&gt;
+    &lt;/Page&gt;
+    &lt;Page ux:Name=&quot;page4&quot;&gt;
+        &lt;PagePlaceholder File=&quot;Assets/screen4.png&quot; /&gt;
+        &lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+            &lt;Set shrinkIndicatorWidth.Value=&quot;false&quot; /&gt;
+            &lt;Set indicatorColorAttractor.Value=&quot;color3&quot; /&gt;
+            &lt;Set bgColorAttractor.Value=&quot;color3&quot; /&gt;
+            &lt;Set titleTextAttractor.Value=&quot;color3&quot; /&gt;
+        &lt;/WhileActive&gt;
+        &lt;ActivatingAnimation Scale=&quot;0.333&quot;&gt;
+            &lt;Move Target=&quot;indicator&quot; X=&quot;1&quot; RelativeTo=&quot;PositionOffset&quot; RelativeNode=&quot;p4&quot;/&gt;
+        &lt;/ActivatingAnimation&gt;
+        &lt;ActivatingAnimation&gt;
+            &lt;Change h4.Opacity=&quot;1&quot; /&gt;
+            &lt;Change col4.Width=&quot;2&quot; /&gt;
+            &lt;Change c4.Color=&quot;White&quot; /&gt;
+        &lt;/ActivatingAnimation&gt;
+    &lt;/Page&gt;
+&lt;/PageControl&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And that's it!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

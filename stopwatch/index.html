@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Stopwatch - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/stopwatch.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_uno.html">Uno</a>, <a href="../tag_nativemodule.html">Native module</a>, <a href="../tag_customtrigger.html">Custom trigger</a>, <a href="../tag_reusablecomponents.html">Reusable components</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/rotation.html" class="nav-link">Rotation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/translation.html" class="nav-link">Translation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/imagefill.html" class="nav-link">ImageFill</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/pulse.html" class="nav-link">Pulse</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/fusejs/timermodule.html" class="nav-link">Timer</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Stopwatch</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we create a stopwatch native-module which we use to create a cool stopwatch app.</p>
+<p>While this is a good example of how to make custom UX components, it can also be pulled off using pure JavaScript logic. You can check out the JavaScript implementation of the app <a href="stopwatch-javascript.html">here.</a></p>
+<h3>The Stopwatch module</h3
+<p>The <code>Stopwatch</code> class is used for the actual time measurement. It derives from <code>NativeModule</code> and defines four functions which we can call from JavaScript:</p>
+<pre><code>public class Stopwatch : NativeModule
+{
+	public Stopwatch()
+	{
+		AddMember(new NativeFunction(&quot;Start&quot;, (NativeCallback)Start));
+		AddMember(new NativeFunction(&quot;Stop&quot;, (NativeCallback)Stop));
+		AddMember(new NativeFunction(&quot;Pause&quot;, (NativeCallback)Pause));
+		AddMember(new NativeFunction(&quot;GetSeconds&quot;, (NativeCallback)GetSeconds));
+	}
+
+	... implementation ...
+}
+</code></pre>
+<p>By adding a <code>Stopwatch</code> instance to our UX and giving it a <code>ux:Global</code> name, we can control it from JavaScript using <code>require('Stopwatch')</code>:</p>
+<pre><code>&lt;Stopwatch ux:Global=&quot;Stopwatch&quot;/&gt;
+</code></pre>
+<pre><code>var Stopwatch = require(&quot;Stopwatch&quot;);
+Stopwatch.GetSeconds();
+Stopwatch.Start();
+Stopwatch.Pause();
+Stopwatch.Stop();
+</code></pre>
+<h4>A trigger to go along</h4
+<p>We also create a few triggers to go along with our Stopwatch component, so that we can animate our UX in response to time passing:</p>
+<p>We define an abstract class in Uno code called <code>StopwatchTrigger</code>. It inherits from <code>Trigger</code> and implements the general functionality we need for each of the more specific triggers.</p>
+<pre><code>public abstract class StopwatchTrigger : Trigger
+{
+	Stopwatch _stopwatch;
+	public Stopwatch Stopwatch
+	{
+		get { return _stopwatch; }
+		set
+		{
+			if (_stopwatch != null)
+				_stopwatch.Ticked -= Tick;
+			_stopwatch = value;
+			_stopwatch.Ticked += Tick;
+		}
+	}
+
+	void Tick()
+	{
+		var time = Math.Mod(Time(), 1.0) * _factor;
+		if (IsRooted)
+			Seek(time);
+	}
+
+	double _factor = 1.0;
+	public double Factor { get { return _factor; } set { _factor = value; } }
+
+	protected abstract double Time();
+}
+</code></pre>
+<p>We can inherit from this class to make triggers which responds more specifically. In our case, we want a trigger which triggers on seconds passing:</p>
+<pre><code>public class Seconds : StopwatchTrigger
+{
+	protected override double Time()
+	{
+		return Stopwatch.EllapsedSeconds;
+	}
+}
+</code></pre>
+<p>We can then use this trigger in our UX to animate the watch face.</p>
+<h3>The watch face</h3
+<p>The watch face is composed of four circles. The background is a circle with a <code>SolidColor</code> inside its <code>Stroke</code>. The foreground has an <code>ImageFill</code> with a gradient image for its <code>Stroke</code>. It also has a copy which is used for the tick animation. Lastly there is a small <code>Circle</code> which represents the clock hand.</p>
+<!-- snippet-begin:code/WatchFace.ux:WatchFaceCircles -->
+<pre><code>&lt;Circle Width=&quot;10&quot; Height=&quot;10&quot; Color=&quot;#fff&quot;&gt;
+    &lt;Rotation ux:Name=&quot;trackerBall&quot; Degrees=&quot;0&quot; /&gt;
+    &lt;Translation Y=&quot;-0.487&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+&lt;/Circle&gt;
+&lt;Circle ux:Name=&quot;clock&quot; StartAngleDegrees=&quot;0&quot; EndAngleDegrees=&quot;0&quot;&gt;
+    &lt;Rotation Degrees=&quot;-90&quot; /&gt;
+    &lt;Stroke Width=&quot;6&quot; Alignment=&quot;Inside&quot; Offset=&quot;-1&quot; LineCap=&quot;Round&quot;&gt;
+        &lt;ImageFill File=&quot;gradient.png&quot; WrapMode=&quot;ClampToEdge&quot;/&gt;
+    &lt;/Stroke&gt;
+&lt;/Circle&gt;
+&lt;Circle&gt;
+    &lt;Stroke Width=&quot;6&quot; Alignment=&quot;Inside&quot; Offset=&quot;-1&quot; Brush=&quot;#455493&quot; /&gt;
+&lt;/Circle&gt;
+&lt;Circle ux:Name=&quot;tickCircle&quot; Visibility=&quot;Hidden&quot;&gt;
+    &lt;Stroke Width=&quot;6&quot; Alignment=&quot;Inside&quot; Offset=&quot;-1&quot;&gt;
+        &lt;ImageFill File=&quot;gradient.png&quot; WrapMode=&quot;ClampToEdge&quot;/&gt;
+    &lt;/Stroke&gt;
+    &lt;Scaling ux:Name=&quot;circleScale&quot; /&gt;
+&lt;/Circle&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We animate the <code>EndAngleDegrees</code> property of our &quot;clock&quot; <code>Circle</code> inside the <code>Seconds</code> trigger.
+The tick animation is triggered by using a <code>Pulse</code> animator.</p>
+<!-- snippet-begin:code/WatchFace.ux:WatchFaceAnimation -->
+<pre><code>&lt;Timeline ux:Name=&quot;tickCircleAnimation&quot;&gt;
+    &lt;Change Target=&quot;tickCircle.Visibility&quot; Value=&quot;Visible&quot; /&gt;
+    &lt;Change Target=&quot;tickCircle.Opacity&quot; Value=&quot;0&quot; Duration=&quot;0.5&quot; Easing=&quot;QuadraticOut&quot; DurationBack=&quot;0&quot; /&gt;
+    &lt;Change Target=&quot;circleScale.Factor&quot; Value=&quot;1.3&quot; Duration=&quot;0.5&quot; Easing=&quot;QuadraticOut&quot; DurationBack=&quot;0&quot; /&gt;
+&lt;/Timeline&gt;
+
+&lt;Seconds Stopwatch=&quot;Stopwatch&quot;&gt;
+    &lt;Change Target=&quot;clock.EndAngleDegrees&quot; Value=&quot;360&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Change Target=&quot;trackerBall.Degrees&quot; Value=&quot;360&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Pulse Target=&quot;tickCircleAnimation&quot; /&gt;
+&lt;/Seconds&gt;
+</code></pre>
+<!-- snippet-end -->
+<ul>
+<li>Notice that we can access the global <code>Stopwatch</code> object we made in MainView.ux even though our <code>Seconds</code> trigger is inside the WatchFace.ux file.</li>
+</ul>
+<h3>Recording laps</h3
+<p>We add laps to a an <code>Observable</code> whenever the user clicks the lap button while the stopwatch is running.</p>
+<!-- snippet-begin:code/MainView.js:Fields -->
+<pre><code>var laps = Observable();
+var running = Observable(false);
+var timeString = Observable(&quot;&quot;);
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.js:AddLap -->
+<pre><code>function addLapOrReset(){
+    if (running.value){
+        if (Stopwatch.GetSeconds() &gt; 0)
+            laps.insertAt(0, {
+                title:(&quot;Lap &quot; + (laps.length + 1)),
+                time: timeString.value
+            });
+    } else {
+        Stopwatch.Stop();
+        laps.clear();
+        updateTimeString();
+    }
+}
+</code></pre>
+<!-- snippet-end -->
+<p>We use Adding-, Removing- and LayoutAnimation to move all the list elements as we add new items. Since we use <code>laps.insertAt(0, item)</code>, we make sure new laps are always on the top of the list.</p>
+<!-- snippet-begin:code/MainView.ux:LapsUX -->
+<pre><code>&lt;StackPanel Margin=&quot;20,40&quot;&gt;
+    &lt;Each Items=&quot;{laps}&quot;&gt;
+        &lt;Panel Height=&quot;50&quot; Clicked=&quot;{removeLap}&quot; HitTestMode=&quot;LocalBoundsAndChildren&quot;&gt;
+            &lt;DockPanel&gt;
+                &lt;FadeText Alignment=&quot;Center&quot; FontSize=&quot;24&quot; Color=&quot;#fff&quot; Dock=&quot;Left&quot; Value=&quot;{title}&quot;/&gt;
+                &lt;FadeText Alignment=&quot;Center&quot; FontSize=&quot;24&quot; Color=&quot;#fff&quot; Dock=&quot;Right&quot; Value=&quot;{time}&quot;/&gt;
+            &lt;/DockPanel&gt;
+            &lt;Rectangle Color=&quot;#8FBFE8&quot; Height=&quot;1&quot; Alignment=&quot;Bottom&quot;/&gt;
+            &lt;AddingAnimation&gt;
+                &lt;Move Y=&quot;-1&quot; RelativeTo=&quot;Size&quot; Duration=&quot;0.3&quot;/&gt;
+            &lt;/AddingAnimation&gt;
+            &lt;RemovingAnimation&gt;
+                &lt;Move X=&quot;1.4&quot; RelativeTo=&quot;ParentSize&quot; Duration=&quot;0.3&quot;/&gt;
+            &lt;/RemovingAnimation&gt;
+            &lt;LayoutAnimation&gt;
+                &lt;Move Y=&quot;1&quot; RelativeTo=&quot;LayoutChange&quot; Duration=&quot;0.3&quot; Easing=&quot;CircularInOut&quot;/&gt;
+            &lt;/LayoutAnimation&gt;
+        &lt;/Panel&gt;
+    &lt;/Each&gt;
+&lt;/StackPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>That's it!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

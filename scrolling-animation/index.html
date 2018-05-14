@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Scrolling animations - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/scrolling-animation.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_layout.html">Layout</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/scrollinganimation.html" class="nav-link">ScrollingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/ios/statusbarconfig.html" class="nav-link">iOS.StatusBarConfig</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/multilayoutpanel.html" class="nav-link">MultiLayoutPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/placeholder.html" class="nav-link">Placeholder</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/transformanimator_1/relativenode.html" class="nav-link">RelativeNode</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move/relativeto.html" class="nav-link">Move.RelativeTo</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Scrolling animations</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how you can use a <code>ScrollView</code> together with <code>ScrollingAnimation</code> to create advanced visual effects to accompany scrolling. In this example, we have an article with a nice header that animates when you scroll through the article.</p>
+<h3>Design</h3
+<p>The basic layout is like this:</p>
+<pre><code>&lt;App Theme=&quot;Basic&quot; Background=&quot;#eeeeeeff&quot;&gt;
+    &lt;iOS.StatusBarConfig ux:Name=&quot;statusBarConfig&quot; Style=&quot;Dark&quot;/&gt;
+    &lt;Panel&gt;
+		&lt;MultiLayoutPanel ux:Name=&quot;headerPanel&quot; HitTestMode=&quot;None&quot; Alignment=&quot;Top&quot; Height=&quot;260&quot;&gt;
+            ... Header content ...
+        &lt;/MultiLayoutPanel&gt;
+        &lt;ScrollView&gt;
+            ... Main content ...
+        &lt;/ScrollView&gt;
+    &lt;/Panel&gt;
+&lt;/App&gt;
+</code></pre>
+<p>The main part of our app is created with a <code>Panel</code> which layers the <code>headerPanel</code> on top of a <code>ScrollView</code>.</p>
+<p>Notice that we set <code>HitTestMode</code> to &quot;None&quot; for headerPanel which makes it ignore all input. This has the effect of sending the input to the next element that is under the pointer. This way, we can scroll the <code>ScrollView</code> even if the headerPanel is above it visually.</p>
+<h3>ScrollingAnimation</h3
+<p>A very central part of this example is the <code>ScrollingAnimation</code> trigger. It can be used to do animations based on a scrollviews scroll position.</p>
+<p>One example is that the header gets smaller as you scroll down. Because the header and the body is on top of each other, they don't affect each other layout-wise.</p>
+<p>We can move the <code>backgroundPicture</code> with a <code>Move</code> animator:</p>
+<!-- snippet-begin:code/MainView.ux:MoveBackgroundPicture -->
+<pre><code>&lt;ScrollingAnimation From=&quot;0&quot; To=&quot;260&quot;&gt;
+    &lt;Move Target=&quot;backgroundPicture&quot; RelativeTo=&quot;Size&quot; Y=&quot;-0.7&quot; Easing=&quot;QuadraticOut&quot;/&gt;
+    ... some other animators ...
+&lt;/ScrollingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>All the <code>Change</code> blocks will be smoothly animated between scroll position 0 and 260. Note that <code>RelativeTo=&quot;Size&quot; Y=&quot;-0.7&quot;</code> means that the target element is moved 70% of its size in the negative Y-direction. The <code>RelativeTo</code> property gives us finer control of how to animate with relative numbers.</p>
+<p>Throughout this example we use the <code>RelativeTo</code> property set to both &quot;Size&quot; and &quot;ParentSize&quot;. If one wants to specify an arbitrary node as the relative node, one can use the <code>RelativeNode</code> property.</p>
+<h3>Animating the profile picture</h3
+<p>There is an interesting type of animation happening to the face picture. Notice that at scroll position 0, the picture is on top of the background picture, but as we start scrolling, it actually moves behind it. To achieve this effect, we use a <code>MultiLayoutPanel</code>. The <code>MultiLayoutPanel</code> allows us to actually move the element to a different spot in the visual tree using a <code>Placeholder</code> node.</p>
+<!-- snippet-begin:code/MainView.ux:MultiLayoutPanel -->
+<pre><code>&lt;MultiLayoutPanel ux:Name=&quot;headerPanel&quot; HitTestMode=&quot;None&quot; Alignment=&quot;Top&quot; Height=&quot;260&quot;&gt;
+    &lt;Placeholder ux:Name=&quot;overBackgroundLayout&quot;&gt;
+        &lt;Image ux:Name=&quot;facePicture&quot;  File=&quot;Assets/avatar.png&quot; Alignment=&quot;BottomCenter&quot;
+               Width=&quot;150&quot; Height=&quot;150&quot; Offset=&quot;0,75&quot;/&gt;
+    &lt;/Placeholder&gt;
+
+    ... background image ...
+
+    &lt;Placeholder ux:Name=&quot;underBackgroundLayout&quot; Target=&quot;facePicture&quot;/&gt;
+&lt;/MultiLayoutPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Then we change which placeholder we want our picture to exist in:</p>
+<!-- snippet-begin:code/MainView.ux:SettingLayoutElement -->
+<pre><code>&lt;ScrollingAnimation From=&quot;125&quot; To=&quot;0&quot;&gt;
+    &lt;Set headerPanel.LayoutElement=&quot;overBackgroundLayout&quot;/&gt;
+&lt;/ScrollingAnimation&gt;
+&lt;ScrollingAnimation From=&quot;125&quot; To=&quot;170&quot;&gt;
+    &lt;Set headerPanel.LayoutElement=&quot;underBackgroundLayout&quot;/&gt;
+&lt;/ScrollingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Since the <code>Set</code> animator permanently changes its targets value, we have to set it back to its original state when we scroll back, hence the two animators.</p>
+<h3>The status bar text color change</h3
+<p>On iOS devices, the background image is displayed under the statusbar (not visible in the gif). The top half of the image has quite bright colors, so we set the statusbar style to be dark. When we start scrolling, and the darker parts of our image go beneath the statusbar, we want to change the style to light. This can also be done with the <code>ScrollingAnimation</code> trigger:</p>
+<!-- snippet-begin:code/MainView.ux:StatusBarConfig -->
+<pre><code>&lt;Fuse.iOS.StatusBarConfig ux:Name=&quot;statusBarConfig&quot; Style=&quot;Dark&quot;/&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Then, we simply use a <code>Change</code> on it during a <code>ScrollingAnimation</code>:</p>
+<!-- snippet-begin:code/MainView.ux:ConfigStyleToLight -->
+<pre><code>&lt;ScrollingAnimation From=&quot;50&quot; To=&quot;250&quot;&gt;
+    &lt;Change statusBarConfig.Style=&quot;Light&quot; /&gt;
+&lt;/ScrollingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Since this is a boolean change, the actual switch from dark to light style will happen when the animator progress is at 50%.
+In this case that would be at 150.</p>
+<ul>
+<li>Note that this only applies to iOS, and has no effect on Android devices.</li>
+</ul>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

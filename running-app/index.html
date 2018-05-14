@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Fitness app concept - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/running-app.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_layout.html">Layout</a>, <a href="../tag_navigation.html">Navigation</a>, <a href="../tag_animation.html">Animation</a>, <a href="../tag_basics.html">Basics</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/whileactive.html" class="nav-link">WhileActive</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/easing.html" class="nav-link">Easing</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/anchor.html" class="nav-link">Anchor</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/imagefill.html" class="nav-link">ImageFill</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/rotation.html" class="nav-link">Rotation</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Fitness app concept</h1>
+
+          <div class="example-content-preview example-content-preview-slot-3">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>We found <a href="https://dribbble.com/shots/3202189-Fitness-App-Concept">this excellent concept</a> by <a href="https://dribbble.com/tanyabrassie">Tanya Brassie</a> of <a href="https://www.instagram.com/incahootsdesign">inCahoots</a>, and decided to implement the design in Fuse.</p>
+<h4>Slicing and dicing</h4
+<p>This example is quite heavy on image assets, and each image is sliced from the original vector art in 1x, 2x, and 4x densities.
+This will result in a lot of clutter throughout our code, since we need a <code>MultiDensityImageSource</code> with three instances of <code>FileImageSource</code> for each image.</p>
+<p>To clean this up, all images are defined separately in <code>StaticResources.ux</code>, along with fonts and text styles.</p>
+<!-- snippet-begin:code/StaticResources.ux:Images -->
+<pre><code>&lt;Image ux:Class=&quot;RunningWomanRightArm&quot; StretchMode=&quot;PixelPrecise&quot;&gt;
+    &lt;MultiDensityImageSource&gt;
+        &lt;FileImageSource File=&quot;Assets/running-woman/arm-right@1x.png&quot; Density=&quot;1&quot; /&gt;
+        &lt;FileImageSource File=&quot;Assets/running-woman/arm-right@2x.png&quot; Density=&quot;2&quot; /&gt;
+        &lt;FileImageSource File=&quot;Assets/running-woman/arm-right@4x.png&quot; Density=&quot;4&quot; /&gt;
+    &lt;/MultiDensityImageSource&gt;
+&lt;/Image&gt;
+
+... and so on ...
+</code></pre>
+<!-- snippet-end -->
+<h4>Noise</h4
+<p>The example has a couple of elements that include a subtle noise texture.
+For this, we've created a <code>NoiseRectangle</code> component, which displays a repeating noise image overlaying a color.
+The <code>NoiseIntensity</code> property controls the opacity of the noise.</p>
+<!-- snippet-begin:code/Components/NoiseRectangle.ux:NoiseRectangle -->
+<pre><code>&lt;Rectangle ux:Class=&quot;NoiseRectangle&quot; Color=&quot;#fff&quot; NoiseIntensity=&quot;0.12&quot;&gt;
+    &lt;float ux:Property=&quot;NoiseIntensity&quot; /&gt;
+
+    &lt;ImageFill File=&quot;../Assets/noise.png&quot;
+               StretchMode=&quot;PointPrecise&quot;
+               Density=&quot;2&quot;
+               ContentAlignment=&quot;TopLeft&quot;
+               Opacity=&quot;{ReadProperty NoiseIntensity}&quot; /&gt;
+&lt;/Rectangle&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Running woman</h4
+<p>The illustration of the running woman is split up into three parts – the body, the right arm, and the left arm.
+Each arm has an <code>Anchor</code>, which determines its point of origin. We've set this to be approximately the point where the arm joins the torso.
+Because we also set <code>TransformOrigin=&quot;Anchor&quot;</code>, all transformations will revolve around this point.</p>
+<p>When the page is <em>inactive</em>, we slightly <code>Rotate</code> each arm clockwise.
+We then use a <code>WhileActive</code> trigger to revert this rotation when the containing page becomes active.
+The bouncy effect is achieved by using the <code>ElasticOut</code> easing function.</p>
+<!-- snippet-begin:code/Components/RunningWoman.ux:RunningWoman -->
+<pre><code>&lt;Panel ux:Class=&quot;RunningWoman&quot;&gt;
+    &lt;RunningWomanRightArm Alignment=&quot;Center&quot; TransformOrigin=&quot;Anchor&quot; Anchor=&quot;81%,11%&quot; Offset=&quot;30,-45&quot;&gt;
+        &lt;Rotation ux:Name=&quot;rightArmRotation&quot; Degrees=&quot;90&quot; /&gt;
+    &lt;/RunningWomanRightArm&gt;
+    
+    &lt;RunningWomanBody /&gt;
+
+    &lt;RunningWomanLeftArm Alignment=&quot;Center&quot; TransformOrigin=&quot;Anchor&quot; Anchor=&quot;10%,54%&quot; Offset=&quot;50,-45&quot;&gt;
+        &lt;Rotation ux:Name=&quot;leftArmRotation&quot; Degrees=&quot;40&quot; /&gt;
+    &lt;/RunningWomanLeftArm&gt;
+    
+    &lt;WhileActive Bypass=&quot;Never&quot;&gt;
+        &lt;Change leftArmRotation.Degrees=&quot;0&quot; Duration=&quot;1.8&quot; Delay=&quot;0.3&quot; DurationBack=&quot;0.3&quot; Easing=&quot;ElasticOut&quot; /&gt;
+        &lt;Change rightArmRotation.Degrees=&quot;0&quot;  Duration=&quot;2&quot; Delay=&quot;0.2&quot; DurationBack=&quot;0.3&quot; Easing=&quot;ElasticOut&quot; /&gt;
+    &lt;/WhileActive&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And that's pretty much it! As always, we encourage you to download and play around with the code.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

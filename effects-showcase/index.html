@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Effects showcase - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/effects-showcase.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_effects.html">Effects</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects.html" class="nav-link">Effects</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects/blur.html" class="nav-link">Blur</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects/halftone.html" class="nav-link">Halftone</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects/desaturate.html" class="nav-link">Desaturate</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects/mask.html" class="nav-link">Mask</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/shadow.html" class="nav-link">Shadow</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Effects showcase</h1>
+
+          <div class="example-content-preview example-content-preview-slot-6">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<h3>Effects</h3
+<p>This example shows how you can apply various real-time visual effects to elements in your app.</p>
+<!-- snippet-begin:code/MainView.ux:App -->
+<pre><code>&lt;App&gt;
+	&lt;Text ux:Class=&quot;Title&quot; Color=&quot;#fff&quot; FontSize=&quot;30&quot; Margin=&quot;10&quot; Alignment=&quot;TopLeft&quot; HitTestMode=&quot;None&quot;&gt;
+		&lt;Shadow Size=&quot;10&quot; Distance=&quot;1&quot; Color=&quot;#000&quot; Mode=&quot;PerPixel&quot; /&gt;
+	&lt;/Text&gt;
+	&lt;Image ux:Class=&quot;MyImage&quot; StretchMode=&quot;UniformToFill&quot; /&gt;
+	
+	&lt;Grid RowCount=&quot;4&quot; DefaultRow=&quot;1*&quot;&gt;
+		
+		&lt;Panel ClipToBounds=&quot;true&quot;&gt;
+			&lt;Panel&gt;
+				&lt;StackPanel&gt;
+					&lt;StatusBarBackground /&gt;
+					&lt;Title&gt;BLUR&lt;/Title&gt;
+				&lt;/StackPanel&gt;
+				&lt;MyImage File=&quot;assets/blur.png&quot; Margin=&quot;-20&quot; /&gt;
+				&lt;Blur ux:Name=&quot;blur&quot; Radius=&quot;0&quot; /&gt;
+			&lt;/Panel&gt;
+			
+			&lt;WhilePressed&gt;
+				&lt;Change blur.Radius=&quot;10&quot; Duration=&quot;0.3&quot; /&gt;
+			&lt;/WhilePressed&gt;
+		&lt;/Panel&gt;
+		&lt;Panel&gt;
+			&lt;MyImage File=&quot;assets/halftone.png&quot;&gt;
+				&lt;Title&gt;HALFTONE&lt;/Title&gt;
+				&lt;Halftone ux:Name=&quot;halftone&quot; Smoothness=&quot;1&quot; DotTint=&quot;1&quot; PaperTint=&quot;1&quot; Spacing=&quot;5&quot; Intensity=&quot;0.2&quot; /&gt;
+			&lt;/MyImage&gt;
+			
+			&lt;WhilePressed&gt;
+				&lt;Change halftone.DotTint=&quot;0.1&quot; Duration=&quot;0.3&quot; /&gt;
+				&lt;Change halftone.PaperTint=&quot;.5&quot; Duration=&quot;0.3&quot; /&gt;
+				&lt;Change halftone.Intensity=&quot;0.6&quot; Duration=&quot;0.3&quot; /&gt;
+			&lt;/WhilePressed&gt;
+		&lt;/Panel&gt;
+		&lt;Panel&gt;
+			&lt;Title&gt;DESATURATE&lt;/Title&gt;
+			
+			&lt;MyImage File=&quot;assets/desaturate.png&quot;&gt;
+				&lt;Desaturate ux:Name=&quot;desaturate&quot; Amount=&quot;0&quot; /&gt;
+				
+				&lt;WhilePressed&gt;
+					&lt;Change desaturate.Amount=&quot;1&quot; Duration=&quot;0.3&quot; Easing=&quot;QuadraticInOut&quot; /&gt;
+				&lt;/WhilePressed&gt;
+			&lt;/MyImage&gt;
+		&lt;/Panel&gt;
+		&lt;Panel&gt;
+			&lt;Text Value=&quot;MASK&quot; Alignment=&quot;Center&quot; FontSize=&quot;130&quot; Color=&quot;#fff&quot;&gt;
+				&lt;Mask File=&quot;assets/mask.png&quot; Mode=&quot;Grayscale&quot; /&gt;
+			&lt;/Text&gt;
+			&lt;MyImage ux:Name=&quot;maskBackground&quot; File=&quot;assets/mask_bg.png&quot; /&gt;
+			
+			&lt;WhilePressed&gt;
+				&lt;Change maskBackground.Color=&quot;#111&quot; Duration=&quot;0.3&quot; Easing=&quot;QuadraticInOut&quot; /&gt;
+			&lt;/WhilePressed&gt;
+		&lt;/Panel&gt;
+	&lt;/Grid&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Gallery - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/gallery.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_gesture.html">Gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/layouts/columnlayout.html" class="nav-link">ColumnLayout</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/longpressed.html" class="nav-link">LongPressed</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/tapped.html" class="nav-link">Tapped</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/ios/statusbarconfig.html" class="nav-link">iOS.StatusBarConfig</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/statusbarbackground.html" class="nav-link">StatusBarBackground</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/image.html" class="nav-link">Image</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#add-value" class="nav-link">Observable.add</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#remove-value" class="nav-link">Observable.remove</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html#event-binding-to-javascript-functions" class="nav-link">Event handler</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Gallery</h1>
+
+          <div class="example-content-preview example-content-preview-slot-8">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>It is not uncommon that you want to select multiple items and delete them from a collection. In this example we will see how that can be done in a gallery-like application, similar to what you might find in your mobile operating system.</p>
+<p>In this example we will showcase:</p>
+<ul>
+<li>Layout of pictures in a style similar to <em>pinterest</em></li>
+<li>Multi-selection of these images, allowing the user to tap pictures to add to selection</li>
+<li>Switching to selection mode using the <code>LongPressed</code> trigger</li>
+<li>Deleting pictures from the gallery, with a neat animation on the content as it does the new layout</li>
+</ul>
+<p>The pictures we are using in this example are downloaded from http://www.unsplash.com, an awesome site to get free-to-use content.</p>
+<h4>The JavaScript</h4
+<p>We initialize the data from JavaScript:</p>
+<!-- snippet-begin:code/MainView.js:Initialization -->
+<pre><code>function Picture(resource) {
+    this.resource = &quot;Assets/Pictures/&quot; + resource + &quot;.jpg&quot;;
+    this.isSelected = Observable(false);
+    this.indicateModeChange = Observable(false);
+}
+
+pictures = Observable();
+for (i = 1; i &lt; 21; i++) {
+    pictures.add(new Picture('Unsplash' + i));
+}
+</code></pre>
+<!-- snippet-end -->
+<p>We use an observable <code>bool</code> to track whether we are in selection mode or not:</p>
+<!-- snippet-begin:code/MainView.js:SelectionMode -->
+<pre><code>selectionMode = Observable(false);
+numberOfSelected = Observable(0);
+</code></pre>
+<!-- snippet-end -->
+<p>We also need to track how many items are selected.
+These should be reflected in the header of the app:</p>
+<!-- snippet-begin:code/MainView.js:Header -->
+<pre><code>header = Observable(function () {
+    if (selectionMode.value === false)
+        return 'Gallery';
+    else return 'Gallery (' + numberOfSelected.value + ')';
+});
+</code></pre>
+<!-- snippet-end -->
+<p>Now we just need some simple logic to change the state of the app:</p>
+<!-- snippet-begin:code/MainView.js:ToggleSelections -->
+<pre><code>function goToSelectionMode(args) {
+    if (selectionMode.value === true) return;
+    selectionMode.value = true;
+    args.data.indicateModeChange.value = true;
+    args.data.isSelected.value = true;
+    numberOfSelected.value = 1;
+}
+
+function toggleSelect(args) {
+    if (selectionMode.value === false) return;
+    if (args.data.isSelected.value === false) {
+        numberOfSelected.value = numberOfSelected.value + 1;
+    } else {
+        numberOfSelected.value = numberOfSelected.value - 1;
+        if (numberOfSelected.value === 0) {
+            selectionMode.value = false;
+        }
+    }
+    args.data.isSelected.value = !args.data.isSelected.value;
+}
+</code></pre>
+<!-- snippet-end -->
+<p>We top off the logic in the app with the ability to delete the pictures:</p>
+<!-- snippet-begin:code/MainView.js:DeleteSelected -->
+<pre><code>function deleteSelected(args) {
+    pictures.removeWhere(function (p) {
+        return p.isSelected.value === true;
+    });
+    numberOfSelected.value = 0;
+    selectionMode.value = false;
+}
+</code></pre>
+<!-- snippet-end -->
+<h4>The UX</h4
+<p>To display the top bar of the app, we add this code to the app <code>DockPanel</code>:</p>
+<!-- snippet-begin:code/MainView.ux:TopBar -->
+<pre><code>&lt;StackPanel Dock=&quot;Top&quot; Background=&quot;#3F51B5&quot;&gt;
+    &lt;StatusBarBackground /&gt;
+    &lt;Fuse.iOS.StatusBarConfig Style=&quot;Light&quot;/&gt;
+    &lt;Panel Height=&quot;60&quot;&gt;
+        &lt;Text Value=&quot;{header}&quot; Alignment=&quot;Center&quot; Color=&quot;#fff&quot;/&gt;
+        &lt;Panel Clicked=&quot;{deleteSelected}&quot;  Alignment=&quot;CenterRight&quot;&gt;
+            &lt;Image File=&quot;Assets/Icons/delete.png&quot; Height=&quot;30&quot; Margin=&quot;0,0,5,0&quot; /&gt;
+        &lt;/Panel&gt;
+    &lt;/Panel&gt;
+&lt;/StackPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We also bind the panel holding the trashcan-icon to the <code>deleteSelected</code> JavaScript function.</p>
+<p>To the <code>Color</code> area of the <code>DockPanel</code> we add a <code>ScrollView</code> which contains this <code>Panel</code>:</p>
+<!-- snippet-begin:code/MainView.ux:ColumnLayout -->
+<pre><code>&lt;Panel Alignment=&quot;Top&quot;&gt;
+    &lt;ColumnLayout ColumnCount=&quot;3&quot; /&gt;
+    &lt;Each Items=&quot;{pictures}&quot;&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Simply adding the <code>ColumnLayout</code> to the <code>Panel</code> is what creates the interesting resulting layout.</p>
+<p>All we need to do then is to define the actual instances of the pictures and wire them up to the previously mentioned JavaScript methods:</p>
+<!-- snippet-begin:code/MainView.ux:ImageInstances -->
+<pre><code>&lt;Panel Background=&quot;#333&quot; Margin=&quot;3&quot;&gt;
+    &lt;Image ux:Name=&quot;checkmark&quot; File=&quot;Assets/Icons/Checkmark.png&quot;
+            Alignment=&quot;TopRight&quot; Margin=&quot;5&quot; Width=&quot;20&quot; Height=&quot;20&quot; Color=&quot;#4f6&quot;
+            Opacity=&quot;0&quot; /&gt;
+    &lt;Circle ux:Name=&quot;checkmarkBackground&quot; Width=&quot;20&quot; Height=&quot;20&quot; Margin=&quot;5&quot; Color=&quot;#fff&quot; Alignment=&quot;TopRight&quot; Opacity=&quot;0&quot; /&gt;
+    &lt;Tapped&gt;
+        &lt;Callback Handler=&quot;{toggleSelect}&quot; /&gt;
+    &lt;/Tapped&gt;
+    &lt;Image ux:Name=&quot;picture&quot; StretchMode=&quot;UniformToFill&quot; File=&quot;{resource}&quot; /&gt;
+    &lt;WhileTrue Value=&quot;{isSelected}&quot;&gt;
+        &lt;Change picture.Opacity=&quot;0&quot; /&gt;
+        &lt;Change checkmark.Opacity=&quot;0.7&quot; /&gt;
+        &lt;Change checkmarkBackground.Opacity=&quot;1&quot; /&gt;
+    &lt;/WhileTrue&gt;
+    &lt;WhileTrue Value=&quot;{indicateModeChange}&quot;&gt;
+        &lt;Change entryScaling.Factor=&quot;0.9&quot; Duration=&quot;0.2&quot; Easing=&quot;CircularInOut&quot; /&gt;
+        &lt;Callback Handler=&quot;{nullModeChange}&quot; Delay=&quot;0.4&quot; /&gt;
+    &lt;/WhileTrue&gt;
+    &lt;LongPressed&gt;
+        &lt;Callback Handler=&quot;{goToSelectionMode}&quot; /&gt;
+    &lt;/LongPressed&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The combination of <code>LongPressed</code> and <code>Tapped</code> in concert with some trivial state in the JavaScript creates the functionality we are after, we can press and hold on the first picture to enter multi-selection mode, and then we can tap images to add them to the selection.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

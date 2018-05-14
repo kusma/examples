@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Swipe to reveal details - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/swipe-gesture-reveal.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_swipegesture.html">Swipe gesture</a>, <a href="../tag_cards.html">Cards</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/lineargradient.html" class="nav-link">LinearGradient</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipegesture.html" class="nav-link">SwipeGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipinganimation.html" class="nav-link">SwipingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/motion/navigationmotion.html" class="nav-link">NavigationMotion</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Swipe to reveal details</h1>
+
+          <div class="example-content-preview example-content-preview-slot-7">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we are implementing a really cool <a href="https://dribbble.com/shots/2493845-ToFind-Transition-Test">card navigation</a> with a &quot;swipe to reveal details&quot; action. Design by <a href="https://dribbble.com/leoleung">Leo Leung</a>.</p>
+<p>Icons are from Google's excellent <a href="https://design.google.com/icons/">Material Icons</a> and nature images from <a href="https://unsplash.com/">UnSplash</a>.</p>
+<h4>The swipe gesture</h4
+<p>Each card has a <code>SwipeGesture</code> with the <code>Direction</code> property set to <code>Up</code>. This means that one has to swipe upwards in order to activate the gesture.</p>
+<!-- snippet-begin:code/MainView.ux:SwipeGesture -->
+<pre><code>&lt;SwipeGesture ux:Name=&quot;swipe&quot; Direction=&quot;Up&quot; Type=&quot;Active&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Setting the <code>Type</code> property to <code>Active</code> means that this gesture works like a switch, which stays on until swiped back down.</p>
+<p>We use a <code>SwipingAnimation</code> to declare what should happen while the user is swiping. The <code>Source</code> property points on the <code>SwipeGesture</code> we want to animate in response to.</p>
+<!-- snippet-begin:code/MainView.ux:SwipingAnimation -->
+<pre><code>&lt;SwipingAnimation Source=&quot;swipe&quot;&gt;
+    &lt;Move Target=&quot;topPanel&quot; Y=&quot;-0.3&quot; RelativeTo=&quot;Size&quot; Duration=&quot;0.5&quot; /&gt;
+    &lt;Change bottomPanelScaling.X=&quot;1&quot; Duration=&quot;0.5&quot; /&gt;
+    &lt;Change bottomPanelScaling.Y=&quot;1&quot; Duration=&quot;0.5&quot; /&gt;
+    &lt;Change bottomPanel.Opacity=&quot;1&quot; Duration=&quot;0.5&quot; /&gt;
+&lt;/SwipingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Each card has two layers, the &quot;topPanel&quot; and the &quot;bottomPanel&quot;. As we swipe upwards, the &quot;topPanel&quot; is moved in the negative Y direction, while the &quot;bottomPanel&quot; is scaled.</p>
+<h4>The navigation</h4
+<p>The navigation between cards is a <code>PageControl</code> with two of its default properties overriden. We set <code>InactiveState=&quot;Unchanged&quot;</code> so that inactive pages are not hidden. We set <code>Transition=&quot;None&quot;</code> because our cards have their own transitions specified.</p>
+<!-- snippet-begin:code/MainView.ux:PageControl -->
+<pre><code>&lt;PageControl InactiveState=&quot;Unchanged&quot; Transition=&quot;None&quot;&gt;
+	&lt;NavigationMotion GotoEasing=&quot;QuadraticOut&quot; GotoDuration=&quot;0.3&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We use <code>EnteringAnimation</code> and <code>ExitingAnimation</code> to animate the cards as they are navigated to and from. Since we need to show the edges of the next cards, we add some <code>Scale</code> to the triggers.</p>
+<!-- snippet-begin:code/MainView.ux:EnterExit -->
+<pre><code>&lt;EnteringAnimation Scale=&quot;0.5&quot;&gt;
+    &lt;Move X=&quot;-1.4&quot; RelativeTo=&quot;ParentSize&quot; Duration=&quot;0.5&quot; /&gt;
+&lt;/EnteringAnimation&gt;
+&lt;ExitingAnimation Scale=&quot;0.5&quot;&gt;
+    &lt;Move X=&quot;1.4&quot; RelativeTo=&quot;ParentSize&quot; Duration=&quot;0.5&quot; /&gt;
+&lt;/ExitingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The inactive cards, should lose some opacity and also scale down slightly. This is done inside an <code>ActivatingAnimation</code> trigger.</p>
+<!-- snippet-begin:code/MainView.ux:ActivatingAnim -->
+<pre><code>&lt;ActivatingAnimation&gt;
+    &lt;Change self.Opacity=&quot;1&quot; Duration=&quot;0.5&quot; /&gt;
+    &lt;Change pageScaling.Factor=&quot;1&quot; Duration=&quot;0.5&quot; /&gt;
+&lt;/ActivatingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

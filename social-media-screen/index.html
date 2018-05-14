@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Social media example - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/social-media-screen.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_sidebar.html">Sidebar</a>, <a href="../tag_javascript.html">JavaScript</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/edgenavigation.html" class="nav-link">EdgeNavigator</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/translation.html" class="nav-link">Translation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/rotation.html" class="nav-link">Rotation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/opacity.html" class="nav-link">Opacity</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/imagefill.html" class="nav-link">ImageFill</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/http.html#fetch" class="nav-link">fetch</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/polyfills.html" class="nav-link">promises</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Social media example</h1>
+
+          <div class="example-content-preview example-content-preview-slot-7">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>Here we combine several different UX and JavaScript features to create a more involved app screen.</p>
+<p>This app screen shows how to:</p>
+<ul>
+<li>Summon and dismiss the side menu using a <code>Clicked</code>-event and an <code>EdgeNavigator</code></li>
+<li>Move the main client area in response to the sidebar coming on screen</li>
+<li>Animate the side menu icon, turning a familiar &quot;hamburger&quot;-menu icon into a &quot;cross&quot; dismiss-icon using <code>Translation</code>-, <code>Rotation</code>- and <code>Opacity</code>-transforms</li>
+<li>Animate the menu choices in the side bar using the <code>WhileInactive</code>-trigger</li>
+<li>Create a typical circular portrait picture using <code>Circle</code> with <code>ImageFill</code></li>
+<li>Easily databind news items to JavaScript fetched from the net</li>
+</ul>
+<p>Let's take a look at points of interest from this example:</p>
+<h5>App.ux</h5
+<p>Handling the sidebar open state and getting Json from the network:</p>
+<!-- snippet-begin:code/MyApp.ux:FetchingJson -->
+<pre><code>var Observable = require(&quot;FuseJS/Observable&quot;);
+
+var sidebarOpen = Observable(false);
+function setSidebarOpen() {
+    sidebarOpen.value = true;
+};
+function setSidebarClosed() {
+    sidebarOpen.value = false;
+};
+
+var data = Observable();
+
+fetch('http://az664292.vo.msecnd.net/files/P6FteBeij9A7jTXL-edgenavresponse.json')
+.then(function(response) { return response.json(); })
+.then(function(responseObject) { data.value = responseObject; });
+
+module.exports = {
+    data: data,
+    sidebarOpen: sidebarOpen,
+    setSidebarOpen: setSidebarOpen,
+    setSidebarClosed: setSidebarClosed
+};
+</code></pre>
+<!-- snippet-end -->
+<p>We want to show an instance of <code>NewsItem</code> per entry in the JSON. This is accomplished using <code>Each</code>. Note that <code>responseData</code> is part of the server side datastructure, and not a &quot;magic&quot; term; we are referencing straight into the JSON:</p>
+<!-- snippet-begin:code/MyApp.ux:MainScrollArea -->
+<pre><code>&lt;!-- This is the main scroll area --&gt;
+&lt;ScrollView&gt;
+    &lt;StackPanel Alignment=&quot;Top&quot;&gt;
+        &lt;Panel Height=&quot;7&quot; /&gt;
+        &lt;Each Items=&quot;{data.responseData}&quot;&gt;
+            &lt;NewsItem /&gt;
+        &lt;/Each&gt;
+    &lt;/StackPanel&gt;
+&lt;/ScrollView&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We add the side menu to the main <code>EdgeNavigator</code>. When the <code>Sidebar</code> (defined in <code>Sidebar.ux</code>) is activating, we move the main area of the app and animate the hamburger icon into a cross:</p>
+<!-- snippet-begin:code/MyApp.ux:AddAPanel -->
+<pre><code>&lt;!-- Add a panel to the left edge --&gt;
+&lt;Sidebar Width=&quot;180&quot; ux:Name=&quot;menu&quot; EdgeNavigation.Edge=&quot;Left&quot;&gt;
+    &lt;ActivatingAnimation&gt;
+        &lt;Change mainAppTranslation.X=&quot;180&quot; /&gt;
+        &lt;!-- Change to cross out --&gt;
+        &lt;Change topMenuTranslation.Y=&quot;0&quot; /&gt;
+        &lt;Change bottomMenuTranslation.Y=&quot;0&quot; /&gt;
+        &lt;Change middleRectangle.Opacity=&quot;0&quot; Easing=&quot;CircularOut&quot; /&gt;
+        &lt;Change topMenuRotation.Degrees=&quot;45&quot; Easing=&quot;ExponentialIn&quot; /&gt;
+        &lt;Change bottomMenuRotation.Degrees=&quot;-45&quot; Easing=&quot;ExponentialIn&quot; /&gt;
+        &lt;Change topRectangle.Width=&quot;28&quot; /&gt;
+        &lt;Change bottomRectangle.Width=&quot;28&quot; /&gt;
+    &lt;/ActivatingAnimation&gt;
+    &lt;WhileActive&gt;
+        &lt;Callback Handler=&quot;{setSidebarOpen}&quot; /&gt;
+    &lt;/WhileActive&gt;
+    &lt;WhileInactive&gt;
+        &lt;Callback Handler=&quot;{setSidebarClosed}&quot; /&gt;
+    &lt;/WhileInactive&gt;
+&lt;/Sidebar&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>To draw the hamburger menu and to allow for the above translations to work, we implement it like this:</p>
+<!-- snippet-begin:code/MyApp.ux:TheHamburger -->
+<pre><code>&lt;Panel Margin=&quot;7,5,5,5&quot; Height=&quot;32&quot; Width=&quot;32&quot; HitTestMode=&quot;LocalBounds&quot;&gt;
+    &lt;WhileTrue Value=&quot;{sidebarOpen}&quot;&gt;
+        &lt;Clicked&gt;
+            &lt;NavigateTo Target=&quot;content&quot; /&gt;
+        &lt;/Clicked&gt;
+    &lt;/WhileTrue&gt;
+    &lt;WhileFalse Value=&quot;{sidebarOpen}&quot;&gt;
+        &lt;Clicked&gt;
+            &lt;NavigateTo Target=&quot;menu&quot; /&gt;
+        &lt;/Clicked&gt;
+    &lt;/WhileFalse&gt;
+    &lt;Rectangle ux:Name=&quot;topRectangle&quot; Height=&quot;2&quot; Width=&quot;26&quot; Color=&quot;#000&quot;&gt;
+        &lt;Translation Y=&quot;-9&quot; ux:Name=&quot;topMenuTranslation&quot; /&gt;
+        &lt;Rotation ux:Name=&quot;topMenuRotation&quot; /&gt;
+    &lt;/Rectangle&gt;
+    &lt;Rectangle ux:Name=&quot;middleRectangle&quot; Height=&quot;2&quot; Width=&quot;26&quot; Color=&quot;#000&quot; /&gt;
+    &lt;Rectangle ux:Name=&quot;bottomRectangle&quot; Height=&quot;2&quot; Width=&quot;26&quot; Color=&quot;#000&quot;&gt;
+        &lt;Translation Y=&quot;9&quot; ux:Name=&quot;bottomMenuTranslation&quot; /&gt;
+        &lt;Rotation ux:Name=&quot;bottomMenuRotation&quot; /&gt;
+    &lt;/Rectangle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>This <code>Panel</code> also holds commands to activate the <code>Sidebar</code>, which we've named <code>menu</code>, and the main content area, named <code>content</code>. We achieve this by using a <code>WhileTrue</code> and <code>WhileFalse</code> trigger that are bound to an Observable <code>bool</code> named <code>sidebarOpen</code>. We set this value from a <code>WhileActive</code> and <code>WhileInactive</code> triggers on the <code>Sidebar</code>.</p>
+<h5>Sidebar.ux</h5
+<p>The <code>Sidebar</code> is defined as a normal <code>StackPanel</code>. It implements the interesting animate-in effect on the menu items using the <code>WhileInactive</code>-trigger. This assumes the normal layout is the <em>rest state</em> of the panel, and then we change it when it is <em>inactive</em>. We did the opposite in <code>App.ux</code> with <code>ActivatingAnimation</code> where we animated the hamburger-menu. Here is makes sense to let the active state be the state without any offsets applied to the elements, as it makes it easier to tweak the effect or remove it fully.</p>
+<p>Using <code>WhileInactive</code> comes with certain caveats, however. Because it describes the state we are animating <em>from</em> as the <code>Sidebar</code> becomes active, the animations will effectively be run <em>backwards</em> when the menu becomes <em>visible</em>.</p>
+<p>This makes sense if you push the <code>Sidebar</code> off the screen to its inactive state, you can see the <code>Chat</code> moving first, followed by the <code>Feed</code>, the <code>Browser</code> and so on.</p>
+<!-- snippet-begin:code/Sidebar.ux:TheSidebar -->
+<pre><code>&lt;StackPanel ux:Class=&quot;Sidebar&quot; Background=&quot;#212831&quot;&gt;
+    &lt;WhileInactive Threshold=&quot;0.4&quot;&gt;
+        &lt;Move Target=&quot;user&quot; X=&quot;-180&quot; Duration=&quot;0.2&quot; Delay=&quot;0.3&quot; Easing=&quot;CircularIn&quot; /&gt;
+        &lt;Move Target=&quot;stats&quot; X=&quot;-180&quot; Duration=&quot;0.2&quot; Delay=&quot;0.2&quot; Easing=&quot;CircularIn&quot; /&gt;
+        &lt;Move Target=&quot;browser&quot; X=&quot;-180&quot; Duration=&quot;0.2&quot; Delay=&quot;0.15&quot; Easing=&quot;CircularIn&quot; /&gt;
+        &lt;Move Target=&quot;feed&quot; X=&quot;-180&quot; Duration=&quot;0.2&quot; Delay=&quot;0.1&quot; Easing=&quot;CircularIn&quot; /&gt;
+        &lt;Move Target=&quot;chat&quot; X=&quot;-180&quot; Duration=&quot;0.2&quot; Delay=&quot;0.05&quot; Easing=&quot;CircularIn&quot; /&gt;
+    &lt;/WhileInactive&gt;
+
+    ...
+&lt;/StackPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>As you can see, the <code>WhileInactive</code>-trigger has a <code>Threshold</code>. This <code>Threshold</code> goes from <code>0</code> to <code>1</code> and decides when the <code>Trigger</code>-actions are to be run. Keep in mind that as this animation runs backwards, the smaller the number, the more visible the panel needs to be for the <code>Trigger</code>-actions to play.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

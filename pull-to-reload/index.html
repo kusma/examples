@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Pull to reload - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/pull-to-reload.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_gesture.html">Gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/pulltoreload.html" class="nav-link">PullToReload</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/state.html" class="nav-link">State</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/ux-markup.html#creating-heirarchies" class="nav-link">ux:Binding</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollviewbase/snapmintransform.html" class="nav-link">SnapMinTransform</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/scrollinganimation.html" class="nav-link">ScrollingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/spin.html" class="nav-link">Spin</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/timelineaction.html" class="nav-link">TimelineAction</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html#event-binding-to-javascript-functions" class="nav-link">Event handler</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Pull to reload</h1>
+
+          <div class="example-content-preview example-content-preview-slot-3">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we will implement a pull to reload design inspired by <a href="https://dribbble.com/shots/1974767-gear-powered-pull-to-refresh-animation">this cool piece</a> by Michael B. Mayers.</p>
+<h3>The PullToReload-trigger</h3
+<p>Fuse has a <code>Trigger</code> called <code>PullToReload</code>, which we use in this example. The following snippet illustrates its basic usage.</p>
+<pre><code>&lt;PullToReload IsLoading=&quot;{isLoading}&quot; ReloadHandler=&quot;{reloadHandler}&quot;&gt;
+	&lt;State ux:Binding=&quot;Pulling&quot;&gt;
+		&lt;!-- active while pulling --&gt;
+	&lt;/State&gt;
+	&lt;State ux:Binding=&quot;PulledPastThreshold&quot;&gt;
+		&lt;!-- activates when pulled past threshold --&gt;
+	&lt;/State&gt;
+	&lt;State ux:Binding=&quot;Loading&quot;&gt;
+		&lt;!-- active while loading --&gt;
+	&lt;/State&gt;
+&lt;/PullToReload&gt;
+</code></pre>
+<p><code>PullToReload</code> has three properties which we can bind <code>State</code> objects to. Each <code>State</code> is activated in response to different parts of the pull gesture as commented on in the snippet.</p>
+<p>The <code>ScrollView</code> normally allows the user to scroll a bit past the top and snaps back as it gets released. Since we want to control this behavior ourselves, we set the <code>SnapMinTransform</code> property of the <code>ScrollView</code> to <code>false</code>:</p>
+<pre><code>&lt;ScrollView SnapMinTransform=&quot;false&quot;/&gt;
+</code></pre>
+<h3>The loading content</h3
+<p>When pulling on the <code>ScrollView</code>, we show a <code>Panel</code> containing our cog wheel images. We define two classes for our cog wheels, that inherit from another class, <code>Cog</code>:</p>
+<!-- snippet-begin:code/CogWheelReload.ux:CogWheelClasses -->
+<pre><code>&lt;Image ux:Class=&quot;Cog&quot; MaxHeight=&quot;200&quot; MaxWidth=&quot;200&quot; Alignment=&quot;Center&quot; /&gt;
+&lt;Cog ux:Class=&quot;SmallCog&quot; Color=&quot;#3e64b7&quot; File=&quot;Assets/cog1_white.png&quot; Width=&quot;60&quot; Height=&quot;60&quot; /&gt;
+&lt;Cog ux:Class=&quot;BigCog&quot; Color=&quot;#3562c4&quot; File=&quot;Assets/cog2_white.png&quot; Width=&quot;120&quot; Height=&quot;120&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We can then place the cog wheels in our loading <code>Panel</code> using the <code>Offset</code> property and <code>Rotation</code> transform to make sure they fit together nicely. We also add a larger <code>Translation</code> to the <code>BigCog</code> elements so that we can animate them into place as we reach the pull threshold.</p>
+<!-- snippet-begin:code/CogWheelReload.ux:CogPanel -->
+<pre><code>&lt;Panel ux:Name=&quot;cogPanel&quot; Background=&quot;#183A6F&quot; Alignment=&quot;Top&quot; Height=&quot;0&quot; MinHeight=&quot;0&quot;&gt;
+    &lt;SmallCog ux:Name=&quot;cog1&quot;&gt;
+        &lt;Rotation ux:Name=&quot;cog1Rotation&quot; /&gt;
+    &lt;/SmallCog&gt;
+    &lt;BigCog ux:Name=&quot;cog2&quot; Offset=&quot;60,-60&quot;&gt;
+        &lt;Translation ux:Name=&quot;cog2Trans&quot; Y=&quot;-100&quot; /&gt;
+        &lt;Rotation ux:Name=&quot;cog2Rotation&quot; /&gt;
+    &lt;/BigCog&gt;
+    &lt;BigCog ux:Name=&quot;cog3&quot; Offset=&quot;-60,60&quot;&gt;
+        &lt;Translation ux:Name=&quot;cog3Trans&quot; Y=&quot;100&quot; /&gt;
+        &lt;Rotation Degrees=&quot;10&quot; /&gt;
+        &lt;Rotation ux:Name=&quot;cog3Rotation&quot; /&gt;
+    &lt;/BigCog&gt;
+    &lt;BigCog ux:Name=&quot;cog4&quot; Offset=&quot;130,30&quot;&gt;
+        &lt;Translation ux:Name=&quot;cog4Trans&quot; Y=&quot;100&quot; /&gt;
+        &lt;Rotation Degrees=&quot;5&quot; /&gt;
+        &lt;Rotation ux:Name=&quot;cog4Rotation&quot; /&gt;
+    &lt;/BigCog&gt;
+    &lt;BigCog ux:Name=&quot;cog5&quot; Offset=&quot;-100, -47&quot;&gt;
+        &lt;Translation ux:Name=&quot;cog5Trans&quot; Y=&quot;-100&quot; /&gt;
+        &lt;Rotation Degrees=&quot;8&quot; /&gt;
+        &lt;Rotation ux:Name=&quot;cog5Rotation&quot; /&gt;
+    &lt;/BigCog&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p><code>ScrollingAnimation</code> is used to animate the <code>Height</code> of our loading panel as we pull on the <code>ScrollView</code>. We set the <code>Range</code> property to <code>SnapMin</code>, which means that this animator will activate over the &quot;SnapMin&quot; range of our <code>ScrollView</code>. We also animate the rotation of our cog wheels for a nice effect.</p>
+<!-- snippet-begin:code/CogWheelReload.ux:ScrollingAnimation -->
+<pre><code>&lt;ScrollingAnimation Range=&quot;SnapMin&quot;&gt;
+    &lt;Change cogPanel.Height=&quot;150&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Change cog1Rotation.Degrees=&quot;200&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Change cog2Rotation.Degrees=&quot;-93&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Change cog3Rotation.Degrees=&quot;-93&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Change cog4Rotation.Degrees=&quot;93&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Change cog5Rotation.Degrees=&quot;93&quot; Duration=&quot;1&quot; /&gt;
+&lt;/ScrollingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We want to move the big cog wheels into place when we have reached the reload threshold. We do that by playing a <code>Timeline</code> which animates the <code>Translations</code> we added earlier:</p>
+<!-- snippet-begin:code/CogWheelReload.ux:Timeline -->
+<pre><code>&lt;Timeline ux:Name=&quot;moveCogsIntoPlace&quot;&gt;
+    &lt;Change cog2Trans.Y=&quot;0&quot; Duration=&quot;0.6&quot; DurationBack=&quot;0.2&quot; Easing=&quot;CircularOut&quot; /&gt;
+    &lt;Change cog3Trans.Y=&quot;0&quot; Duration=&quot;0.6&quot; DurationBack=&quot;0.2&quot; Easing=&quot;CircularOut&quot; /&gt;
+    &lt;Change cog4Trans.Y=&quot;0&quot; Duration=&quot;0.6&quot; DurationBack=&quot;0.2&quot; Easing=&quot;CircularOut&quot; /&gt;
+    &lt;Change cog5Trans.Y=&quot;0&quot; Duration=&quot;0.6&quot; DurationBack=&quot;0.2&quot; Easing=&quot;CircularOut&quot; /&gt;
+&lt;/Timeline&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We use the <code>Spin</code> animator to rotate the cog wheels endlessly while our <code>PullToReload</code> trigger is in the Loading state:</p>
+<!-- snippet-begin:code/CogWheelReload.ux:LoadingAnimator -->
+<pre><code>&lt;State ux:Binding=&quot;Loading&quot;&gt;
+    &lt;Change retainSpace.Value=&quot;true&quot; DurationBack=&quot;0.5&quot; /&gt;
+    &lt;Spin Target=&quot;cog1&quot; Frequency=&quot;0.53125&quot; /&gt;
+    &lt;Spin Target=&quot;cog2&quot; Frequency=&quot;-0.25&quot; /&gt;
+    &lt;Spin Target=&quot;cog3&quot; Frequency=&quot;-0.25&quot; /&gt;
+    &lt;Spin Target=&quot;cog4&quot; Frequency=&quot;0.25&quot; /&gt;
+    &lt;Spin Target=&quot;cog5&quot; Frequency=&quot;0.25&quot; /&gt;
+    &lt;TimelineAction Target=&quot;moveCogsIntoPlace&quot; How=&quot;PlayTo&quot; When=&quot;Backward&quot; Progress=&quot;0&quot; /&gt;
+&lt;/State&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We also activate a <code>WhileTrue</code> trigger which makes sure our loading panel maintains a certain size:</p>
+<!-- snippet-begin:code/CogWheelReload.ux:RetainSpace -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;retainSpace&quot;&gt;
+    &lt;Change cogPanel.MinHeight=&quot;75&quot; Duration=&quot;0&quot; DurationBack=&quot;0.3&quot; Easing=&quot;CircularIn&quot; /&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>Adding it to our app</h3
+<p>The last thing we do is to add our custom pull to reload component to our app:</p>
+<!-- snippet-begin:code/MainView.ux:App -->
+<pre><code>&lt;ScrollView SnapMinTransform=&quot;false&quot;&gt;
+    &lt;DockPanel&gt;
+        &lt;CogWheelReload Dock=&quot;Top&quot; /&gt;
+        &lt;StackPanel Background=&quot;#fff&quot;&gt;
+            &lt;Shadow ux:Name=&quot;dropShadow&quot; Color=&quot;#333&quot; Distance=&quot;10&quot; Size=&quot;10&quot; Angle=&quot;180&quot; /&gt;
+            &lt;Each Count=&quot;15&quot;&gt;
+                &lt;Panel Margin=&quot;0,0,0,2&quot; Height=&quot;70&quot; Background=&quot;#ddd&quot; /&gt;
+            &lt;/Each&gt;
+        &lt;/StackPanel&gt;
+    &lt;/DockPanel&gt;
+&lt;/ScrollView&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We also have a few lines of JavaScript to simulate the loading state:</p>
+<!-- snippet-begin:code/MainView.ux:Javascript -->
+<pre><code>&lt;JavaScript&gt;
+    var Observable = require(&quot;FuseJS/Observable&quot;);
+
+    function endLoading(){
+        isLoading.value = false;
+    }
+
+    function reloadHandler(){
+        isLoading.value = true;
+        setTimeout(endLoading, 3000);
+    }
+
+    var isLoading = Observable(false);
+
+    module.exports = {
+        isLoading: isLoading,
+        reloadHandler: reloadHandler
+    };
+&lt;/JavaScript&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

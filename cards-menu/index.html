@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>A new take on tabs - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/cards-menu.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_cards.html">Cards</a>, <a href="../tag_menu.html">Menu</a>, <a href="../tag_tabs.html">Tabs</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/callback.html" class="nav-link">Callback</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/stategroup.html" class="nav-link">StateGroup</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>A new take on tabs</h1>
+
+          <div class="example-content-preview example-content-preview-slot-8">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we have implemented <a href="https://dribbble.com/shots/2389505-Cards-Menu-Concept">an awesome menu design</a> by <a href="https://dribbble.com/galshir">Gal Shir</a>!</p>
+<h4>The cards</h4
+<p>Each card is defined as follows. A translational offset is calculated in JavaScript based on the cards index. Name, background color and text color are also data-bound values.</p>
+<!-- snippet-begin:code/MainView.ux:TheCards -->
+<pre><code>&lt;Panel Offset=&quot;{offset}&quot; ux:Name=&quot;unselected&quot;&gt;
+    &lt;Panel ux:Name=&quot;self&quot; LayoutMaster=&quot;unselected&quot;&gt;
+        &lt;Grid ux:Name=&quot;hamburger&quot; RowCount=&quot;3&quot; Height=&quot;30&quot; Width=&quot;30&quot; Alignment=&quot;TopLeft&quot; Margin=&quot;20&quot; Opacity=&quot;0&quot;&gt;
+            &lt;Each Count=&quot;3&quot;&gt;
+                &lt;Rectangle Height=&quot;4&quot; Color=&quot;{textColor}&quot; CornerRadius=&quot;2&quot;/&gt;
+            &lt;/Each&gt;
+        &lt;/Grid&gt;
+
+        &lt;Text ux:Name=&quot;text&quot; Value=&quot;{name}&quot; Margin=&quot;25&quot; Color=&quot;{textColor}&quot; Font=&quot;RobotoBold&quot; FontSize=&quot;14&quot;/&gt;
+
+        &lt;Rectangle ux:Name=&quot;backgroundRect&quot; CornerRadius=&quot;10&quot; Layer=&quot;Background&quot;&gt;
+            &lt;SolidColor ux:Name=&quot;backgroundRectCol&quot; Color=&quot;{color}&quot;/&gt;
+        &lt;/Rectangle&gt;
+
+        &lt;WhileTrue Value=&quot;{isSelected}&quot;&gt;
+            &lt;Move Target=&quot;text&quot; X=&quot;40&quot; Duration=&quot;0.3&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+            &lt;Change hamburger.Opacity=&quot;1&quot; Duration=&quot;0.3&quot; Easing=&quot;QuadraticInOut&quot; /&gt;
+        &lt;/WhileTrue&gt;
+
+        &lt;Clicked&gt;
+            &lt;Callback Handler=&quot;{selectMe}&quot; /&gt;
+            &lt;Change backgroundRectCol.Color=&quot;#fff&quot; Duration=&quot;0.0&quot; DurationBack=&quot;0.28&quot; /&gt;
+        &lt;/Clicked&gt;
+
+        &lt;LayoutAnimation&gt;
+            &lt;Move RelativeTo=&quot;PositionChange&quot; X=&quot;1&quot; Y=&quot;1&quot; Duration=&quot;0.3&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+        &lt;/LayoutAnimation&gt;
+
+        &lt;StateGroup Rest=&quot;menu&quot; Active=&quot;{state}&quot;&gt;
+            &lt;State Name=&quot;menu&quot;&gt;
+
+            &lt;/State&gt;
+            &lt;State Name=&quot;selectedOrUnder&quot;&gt;
+                &lt;Change self.LayoutMaster=&quot;selected&quot; DelayBack=&quot;0&quot;/&gt;
+                &lt;Change backgroundRect.CornerRadius=&quot;0&quot; Duration=&quot;0.3&quot; Delay=&quot;0.1&quot;/&gt;
+                &lt;Change self.Padding=&quot;0,20,0,0&quot; Duration=&quot;0.3&quot; DelayBack=&quot;0&quot; Easing=&quot;QuadraticInOut&quot; /&gt;
+            &lt;/State&gt;
+            &lt;State Name=&quot;aboveSelected&quot;&gt;
+                &lt;Move X=&quot;1&quot; RelativeTo=&quot;Size&quot; Duration=&quot;0.3&quot; Easing=&quot;CircularInOut&quot;/&gt;
+            &lt;/State&gt;
+        &lt;/StateGroup&gt;
+    &lt;/Panel&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Three states</h4
+<p>Each card can be in one of three states. The &quot;menu&quot; state is the rest state, and is where all the cards are visible. Clicking a card brings it to the &quot;selectedOrUnder&quot; state. At that point, all the other cards fall into either the &quot;selectedOrUnder&quot; state, or the &quot;aboveSelected&quot; state.</p>
+<p>Notice that the cards in front of the selected card will move to the right, while the selected card and all the cards below it will scale to fill the screen. This is handled with some JavaScript logic.</p>
+<h4>Calculating state in JavaScript</h4
+<p>When a card is clicked, we fire the <code>selectMe</code> method. It will determine whether a card is above or below the selected card and change the state accordingly.</p>
+<!-- snippet-begin:code/MainView.js:CalculatingStateInJS -->
+<pre><code>this.selectMe = function(){
+    pageSelected.value = !pageSelected.value;
+
+    if (pageSelected.value === false)
+        currentStatusbarStyle.value = StatusBarStyle.Dark;
+
+    if (this.isSelected.value){
+        for (var i = 0; i &lt; pages.length; i++){
+            pages.getAt(i).state.value = State.Menu;
+            pages.getAt(i).isSelected.value = false;
+        }
+    } else {
+        for (var i = 0; i &lt; pages.length; i++){
+            var item = pages.getAt(i);
+            item.state.value = i &gt;= index ? State.SelectedOrUnder : State.AboveSelected;
+
+            if (i === this.index){
+                item.isSelected.value = true;
+                currentStatusbarStyle.value = this.statusBarStyle;
+            }
+            else {
+                item.isSelected.value = false;
+            }
+        }
+    }
+
+}.bind(this);
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

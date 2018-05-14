@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Ticket scroll - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/ticket-scroll.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/scrollinganimation.html" class="nav-link">ScrollingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each/count.html" class="nav-link">Each.Count</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Ticket scroll</h1>
+
+          <div class="example-content-preview example-content-preview-slot-5">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows another use of <code>ScrollingAnimation</code> to make a collapsing and expanding top section for a scrolling list. The example is inspired by <a href="https://dribbble.com/shots/2367675-Ticket-scroll">this cool pice</a> by <a href="https://dribbble.com/highfelt">Cam Macbeth</a>. Icons are taken from Google's excellent <a href="https://design.google.com/icons/">Material Icons pack</a>.</p>
+<h4>Defining our colors</h4
+<p>The color palette is defined in its own class called <code>ColorPalette</code> and is instantiated in the top of our <code>MainView.ux</code>.</p>
+<!-- snippet-begin:code/ColorPalette.ux:ColorPalette -->
+<pre><code>&lt;Panel ux:Class=&quot;ColorPalette&quot;&gt;
+    &lt;float4 ux:Global=&quot;LightGray&quot;       ux:Value=&quot;#FDFDFD&quot;   /&gt;
+    &lt;float4 ux:Global=&quot;LightGrayFaded&quot;  ux:Value=&quot;#FDFDFD88&quot; /&gt;
+    &lt;float4 ux:Global=&quot;TicketPurple&quot;    ux:Value=&quot;#3D206A&quot;   /&gt;
+    &lt;float4 ux:Global=&quot;FlagColor&quot;       ux:Value=&quot;#973067&quot;   /&gt;
+    &lt;float4 ux:Global=&quot;MediumGray&quot;      ux:Value=&quot;#A5A3A8&quot;   /&gt;
+    &lt;float4 ux:Global=&quot;FadedMediumGray&quot; ux:Value=&quot;#A5A3A877&quot; /&gt;
+    &lt;float4 ux:Global=&quot;TicketRed&quot;       ux:Value=&quot;#CC2421&quot;   /&gt;
+    &lt;float4 ux:Global=&quot;IndicatorColor&quot;  ux:Value=&quot;#A34379&quot;   /&gt;
+    &lt;SolidColor ux:Global=&quot;FlagColorBrush&quot; Color=&quot;FlagColor&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We can then use these colors by their names instead of inputting the hex codes everywhere.</p>
+<h4>The <code>ScrollingAnimation</code></h4
+<p>The purple part containing the content which should &quot;wrap&quot; away as the user scrolls is defined in its own layer by having them in their own <code>Grid</code>. This <code>Grid</code> is then put underneath the actual <code>ScrollView</code> which is offset by the size of the <code>Grid</code> in its Y-direction.</p>
+<p>This make sure that we always hit the <code>ScrollView</code>, but for the top most part we control the animation ourselves.</p>
+<!-- snippet-begin:code/MainView.ux:WrappingPart -->
+<pre><code>&lt;Text ux:Class=&quot;T&quot; Color=&quot;LightGray&quot; Alignment=&quot;CenterLeft&quot;/&gt;
+&lt;Grid ux:Name=&quot;ticketInfo&quot; Rows=&quot;150,80,130&quot; Alignment=&quot;Top&quot; &gt;
+    &lt;Panel ux:Name=&quot;trip&quot; &gt;
+        &lt;HorizontalStripedLine ux:Name=&quot;stripedLine&quot; NSegments=&quot;25&quot; Padding=&quot;25,0&quot; Alignment=&quot;Bottom&quot;/&gt;
+        &lt;Grid RowCount=&quot;4&quot; Columns=&quot;60,1*&quot; Color=&quot;TicketPurple&quot; Padding=&quot;20&quot;&gt;
+            &lt;Image File=&quot;Icons/arrow.png&quot; Alignment=&quot;CenterLeft&quot; Width=&quot;30&quot;&gt;
+                &lt;Rotation Degrees=&quot;180&quot; /&gt;
+            &lt;/Image&gt; &lt;T Value=&quot;Fri 15 May 2015&quot;  FontSize=&quot;22&quot;/&gt;
+            &lt;T Value=&quot;Dep.&quot; Color=&quot;LightGrayFaded&quot; FontSize=&quot;12&quot;/&gt; &lt;T Value=&quot;11:07 Manchester Piccadilly&quot; /&gt;
+            &lt;T Value=&quot;Arr.&quot; Color=&quot;LightGrayFaded&quot; FontSize=&quot;12&quot;/&gt; &lt;T Value=&quot;14:35 London King`s Cross&quot; /&gt;
+            &lt;Panel /&gt; &lt;T FontSize=&quot;14&quot; Color=&quot;LightGray&quot; Value=&quot;Duration: 3hr 28m Changes: 2&quot; /&gt;
+        &lt;/Grid&gt;
+    &lt;/Panel&gt;
+
+    &lt;Panel ux:Name=&quot;ticket&quot; Color=&quot;TicketPurple&quot;&gt;
+
+        &lt;Grid Columns=&quot;40,1*&quot; Padding=&quot;15&quot; ux:Name=&quot;ticketContent&quot;&gt;
+            &lt;Flag Height=&quot;15&quot; Width=&quot;20&quot; Alignment=&quot;TopLeft&quot;/&gt;
+            &lt;StackPanel&gt;
+                &lt;DockPanel&gt;
+                    &lt;Text Value=&quot;ABX456789&quot; Color=&quot;LightGray&quot;/&gt;
+                    &lt;Text Value=&quot;&amp;#163; 87.60&quot; Color=&quot;LightGray&quot; Dock=&quot;Right&quot;/&gt;
+                &lt;/DockPanel&gt;
+                &lt;Text Value=&quot;Your ticket is ready for collection.&quot; Color=&quot;MediumGray&quot; FontSize=&quot;12&quot; Margin=&quot;0,5,0,0&quot;/&gt;
+                &lt;Text Value=&quot;Find out how&quot; Color=&quot;MediumGray&quot; FontSize=&quot;12&quot;/&gt;
+            &lt;/StackPanel&gt;
+        &lt;/Grid&gt;
+    &lt;/Panel&gt;
+    &lt;Panel ux:Name=&quot;info&quot; Color=&quot;LightGray&quot;&gt;
+        &lt;Panel ux:Name=&quot;infoContent&quot;&gt;
+            &lt;Panel Alignment=&quot;TopRight&quot; Margin=&quot;15&quot;&gt;
+                &lt;Text Value=&quot;1st&quot; Color=&quot;LightGray&quot; Alignment=&quot;Center&quot; FontSize=&quot;13&quot;/&gt;
+                &lt;Rectangle Color=&quot;TicketPurple&quot; CornerRadius=&quot;10&quot; Height=&quot;20&quot; Width=&quot;40&quot;/&gt;
+            &lt;/Panel&gt;
+            &lt;StackPanel Padding=&quot;20&quot;&gt;
+                &lt;Text Value=&quot;Anytime Return&quot; FontSize=&quot;15&quot;/&gt;
+
+                &lt;Text Value=&quot;2 Adults 1 Child&quot; FontSize=&quot;14&quot; Margin=&quot;0,10,0,0&quot;/&gt;
+                &lt;Text Value=&quot;1 Senior Railcard 1 Annual Gold Card&quot; FontSize=&quot;14&quot;/&gt;
+
+                &lt;Text Value=&quot;Valid only on your chosen service. Not refundable.&quot; Color=&quot;MediumGray&quot; FontSize=&quot;12&quot; Margin=&quot;0,10,0,0&quot;/&gt;
+                &lt;Text Value=&quot;Changeable prior to date of travel for a fee.&quot;      Color=&quot;MediumGray&quot; FontSize=&quot;12&quot;/&gt;
+            &lt;/StackPanel&gt;
+        &lt;/Panel&gt;
+    &lt;/Panel&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The <code>ScrollView</code> contains several <code>ScrollingAnimation</code> animators, which are used to animate the collapsing items. There are three main main ranges; (0,150), (150,240) and (220,370). They roughly correspond to the height of the elements they animate.</p>
+<!-- snippet-begin:code/MainView.ux:ScrollView -->
+<pre><code>&lt;ScrollView&gt;
+    &lt;StackPanel&gt;
+        &lt;Panel Height=&quot;360&quot; /&gt;
+        &lt;StackPanel&gt;
+            &lt;StackPanel Color=&quot;White&quot; &gt;
+                &lt;Each Count=&quot;5&quot;&gt;
+                    &lt;Trip /&gt;
+                &lt;/Each&gt;
+            &lt;/StackPanel&gt;
+
+            &lt;ScrollingAnimation From=&quot;0&quot; To=&quot;150&quot;&gt;
+                &lt;Move Target=&quot;info&quot; Y=&quot;-1&quot; RelativeTo=&quot;Size&quot;/&gt;
+            &lt;/ScrollingAnimation&gt;
+            &lt;ScrollingAnimation From=&quot;0&quot; To=&quot;130&quot;&gt;
+                &lt;Move Target=&quot;infoContent&quot; Y=&quot;0.5&quot; RelativeTo=&quot;Size&quot; /&gt;
+                &lt;Change Target=&quot;infoContent.Opacity&quot; Value=&quot;0&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+            &lt;/ScrollingAnimation&gt;
+
+            &lt;ScrollingAnimation From=&quot;150&quot; To=&quot;240&quot;&gt;
+                &lt;Move Target=&quot;ticket&quot; Y=&quot;-1&quot; RelativeTo=&quot;Size&quot;/&gt;
+            &lt;/ScrollingAnimation&gt;
+            &lt;ScrollingAnimation From=&quot;150&quot; To=&quot;220&quot;&gt;
+                &lt;Move Target=&quot;ticketContent&quot; Y=&quot;0.4&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+                &lt;Move Target=&quot;stripedLine&quot; Y=&quot;-0.05&quot; RelativeTo=&quot;ParentSize&quot; RelativeNode=&quot;ticket&quot;/&gt;
+                &lt;Change ticketContent.Opacity=&quot;0&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+                &lt;Change stripedLine.Opacity=&quot;0&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+            &lt;/ScrollingAnimation&gt;
+
+            &lt;ScrollingAnimation From=&quot;220&quot; To=&quot;370&quot;&gt;
+                &lt;Move Target=&quot;trip&quot; Y=&quot;-150&quot;/&gt;
+            &lt;/ScrollingAnimation&gt;
+        &lt;/StackPanel&gt;
+    &lt;/StackPanel&gt;
+
+&lt;/ScrollView&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>The striped lines</h4
+<p>Striped strokes are soon coming to Fuse, but until then, we have to be a little clever. For this limited use-case we can get away with creating a couple of classes.</p>
+<!-- snippet-begin:code/StripedLine.ux:StripedLines -->
+<pre><code>&lt;Panel ux:Class=&quot;StripedLine&quot; StripeColor=&quot;FadedMediumGray&quot;&gt;
+        &lt;float4 ux:Property=&quot;StripeColor&quot; /&gt;
+        &lt;int ux:Property=&quot;NSegments&quot; /&gt;
+    &lt;/Panel&gt;
+
+    &lt;StripedLine ux:Class=&quot;VerticalStripedLine&quot;&gt;
+        &lt;Grid RowCount=&quot;{ReadProperty this.NSegments}&quot;&gt;
+            &lt;Each Count=&quot;{ReadProperty this.NSegments}&quot;&gt;
+                &lt;Rectangle Color=&quot;{ReadProperty this.StripeColor}&quot; Margin=&quot;1&quot; Width=&quot;1&quot;/&gt;
+            &lt;/Each&gt;
+        &lt;/Grid&gt;
+    &lt;/StripedLine&gt;
+
+    &lt;StripedLine ux:Class=&quot;HorizontalStripedLine&quot;&gt;
+        &lt;Grid ColumnCount=&quot;{ReadProperty this.NSegments}&quot;&gt;
+            &lt;Each Count=&quot;{ReadProperty this.NSegments}&quot;&gt;
+                &lt;Rectangle Color=&quot;{ReadProperty this.StripeColor}&quot; Margin=&quot;1&quot; Height=&quot;1&quot;/&gt;
+            &lt;/Each&gt;
+        &lt;/Grid&gt;
+    &lt;/StripedLine&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>These can then be used like so:</p>
+<pre><code>&lt;HorizontalStripedLine NSegments=&quot;25&quot; /&gt;
+&lt;VerticalStripedLine NSegments=&quot;10&quot; /&gt;
+</code></pre>
+<p>The rest of the UX is pretty much just standard Fuse layout and animation, so download the source and play around - have fun!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

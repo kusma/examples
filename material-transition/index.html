@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Material transition - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/material-transition.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_materialdesign.html">Material Design</a>, <a href="../tag_transition.html">Transition</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/layoutcontrol/setlayoutmaster_084fadc8.html" class="nav-link">LayoutMaster</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/expressions.html" class="nav-link">UX Expressions</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/selection/selection.html" class="nav-link">Selection</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/bringtofront.html" class="nav-link">BringToFront</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Material transition</h1>
+
+          <div class="example-content-preview example-content-preview-slot-4">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how you can create a neat material design card animation.
+It is inspired by <a href="https://dribbble.com/shots/1893589-Material-design-card-animation">this awesome piece</a> by <a href="https://dribbble.com/ibjelajac">Ivan Bjelajac</a>.</p>
+<p>The icons are from Google's <a href="https://material.io/icons/">Material Icons</a>, and images from <a href="https://unsplash.com/">Unsplash</a>.</p>
+<h3>Resources, data and components</h3
+<p>Global, static resources such as fonts, text styles and the color palette are defined as a <code>ux:Class</code> in a separate file, <code>StaticResources.ux</code>.
+Since it only contains static resources (<code>ux:Class</code> and <code>ux:Global</code>) it doesn't need to be instantiated – its contents are automatically available from any other file in our project.</p>
+<!-- snippet-begin:code/StaticResources.ux:Resources -->
+<pre><code>&lt;Panel ux:Class=&quot;StaticResources&quot;&gt;
+    &lt;Font ux:Global=&quot;RobotoMedium&quot; File=&quot;Assets/Roboto-Medium.ttf&quot; /&gt;
+
+    &lt;float4 ux:Global=&quot;PrimaryColor&quot; ux:Value=&quot;#29B6F6&quot; /&gt;
+    &lt;float4 ux:Global=&quot;AccentColor&quot; ux:Value=&quot;#E91E63&quot; /&gt;
+    
+    &lt;Text ux:Class=&quot;SmallHeaderText&quot; Font=&quot;RobotoMedium&quot; FontSize=&quot;17&quot; Color=&quot;PrimaryColor&quot; Margin=&quot;0,15,0,0&quot; /&gt;
+    &lt;Text ux:Class=&quot;BodyText&quot; FontSize=&quot;14&quot; Color=&quot;#263238&quot; TextWrapping=&quot;Wrap&quot; /&gt;
+    &lt;BodyText ux:Class=&quot;MutedText&quot; Color=&quot;#888&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Our made-up mock data comes from a JavaScript file which exports an array of events under the key <code>events</code>.</p>
+<!-- snippet-begin:code/MainView.ux:IncludeData -->
+<pre><code>&lt;JavaScript File=&quot;data.js&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The app also contains a number of components whose internals aren't relevant to the effect this example focuses on, but mainly serve to mimic parts of a real-world app screen.
+To reduce clutter in our <code>MainView.ux</code>, these are defined in separate files under the <code>Components/</code> directory.</p>
+<h3>Navigation and layout</h3
+<p>Although this example demonstrates a navigation flow, we are going to use <code>Selection</code> and <code>Selectable</code> to handle the navigation between the list of cards and the expanded state.
+The reason is that we're not actually navigating between pages, but rather moving elements around to expose the content and fill the screen when a card is expanded.
+<code>Selection</code> fits this use case perfectly, since we can have a <code>WhileSelected</code> trigger for each card that animates <em>that</em> particular card to the expanded state.
+Additionally, we've configured our <code>Selection</code> to allow no more than one item to be selected at a time.
+This gives us the behavior of a two-state navigation system, where we can either have <em>zero</em> selected items (list of cards), or <em>one</em> selected item (expanded view of a particular card).</p>
+<p>Below is the basic outer structure of the app.</p>
+<!-- snippet-begin:code/MainView.ux:OuterStructure -->
+<pre><code>&lt;DockPanel&gt;
+    &lt;StatusAndAppBar ux:Name=&quot;statusAndAppBar&quot; Dock=&quot;Top&quot; /&gt;
+    
+    &lt;ScrollView ux:Name=&quot;mainScrollView&quot; ClipToBounds=&quot;false&quot; LayoutMode=&quot;PreserveVisual&quot;&gt;
+        &lt;StackPanel Margin=&quot;0,0,0,15&quot;&gt;
+            &lt;Selection MinCount=&quot;0&quot; MaxCount=&quot;1&quot; /&gt;
+            
+            &lt;Each Items=&quot;{events}&quot;&gt;
+                &lt;EventCard layoutTarget=&quot;contentPlaceholder&quot;&gt;
+                    &lt;Selectable Value=&quot;{id}&quot; /&gt;
+                    &lt;WhileSelected&gt;
+                        &lt;Change mainScrollView.UserScroll=&quot;false&quot; DelayBack=&quot;0&quot; /&gt;
+                        &lt;Move Target=&quot;statusAndAppBar&quot; Y=&quot;-1&quot; RelativeTo=&quot;Size&quot; Duration=&quot;1.2&quot; Delay=&quot;0.1&quot; Easing=&quot;QuarticOut&quot; EasingBack=&quot;QuarticIn&quot; /&gt;
+                    &lt;/WhileSelected&gt;
+                &lt;/EventCard&gt;
+            &lt;/Each&gt;
+        &lt;/StackPanel&gt;
+    &lt;/ScrollView&gt;
+    
+    &lt;BottomBarBackground Dock=&quot;Bottom&quot; /&gt;
+&lt;/DockPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The cards</h3
+<p>In our mock dataset, we've given each item a unique <code>id</code>, which we bind to the <code>Value</code> of each card's <code>Selectable</code>.
+This is required by <code>Selectable</code> to identify what is currently selected.</p>
+<p>We've also declared a <code>ImageHeight</code> property with a default value of 200.
+As we'll see next, this is done to reduce duplication, as we'll use this value twice.</p>
+<p>Additionally, we have defined a <code>ux:Dependency=&quot;layoutTarget&quot;</code> that requires us to pass in a reference to the contentPlaceholder <code>Panel</code>, so that we can change the <code>LayoutMaster</code> of the card contents to an element outside of the <code>ux:Class</code>.</p>
+<!-- snippet-begin:code/MainView.ux:CardSelectable -->
+<pre><code>&lt;StackPanel ux:Class=&quot;EventCard&quot; ImageHeight=&quot;200&quot;&gt;
+    &lt;float ux:Property=&quot;ImageHeight&quot; /&gt;
+    &lt;Panel ux:Dependency=&quot;layoutTarget&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The image part of each card actually contains both the image <em>and</em> the expanded content.
+However, the <code>DockPanel</code> containing the image and content has <code>ClipToBounds=&quot;true&quot;</code> and is wrapped in a panel whose <code>Height</code> is set to the <code>ImageHeight</code> property we defined earlier.
+This results in only the topmost 200pt of the <code>imageAndContent</code> panel being visible.</p>
+<!-- snippet-begin:code/MainView.ux:ContentLimitPanel -->
+<pre><code>&lt;Panel ux:Name=&quot;contentLimitPanel&quot; Height=&quot;{ReadProperty ImageHeight}&quot;&gt;
+    &lt;DockPanel ux:Name=&quot;imageAndContent&quot; ClipToBounds=&quot;true&quot; HitTestMode=&quot;LocalBoundsAndChildren&quot;&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We set the <code>Height</code> of the panel containing the image and title to the same <code>ImageHeight</code> property as <code>contentLimitPanel</code>.
+Now the image has the same height as <code>contentLimitPanel</code> and thus fits perfectly within the clipped area, rendering the expanded content invisible.</p>
+<!-- snippet-begin:code/MainView.ux:ImageAndTitlePanel -->
+<pre><code>&lt;Panel Dock=&quot;Top&quot; Height=&quot;{ReadProperty ImageHeight}&quot;&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The transition</h3
+<p>At the root of our app, we have defined an empty panel named <code>contentPlaceholder</code> and as shown before, we have passed it in as a <code>ux:Dependency</code> to all of our cards.</p>
+<!-- snippet-begin:code/MainView.ux:ContentPlaceholder -->
+<pre><code>&lt;Panel ux:Name=&quot;contentPlaceholder&quot; /&gt;
+</code></pre>
+<pre><code>&lt;Each Items=&quot;{events}&quot;&gt;
+    &lt;EventCard layoutTarget=&quot;contentPlaceholder&quot;&gt;
+</code></pre>
+<pre><code>&lt;StackPanel ux:Class=&quot;EventCard&quot; ImageHeight=&quot;200&quot;&gt;
+    &lt;Panel ux:Dependency=&quot;layoutTarget&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>When a card is selected, we change the <code>LayoutMaster</code> of the panel containing the image and content to this <code>layoutTarget</code>.
+This results in <code>contentLimitPanel</code> no longer limiting the panel's height, and it can take up all the space inside <code>contentPlaceholder</code>, making the content visible.
+Since <code>contentPlaceholder</code> is placed at the root of our app, this will make it fill the whole screen.</p>
+<!-- snippet-begin:code/MainView.ux:ChangeLayoutMaster -->
+<pre><code>&lt;WhileSelected&gt;
+    &lt;Change imageAndContent.LayoutMaster=&quot;layoutTarget&quot; DelayBack=&quot;0&quot; Delay=&quot;0&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We'll add a <code>LayoutAnimation</code> to the <code>imageAndContent</code> panel to smoothly animate to the new position and size.</p>
+<!-- snippet-begin:code/MainView.ux:LayoutAnimation -->
+<pre><code>&lt;LayoutAnimation&gt;
+    &lt;Move X=&quot;1&quot; RelativeTo=&quot;WorldPositionChange&quot; DelayBack=&quot;0&quot; Duration=&quot;0.2&quot; Easing=&quot;QuadraticInOut&quot; /&gt;
+    &lt;Move Y=&quot;1&quot; RelativeTo=&quot;WorldPositionChange&quot; DelayBack=&quot;0&quot; Duration=&quot;0.2&quot; Easing=&quot;SinusoidalIn&quot; /&gt;
+    &lt;Resize X=&quot;1&quot; Y=&quot;1&quot; RelativeTo=&quot;SizeChange&quot; DelayBack=&quot;0&quot; Duration=&quot;0.25&quot; Easing=&quot;QuadraticIn&quot; /&gt;
+&lt;/LayoutAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Next, we add a <code>BringToFront</code> to bring the card in front of all other cards.</p>
+<p>Because the card is still rooted within the main <code>ScrollView</code>, the <code>imageAndContent</code> panel is still tied to the scroll position, even when we change its <code>LayoutMaster</code>.
+Thus, we immediately disable user interaction for this <code>ScrollView</code>, so that the user can't scroll the list of cards while a card is expanded.</p>
+<p>Since the expanded content shouldn't have any margin at all, we can't just add a margin around the whole card.
+Instead, the same 15pt margin is applied to both the <code>image</code> and the card's background separately.
+This lets us animate the margin of only the <code>image</code> to to 0 during the transition.
+Because <code>image</code> has <code>Layer=&quot;Background&quot;</code>, this will not result in any significant performance impact.</p>
+<p>The status bar and app bar are moved out of view as well.</p>
+<p>It is important to note that we have added a <code>WhileSelected</code> trigger in two places - one in the <code>Each</code> loop outside of the card <code>ux:Class</code>, and another inside of of the <code>ux:Class</code>.
+This lets us have direct access to UX elements in global and local scopes, respectively. The instructions in both triggers get stacked and executed simultaneously.</p>
+<!-- snippet-begin:code/MainView.ux:WhileSelected -->
+<pre><code>&lt;WhileSelected&gt;
+    &lt;Change mainScrollView.UserScroll=&quot;false&quot; DelayBack=&quot;0&quot; /&gt;
+    &lt;Move Target=&quot;statusAndAppBar&quot; Y=&quot;-1&quot; RelativeTo=&quot;Size&quot; Duration=&quot;1.2&quot; Delay=&quot;0.1&quot; Easing=&quot;QuarticOut&quot; EasingBack=&quot;QuarticIn&quot; /&gt;
+&lt;/WhileSelected&gt;
+</code></pre>
+<pre><code>&lt;WhileSelected&gt;
+    &lt;Change imageAndContent.LayoutMaster=&quot;layoutTarget&quot; DelayBack=&quot;0&quot; Delay=&quot;0&quot; /&gt;
+    &lt;BringToFront /&gt;
+    
+    &lt;Change image.CornerRadius=&quot;0&quot; Duration=&quot;0.1&quot; DelayBack=&quot;0&quot; /&gt;
+    &lt;Change image.Margin=&quot;0&quot; Duration=&quot;0.25&quot; Delay=&quot;0&quot; DelayBack=&quot;0&quot; Easing=&quot;CubicInOut&quot; /&gt;
+&lt;/WhileSelected&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Some parts of the transition make more sense to animate the other way, that is, use the active state of a trigger to hide an element instead of expanding or revealing it.
+Because of this, we have a separate inverted version of <code>WhileSelected</code>, which will be active while the card is <em>not</em> selected.</p>
+<p>Most of these animations are small details such as scaling the plus button, fading out the content, etc.
+We also use it to fade out and disable hit tests for the <code>detailNavigationBar</code>, which contains the back button.</p>
+<!-- snippet-begin:code/MainView.ux:WhileNotSelected -->
+<pre><code>&lt;WhileSelected Invert=&quot;true&quot;&gt;
+    &lt;Change contentScrollView.Opacity=&quot;0.4&quot; Duration=&quot;0.3&quot; DelayBack=&quot;0&quot; /&gt;
+    &lt;Change content.Opacity=&quot;0.5&quot; Duration=&quot;0.5&quot; DelayBack=&quot;0&quot; /&gt;
+    &lt;Move Target=&quot;content&quot; Y=&quot;30&quot; Duration=&quot;0.7&quot; DelayBack=&quot;0&quot; Delay=&quot;0&quot; Easing=&quot;QuadraticIn&quot; /&gt;
+
+    &lt;Scale Target=&quot;plusButton&quot; Factor=&quot;0.01&quot; Delay=&quot;0&quot; Duration=&quot;0.2&quot; DelayBack=&quot;0.25&quot; DurationBack=&quot;0.55&quot; Easing=&quot;CubicInOut&quot; /&gt;
+    &lt;Rotate Target=&quot;plusButton&quot; Degrees=&quot;-90&quot; Delay=&quot;0&quot; Duration=&quot;0.5&quot; DelayBack=&quot;0.25&quot; DurationBack=&quot;1.1&quot; EasingBack=&quot;CubicIn&quot; /&gt;
+    &lt;Change plusButton.Opacity=&quot;0&quot; Duration=&quot;0.2&quot; DelayBack=&quot;0.2&quot; DurationBack=&quot;0.5&quot; /&gt;
+    
+    &lt;Change detailNavigationBar.Opacity=&quot;0&quot; Duration=&quot;0.2&quot; Delay=&quot;0&quot; /&gt;
+    &lt;Change detailNavigationBar.HitTestMode=&quot;None&quot; /&gt;
+&lt;/WhileSelected&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And that's it! Feel free download the code and play around.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

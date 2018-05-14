@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Creating a custom switch - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/custom-switch.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_gesture.html">Gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/togglecontrol.html" class="nav-link">ToggleControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipegesture.html" class="nav-link">SwipeGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/whileswipeactive.html" class="nav-link">WhileSwipeActive</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/toggleswipeactive.html" class="nav-link">ToggleSwipeActive</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipinganimation.html" class="nav-link">SwipingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects/dropshadow.html" class="nav-link">DropShadow</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiledisabled.html" class="nav-link">WhileDisabled</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/cliptobounds.html" class="nav-link">ClipToBounds</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Creating a custom switch</h1>
+
+          <div class="example-content-preview example-content-preview-slot-3">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>Fuse has a flexible and powerful system to help you style your own and existing controls. Let's look at how it works by styling a <code>ToggleControl</code> control inspired by <a href="https://dribbble.com/shots/1749645-Contact-Sync">this</a> example by <a href="http://www.ramotion.com">Ramotion</a>.</p>
+<p>In this example, we'll be using:</p>
+<ul>
+<li>Subclassing of the <code>ToggleControl</code> to create our own control that has multiple states (in this case, on and off)</li>
+<li>Allowing the user of the control to choose between swiping the thumb using <code>SwipeGesture</code>, or clicking the control to toggle the state</li>
+</ul>
+<p>The main things we are addressing with our styling are:</p>
+<ul>
+<li>The control should have a border that turns white when it is <code>On</code></li>
+<li>The background of the track should turn transparent as the control is turned <code>On</code></li>
+</ul>
+<p>The code for the custom switch is simply:</p>
+<!-- snippet-begin:code/MySwitch.ux:ToggleControl -->
+<pre><code>&lt;ToggleControl ux:Class=&quot;MySwitch&quot; Margin=&quot;4,4,4,4&quot;
+               Width=&quot;80&quot;
+               Height=&quot;48&quot; Focus.IsFocusable=&quot;true&quot;&gt;
+    &lt;Clicked&gt;
+        &lt;Toggle Target=&quot;this&quot; /&gt;
+    &lt;/Clicked&gt;
+    &lt;SwipeGesture ux:Name=&quot;swipe&quot; Direction=&quot;Right&quot; Length=&quot;38&quot; Type=&quot;Active&quot; IsActive=&quot;{Property Value}&quot;/&gt;
+   
+    &lt;SwipingAnimation Source=&quot;swipe&quot;&gt;
+        &lt;Move Target=&quot;thumb&quot; X=&quot;38&quot;/&gt;
+        &lt;Change thumb.Color=&quot;#fff&quot;/&gt;
+        &lt;Change track.Color=&quot;#ffffff00&quot;/&gt;
+        &lt;Change track.StrokeColor=&quot;#ffffffff&quot;/&gt;
+    &lt;/SwipingAnimation&gt;
+   
+    &lt;Panel Layer=&quot;Background&quot;&gt;
+        &lt;Circle ux:Name=&quot;thumb&quot; Color=&quot;#fafafaff&quot; 
+                Alignment=&quot;CenterLeft&quot;
+                Width=&quot;34&quot;
+                Height=&quot;34&quot;
+                Margin=&quot;4,0,14,0&quot;&gt;
+            &lt;Shadow Angle=&quot;90&quot; Distance=&quot;0&quot; Size=&quot;2&quot; /&gt;
+        &lt;/Circle&gt;
+   
+        &lt;Rectangle ux:Name=&quot;track&quot; Color=&quot;#e7e7e7&quot; StrokeColor=&quot;#ffffff00&quot;
+            CornerRadius=&quot;23&quot;
+            Width=&quot;80&quot;
+            Height=&quot;40&quot;
+            Alignment=&quot;Center&quot;/&gt;
+    &lt;/Panel&gt;
+
+    &lt;WhileDisabled&gt;
+        &lt;Change thumb.Color=&quot;#bdbdbdff&quot; Easing=&quot;QuadraticInOut&quot; Duration=&quot;0.25&quot; /&gt;
+        &lt;Change track.Color=&quot;#0000001e&quot; Easing=&quot;QuadraticInOut&quot; Duration=&quot;0.25&quot; /&gt;
+    &lt;/WhileDisabled&gt;
+
+    &lt;WhileTrue&gt;
+        &lt;Change thumb.Color=&quot;#fff&quot; Easing=&quot;QuadraticInOut&quot; Duration=&quot;0.25&quot; /&gt;
+        &lt;Change track.Color=&quot;#fff0&quot; Easing=&quot;QuadraticInOut&quot; Duration=&quot;0.25&quot; /&gt;
+        &lt;Change track.StrokeColor=&quot;#ffff&quot; Easing=&quot;QuadraticInOut&quot; Duration=&quot;0.25&quot; /&gt;
+    &lt;/WhileTrue&gt;
+&lt;/ToggleControl&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And that's basically it for styling the <code>ToggleControl</code> itself. The rest of the effect is accomplished as we react to the state change of the <code>ToggleControl</code>-control. Let's look at some of the points of interest:</p>
+<!-- snippet-begin:code/MySwitch.ux:Clicked -->
+<pre><code>&lt;Clicked&gt;
+    &lt;Toggle Target=&quot;this&quot; /&gt;
+&lt;/Clicked&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>A typical behavior for a switch is to toggle it's state when clicked. We can simply modify the state of the <code>ToggleControl</code> directly.</p>
+<!-- snippet-begin:code/MySwitch.ux:SwipeGesture -->
+<pre><code>&lt;SwipeGesture ux:Name=&quot;swipe&quot; Direction=&quot;Right&quot; Length=&quot;38&quot; Type=&quot;Active&quot; IsActive=&quot;{Property Value}&quot;/&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We add a <code>SwipeGesture</code> with the same length as the travel of the switch thumb. We bind the <code>IsActive</code> state of the gesture to the <code>Value</code> of the <code>ToggleControl</code>. This keeps the states synchronized, and what allows us to just call <code>Toggle</code> on the switch in the <code>Clicked</code> handler.</p>
+<p>We use <code>SwipingAnimation</code> to define the change in appearance when the toggle is on. This works both when the user is sliding the thumb and when the state is toggled.</p>
+<!-- snippet-begin:code/MySwitch.ux:SwipingAnimation -->
+<pre><code>&lt;SwipingAnimation Source=&quot;swipe&quot;&gt;
+    &lt;Move Target=&quot;thumb&quot; X=&quot;38&quot;/&gt;
+    &lt;Change thumb.Color=&quot;#fff&quot;/&gt;
+    &lt;Change track.Color=&quot;#ffffff00&quot;/&gt;
+    &lt;Change track.StrokeColor=&quot;#ffffffff&quot;/&gt;
+&lt;/SwipingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<h5>The surrounding areas</h5
+<p>In the areas surrounding the switch, we want to:</p>
+<ul>
+<li>Create a <code>Circle</code> that expands and contracts as the switch is toggled</li>
+<li>Subtly change the colors of the icons</li>
+<li>Change the <code>Color</code> of the <code>Header</code> (inline class)</li>
+<li>Change the <code>Color</code> in the background when the <code>Circle</code> has expanded to its maximum value</li>
+<li>Make sure the expanding <code>Circle</code> never extends outside its containing <code>DockPanel</code>, this is achieved using <code>ClipToBounds=&quot;true&quot;</code></li>
+<li>Slightly move the <code>Circle</code> as the switch changes state, so it expands from and contracts to slightly different locations</li>
+</ul>
+<h6>Code</h6
+<p>We're using these <em>inline classes</em>:</p>
+<pre><code>&lt;Text ux:Class=&quot;HeaderText&quot; FontSize=&quot;24&quot; TextColor=&quot;#11abfe&quot; TextAlignment=&quot;Center&quot; /&gt;
+&lt;Text ux:Class=&quot;DescriptionText&quot; TextWrapping=&quot;Wrap&quot; FontSize=&quot;14&quot; TextAlignment=&quot;Center&quot; /&gt;
+&lt;Image ux:Class=&quot;Icon&quot; Height=&quot;80&quot; Width=&quot;80&quot; Color=&quot;#dedede&quot; /&gt;
+</code></pre>
+<p>Then the configuration entry becomes just a matter of:</p>
+<!-- snippet-begin:code/CustomSwitch.ux:Entry -->
+<pre><code>&lt;DockPanel ux:Name=&quot;secondBox&quot; Color=&quot;White&quot; ClipToBounds=&quot;true&quot;&gt;
+    &lt;StackPanel Dock=&quot;Top&quot; ItemSpacing=&quot;35&quot; Margin=&quot;4,35,4,0&quot;&gt;
+        &lt;HeaderText ux:Name=&quot;secondHeader&quot; Value=&quot;Automatic synchronization&quot;/&gt;
+        &lt;DescriptionText Value=&quot;Synchronize all contact information when connecting using USB&quot;/&gt;
+    &lt;/StackPanel&gt;
+
+    &lt;StackPanel Orientation=&quot;Horizontal&quot; Alignment=&quot;Center&quot; ItemSpacing=&quot;35&quot;&gt;
+        &lt;Icon File=&quot;Assets/Connect.png&quot; ux:Name=&quot;connectIcon&quot; /&gt;
+        &lt;Panel&gt;
+            &lt;MySwitch Alignment=&quot;VerticalCenter&quot;&gt;
+                &lt;WhileTrue&gt;
+                    &lt;Change greenCircleScaling.Factor=&quot;10&quot; Duration=&quot;0.25&quot; Easing=&quot;QuadraticOut&quot; Delay=&quot;0.20&quot; /&gt;
+                    &lt;Change secondHeader.TextColor=&quot;White&quot; Duration=&quot;0.25&quot; Delay=&quot;0.20&quot; /&gt;
+                    &lt;Change connectIcon.Color=&quot;White&quot; Duration=&quot;0.25&quot; Delay=&quot;0.35&quot; /&gt;
+                    &lt;Change greenCircle.Color=&quot;#8cb542&quot; Duration=&quot;0.25&quot; Easing=&quot;QuadraticOut&quot; Delay=&quot;0.20&quot; /&gt;
+                    &lt;Change secondBox.Color=&quot;#8cb542&quot; Duration=&quot;0.05&quot; Delay=&quot;0.35&quot; /&gt;
+                    &lt;Change greenCircleTranslation.X=&quot;19&quot; Duration=&quot;0&quot; DurationBack=&quot;0&quot; Delay=&quot;0.25&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+                &lt;/WhileTrue&gt;
+            &lt;/MySwitch&gt;
+            &lt;Circle ux:Name=&quot;greenCircle&quot; Color=&quot;White&quot;&gt;
+                &lt;Translation ux:Name=&quot;greenCircleTranslation&quot; X=&quot;-19&quot; /&gt;
+                &lt;Scaling ux:Name=&quot;greenCircleScaling&quot; Factor=&quot;0&quot; /&gt;
+            &lt;/Circle&gt;
+        &lt;/Panel&gt;
+    &lt;/StackPanel&gt;
+&lt;/DockPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

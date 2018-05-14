@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Swipe places - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/swipe-places.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_physics.html">Physics</a>, <a href="../tag_animation.html">Animation</a>, <a href="../tag_gesture.html">Gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/physics/pointattractor.html" class="nav-link">PointAttractor</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/physics/draggable.html" class="nav-link">Draggable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/physics/whiledragging.html" class="nav-link">WhileDragging</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/rotation.html" class="nav-link">Rotation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/physics/inforcefieldanimation.html" class="nav-link">InForceFieldAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/physics/enteredforcefield.html" class="nav-link">EnteredForceField</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/physics/exitedforcefield.html" class="nav-link">ExitedForceField</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/polyfills.html" class="nav-link">setTimeout</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Swipe places</h1>
+
+          <div class="example-content-preview example-content-preview-slot-7">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we will implement the card swipe control made famous by Tinder. Swipe to the right if you've visited a city, to the left if you have not.</p>
+<p>To achieve the desired effect, we will use <code>PointAttractor</code> and <code>Draggable</code> to give elements the ability to respond to dragging gestures. <code>PointAttractor</code> will create a zone that the elements are attracted to. We will use three of these to create the Tinder sorting effect.</p>
+<p>Let's start by looking at the JavaScript:</p>
+<!-- snippet-begin:code/MainView.ux:JavaScript -->
+<pre><code>&lt;JavaScript&gt;
+    var Observable = require(&quot;FuseJS/Observable&quot;);
+
+    var resetting = Observable(false);
+
+    function City(name, imageKey, country, visitors, nonVisitors)
+    {
+        this.name = name;
+        this.imageKey = imageKey;
+        this.country = country;
+        this.visitors = Observable(visitors);
+        this.nonVisitors = Observable(nonVisitors);
+        this.degrees = -4 + (8 * Math.random());
+    }
+
+    function reset(x) {
+        resetting.value = true;
+        setTimeout(backToNormal, 300);
+    }
+
+    function backToNormal() {
+        resetting.value = false;
+    }
+
+    module.exports = {
+        cities : [
+            new City(&quot;Oslo&quot;, &quot;Assets/Cities/Oslo.jpg&quot;, &quot;NORWAY&quot;, 3127, 3943),
+            new City(&quot;Paris&quot;, &quot;Assets/Cities/Paris.jpg&quot;, &quot;FRANCE&quot;, 10250, 400),
+            new City(&quot;San Francisco&quot;, &quot;Assets/Cities/San Francisco.jpg&quot;, &quot;USA&quot;, 6700, 5421),
+            new City(&quot;Seoul&quot;, &quot;Assets/Cities/Seoul.jpg&quot;, &quot;KOREA&quot;, 5713, 4702),
+            new City(&quot;Tokyo&quot;, &quot;Assets/Cities/Tokyo.jpg&quot;, &quot;JAPAN&quot;, 4512, 657)
+        ],
+        visited: function(x)
+        {
+            debug_log(&quot;Visited &quot; + x.data.name);
+        },
+        notVisited: function(x)
+        {
+            debug_log(&quot;Not visited &quot; + x.data.name);
+        },
+        addVisitor: function(x)
+        {
+            x.data.visitors.value = x.data.visitors.value + 1;
+        },
+        removeVisitor: function(x)
+        {
+            x.data.visitors.value = x.data.visitors.value - 1;
+        },
+        addNonVisitor: function(x)
+        {
+            x.data.nonVisitors.value = x.data.nonVisitors.value + 1;
+        },
+        removeNonVisitor: function(x) {
+            x.data.nonVisitors.value = x.data.nonVisitors.value - 1;
+        },
+        reset: reset,
+        resetting: resetting
+    };
+
+    reset();
+&lt;/JavaScript&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Points of interest:</p>
+<ul>
+<li>We create a bunch of cities that are to be swiped left or right</li>
+<li>As the number of visitors will update on the cards, we make them <code>Observable</code></li>
+<li>We also begin implementing a <code>reset</code> function to allow us to swipe through the stack multiple times. This is implemented using an <code>Observable</code> boolean which indicates whether the stack is currently in the process of resetting itself. We'll look at how to implement this in UX later</li>
+<li>The resetting <code>Observable</code> is flipped on a timer using <code>setTimeout</code></li>
+</ul>
+<h4>Each</h4
+<p>We create a bunch of panels to hold the card definitions. These are rotated according to the random value set when the city is initialized:</p>
+<!-- snippet-begin:code/MainView.ux:Each -->
+<pre><code>&lt;Each Items=&quot;{cities}&quot;&gt;
+    &lt;Panel Margin=&quot;0&quot; Height=&quot;400&quot; Width=&quot;293&quot;&gt;
+        &lt;Rotation Degrees=&quot;{degrees}&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>This gives the stack a more organic look.</p>
+<h4>Point attractors</h4
+<p>Outside the <code>Each</code>-loop, we setup the point attractors:</p>
+<!-- snippet-begin:code/MainView.ux:PointAttractors -->
+<pre><code>&lt;PointAttractor ux:Name=&quot;centerAttractor&quot; Radius=&quot;800&quot; Strength=&quot;250&quot; /&gt;
+&lt;PointAttractor ux:Name=&quot;notVisitedAttractor&quot; Offset=&quot;-400,0,0&quot; Radius=&quot;380&quot; Strength=&quot;600&quot; /&gt;
+&lt;PointAttractor ux:Name=&quot;visitedAttractor&quot; Offset=&quot;400,0,0&quot; Radius=&quot;380&quot; Strength=&quot;600&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The center attractor has its parameters governed by the resetting <code>Observable</code>:</p>
+<!-- snippet-begin:code/MainView.ux:WhileTrues -->
+<pre><code>&lt;WhileTrue Value=&quot;{resetting}&quot;&gt;
+    &lt;Change centerAttractor.Radius=&quot;8000&quot; /&gt;
+    &lt;Change centerAttractor.Strength=&quot;10000&quot; /&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>When the stack is resetting, the attractor becomes bigger and stronger. When it is not resetting, it gives a gentle attraction towards the center of the screen, covering a large area.</p>
+<h4>Overlays</h4
+<p>To give some visual indication that the city has been visited or not visited, we add some image overlays over the city picture with <code>Opacity</code> of 0.</p>
+<!-- snippet-begin:code/MainView.ux:images -->
+<pre><code>&lt;Image ux:Name=&quot;visitedOverlay&quot; StretchMode=&quot;UniformToFill&quot; File=&quot;Assets/Emblems/VisitedOverlay.png&quot; Opacity=&quot;0&quot; Dock=&quot;Fill&quot; /&gt;
+&lt;Image ux:Name=&quot;notVisitedOverlay&quot; StretchMode=&quot;UniformToFill&quot; File=&quot;Assets/Emblems/NotVisitedOverlay.png&quot; Opacity=&quot;0&quot; Dock=&quot;Fill&quot; /&gt;
+&lt;Rectangle Dock=&quot;Fill&quot;&gt;
+	&lt;ImageFill File=&quot;{imageKey}&quot; StretchMode=&quot;UniformToFill&quot; WrapMode=&quot;ClampToEdge&quot; /&gt;
+&lt;/Rectangle&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The <code>Opacity</code> can then be increased using an <code>InForceFieldAnimation</code>:</p>
+<!-- snippet-begin:code/MainView.ux:InForcefieldAnimation -->
+<pre><code>&lt;InForceFieldAnimation ForceField=&quot;visitedAttractor&quot; From=&quot;0.1&quot; To=&quot;0.3&quot;&gt;
+    &lt;Change visited.Opacity=&quot;1&quot; Duration=&quot;1&quot; /&gt;
+    &lt;Change visitedOverlay.Opacity=&quot;1&quot; Duration=&quot;1&quot; /&gt;
+&lt;/InForceFieldAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Rotation</h4
+<p>We can also add a slight rotation to the card as it is being swiped, also using an <code>InForceFieldAnimation</code>:</p>
+<!-- snippet-begin:code/MainView.ux:Rotating -->
+<pre><code>&lt;InForceFieldAnimation ForceField=&quot;visitedAttractor&quot;&gt;
+    &lt;Rotate Degrees=&quot;-8&quot; /&gt;
+&lt;/InForceFieldAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Visitor updating</h4
+<p>To update the visitor count correctly as the card is swiped, we use <code>EnteredForceField</code> and <code>ExitedForceField</code></p>
+<!-- snippet-begin:code/MainView.ux:EnteredForcefield -->
+<pre><code>&lt;EnteredForceField ForceField=&quot;visitedAttractor&quot; Threshold=&quot;0.05&quot; Handler=&quot;{addVisitor}&quot; /&gt;
+&lt;ExitedForceField ForceField=&quot;visitedAttractor&quot; Threshold=&quot;0.05&quot; Handler=&quot;{removeVisitor}&quot; /&gt;
+&lt;EnteredForceField ForceField=&quot;notVisitedAttractor&quot; Threshold=&quot;0.05&quot; Handler=&quot;{addNonVisitor}&quot; /&gt;
+&lt;ExitedForceField ForceField=&quot;notVisitedAttractor&quot; Threshold=&quot;0.05&quot; Handler=&quot;{removeNonVisitor}&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Draggable behavior</h4
+<p>To make the cards draggable, we add the <code>Draggable</code> behavior:</p>
+<!-- snippet-begin:code/MainView.ux:Draggable -->
+<pre><code>&lt;Draggable /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We can also animate the city in response to being dragged:</p>
+<!-- snippet-begin:code/MainView.ux:WhileDragging -->
+<pre><code>&lt;WhileDragging&gt;
+    &lt;BringToFront /&gt;
+    &lt;Scale Factor=&quot;1.1&quot; Duration=&quot;0.5&quot; Easing=&quot;BackOut&quot; /&gt;
+    &lt;Change shadow.Distance=&quot;20&quot; Duration=&quot;0.5&quot; Easing=&quot;BackOut&quot; /&gt;
+    &lt;Change shadow.Size=&quot;20&quot; Duration=&quot;0.5&quot; Easing=&quot;BackOut&quot; /&gt;
+&lt;/WhileDragging&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Reset button</h4
+<p>Finally, we hook up the reset icon to call the reset JavaScript function:</p>
+<!-- snippet-begin:code/MainView.ux:ImageClicked -->
+<pre><code>&lt;Panel&gt;
+    &lt;Image Clicked=&quot;{reset}&quot; Height=&quot;64&quot; Width=&quot;64&quot; File=&quot;Assets/Icons/Refresh.png&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Angled navigation - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/angled-navigation.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_navigation.html">Navigation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/enteringanimation.html" class="nav-link">EnteringAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/exitinganimation.html" class="nav-link">ExitingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/activatinganimation.html" class="nav-link">ActivatingAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Angled navigation</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we are using <code>Entering-</code> and <code>ExitingAnimation</code> together with <code>Keyframe</code> in order to implement this <a href="https://dribbble.com/shots/2575761-Webshop-UI-UX-experiments">awesome transition animation</a> by <a href="https://dribbble.com/remcobakker">Remco Bakker</a></p>
+<h3>The card class</h3
+<p>Each page has a Card, which contains the images and their up and down movements. Each page also displays some text, but this part has its own <code>Entering-</code> and <code>ExitingAnimation</code>.</p>
+<!-- snippet-begin:code/MainView.ux:CardClass -->
+<pre><code>&lt;Panel ux:Class=&quot;Card&quot; Width=&quot;150&quot; Height=&quot;150&quot; Opacity=&quot;0.4&quot; ux:Name=&quot;self&quot;&gt;
+    &lt;ActivatingAnimation&gt;
+        &lt;Change self.Opacity=&quot;1&quot; Duration=&quot;1&quot;  /&gt;
+    &lt;/ActivatingAnimation&gt;
+    &lt;EnteringAnimation Scale=&quot;0.25&quot;&gt;
+        &lt;Move RelativeTo=&quot;Size&quot;&gt;
+            &lt;Keyframe Time=&quot;0.25&quot; X=&quot;-0.7&quot; Y=&quot;0.7&quot;/&gt;
+            &lt;Keyframe Time=&quot;0.5&quot;  X=&quot;-1.4&quot;  Y=&quot;0&quot;/&gt;
+            &lt;Keyframe Time=&quot;0.75&quot; X=&quot;-2.1&quot; Y=&quot;-0.7&quot;/&gt;
+            &lt;Keyframe Time=&quot;1&quot;    X=&quot;-3.8&quot;  Y=&quot;-1.4&quot;/&gt;
+        &lt;/Move&gt;
+    &lt;/EnteringAnimation&gt;
+    &lt;ExitingAnimation Scale=&quot;0.25&quot;&gt;
+        &lt;Move RelativeTo=&quot;Size&quot;&gt;
+            &lt;Keyframe Time=&quot;0.25&quot; X=&quot;0.7&quot; Y=&quot;0.7&quot;/&gt;
+            &lt;Keyframe Time=&quot;0.5&quot;  X=&quot;1.4&quot;  Y=&quot;0&quot;/&gt;
+            &lt;Keyframe Time=&quot;0.75&quot; X=&quot;2.1&quot; Y=&quot;-0.7&quot;/&gt;
+            &lt;Keyframe Time=&quot;1&quot;    X=&quot;3.8&quot;  Y=&quot;-1.4&quot;/&gt;
+        &lt;/Move&gt;
+    &lt;/ExitingAnimation&gt;
+
+    &lt;float4 ux:Property=&quot;PanelColor&quot; /&gt;
+
+    &lt;Image File=&quot;{image}&quot; Width=&quot;55%&quot;/&gt;
+    &lt;Panel Color=&quot;{ReadProperty self.PanelColor}&quot; Margin=&quot;14&quot; ClipToBounds=&quot;True&quot;&gt;
+        &lt;Rotation Degrees=&quot;45&quot; /&gt;
+    &lt;/Panel&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Notice that we are using <code>Keyframe</code>s inside the <code>Move</code> animators in order to move our cards up and down over the course of the navigation.</p>
+<p>We also set the <code>Scale</code> property of the <code>Entering-</code> and <code>ExitingAnimation</code> to &quot;0.25&quot;. This allows us to show more cards on the screen at once, but also means we have to move them four times as far to get them off the screen.</p>
+<h3>The rotated Grid</h3
+<p>The tilted quadratic pattern is achieved using a large rotated <code>Grid</code>.</p>
+<!-- snippet-begin:code/MainView.ux:RotatedGrid -->
+<pre><code>&lt;Panel Alignment=&quot;Center&quot; Width=&quot;0&quot; Height=&quot;0&quot; Offset=&quot;0,255&quot;&gt;
+    &lt;Grid Columns=&quot;150,150,150,150,150,150&quot; Rows=&quot;150,150,150,150,150,150&quot; Alignment=&quot;Center&quot; TransformOrigin=&quot;TopLeft&quot;&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The Grid has 6 equally sized columns and rows, which is enough to fit all the content properly aligned. We add a <code>&lt;Rotation Degrees=&quot;45&quot; /&gt;</code> transform in order to rotate the whole <code>Grid</code>. The reason we have put the <code>Grid</code> inside a <code>Panel</code> with <code>Width=&quot;0&quot;</code> and <code>Height=&quot;0&quot;</code> is to make sure the <code>Grid</code> gets properly aligned to the center even though it is rotated.</p>
+<h3>The data</h3
+<p>The data is very simple. Just a small JavaScript structure and some content:</p>
+<!-- snippet-begin:code/MainView.js:TheJS -->
+<pre><code>function Item(image, category, name, text){
+    this.category = category;
+    this.name = name;
+    this.text = text;
+    this.image = image;
+}
+
+
+var items = Observable(
+    new Item(&quot;Assets/food1.jpg&quot;,&quot;Fruit&quot;, &quot;Lime&quot;,&quot;A lime (from Arabic and French lim) is a hybrid citrus fruit, which is typically round, lime green, 3-6 centimetres in diameter, and containing acidic juice vesicles. There are several species of citrus trees whose fruits are called limes, including the Key lime (Citrus aurantifolia), Persian lime, kaffir lime, and desert lime. Limes are an excellent source of vitamin C, and are often used to accent the flavours of foods and beverages. They are grown year-round. Plants with fruit called \&quot;limes\&quot; have diverse genetic origins; limes do not form a monophyletic group.&quot;),
+</code></pre>
+<!-- snippet-end -->
+<p>To be able to data-bind directly to file names, we have to explicitly bundle the .jpg files in Assets folder:</p>
+<pre><code>  &quot;Includes&quot;: [
+    &quot;*&quot;,
+    &quot;Assets/*.jpg:Bundle&quot;
+  ]
+</code></pre>
+<p>When the files are included in the bundle, we can use a simple syntax that refers to the image file path relative to project root:</p>
+<!-- snippet-begin:code/MainView.ux:ImageFile -->
+<pre><code>&lt;Image File=&quot;{image}&quot; Width=&quot;55%&quot;/&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The icons are from <a href="https://design.google.com/icons/">Googles Material Icons pack</a>, and the font is called <a href="https://www.google.com/fonts/specimen/Lora">Lora</a> and is available under the CIL license from Google Fonts.</p>
+<p>And that's it! Feel free to download the example and play around.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

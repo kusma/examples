@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Material sidebar - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/material-drawer.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_sidebar.html">Sidebar</a>, <a href="../tag_navigation.html">Navigation</a>, <a href="../tag_materialdesign.html">Material Design</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/edgenavigation.html" class="nav-link">EdgeNavigator</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/activatinganimation.html" class="nav-link">ActivatingAnimation</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Material sidebar</h1>
+
+          <div class="example-content-preview example-content-preview-slot-7">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example illustrates how you can use <code>EdgeNavigator</code> to make a navigation drawer that can be swiped in from the left, or opened using a button.</p>
+<pre><code>&lt;App&gt;
+	&lt;iOS.StatusBarConfig Style=&quot;Light&quot; /&gt;
+	&lt;EdgeNavigator&gt;
+		&lt;Panel ux:Name=&quot;sidebar&quot; Edge=&quot;Left&quot; Width=&quot;100%&quot; Margin=&quot;0,0,56,0&quot; Background=&quot;#37474F&quot;&gt;
+			&lt;Shadow ux:Name=&quot;shadow&quot; Angle=&quot;180&quot; Distance=&quot;8&quot; Size=&quot;16&quot; Color=&quot;#0000&quot; /&gt;
+			&lt;ActivatingAnimation&gt;
+				&lt;Change shadow.Color=&quot;#0004&quot; /&gt;
+				&lt;Change sidebarFade.Opacity=&quot;1&quot; /&gt;
+			&lt;/ActivatingAnimation&gt;
+		&lt;/Panel&gt;
+		
+		&lt;DockPanel Color=&quot;#263238&quot;&gt;
+			&lt;Rectangle ux:Name=&quot;sidebarFade&quot; Layer=&quot;Overlay&quot; Color=&quot;#0005&quot; Opacity=&quot;0&quot; HitTestMode=&quot;None&quot; /&gt;
+			&lt;StackPanel Dock=&quot;Top&quot; Color=&quot;#2196F3&quot;&gt;
+				&lt;Shadow Size=&quot;3&quot; Distance=&quot;1&quot; /&gt;
+				&lt;StatusBarBackground /&gt;
+				&lt;Panel Height=&quot;56&quot;&gt;
+					&lt;Hamburger Alignment=&quot;Left&quot;&gt;
+						&lt;Clicked&gt;
+							&lt;NavigateToggle Target=&quot;sidebar&quot; /&gt;
+						&lt;/Clicked&gt;
+					&lt;/Hamburger&gt;
+				&lt;/Panel&gt;
+			&lt;/StackPanel&gt;
+		&lt;/DockPanel&gt;
+	&lt;/EdgeNavigator&gt;
+&lt;/App&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>A todo-app - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/todo-app.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_javascript.html">JavaScript</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/visual/layer.html" class="nav-link">Layer</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/hittestmode.html" class="nav-link">HitTestMode</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/removinganimation.html" class="nav-link">RemovingAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#map-func-item" class="nav-link">Observable.map</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#add-value" class="nav-link">Observable.add</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#remove-value" class="nav-link">Observable.remove</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>A todo-app</h1>
+
+          <div class="example-content-preview example-content-preview-slot-4">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how one can make a simple todo-app with plenty of animations.</p>
+<h3>The model</h3
+<p>We make a JavaScript class to work as a model for each element and an <code>Observable</code> to contain them.
+Each <code>Task</code> has a title and a checked field. They also have a derived field, hidden, which observes checked.
+Hidden is used in markup to show and hide Tasks based on which tab is chosen.</p>
+<!-- snippet-begin:code/MainView.js:Task -->
+<pre><code>function Task(title){
+    var self = this;
+    this.title = title;
+    this.checked = Observable(false);
+    this.hidden = Observable(function(){
+        if (currentTab.value == &quot;all&quot;){
+            return false;
+        }
+        else if (currentTab.value == &quot;active&quot;){
+            return self.checked.value ? true : false;
+        }
+        else {
+            return self.checked.value ? false : true;
+        }
+    });
+}
+</code></pre>
+<!-- snippet-end -->
+<p>An Observable is used to contain all our Tasks.</p>
+<!-- snippet-begin:code/MainView.js:Observable -->
+<pre><code>var todoList = Observable();
+</code></pre>
+<!-- snippet-end -->
+<p>Our add-button looks like a cross, and is made up of two thin panels layered on top of each other.
+The buttons <code>Clicked</code> property is databound to the <code>addItem</code> function in JavaScript.</p>
+<!-- snippet-begin:code/MainView.ux:AddItemButton -->
+<pre><code>&lt;BlankButton Clicked=&quot;{addItem}&quot; Width=&quot;60&quot; Height=&quot;60&quot; HitTestMode=&quot;LocalBoundsAndChildren&quot;&gt;
+    &lt;Panel Layer=&quot;Background&quot;&gt;
+        &lt;Panel Height=&quot;1&quot; Width=&quot;30&quot; Background=&quot;#ddd&quot;/&gt;
+        &lt;Panel Width=&quot;1&quot; Height=&quot;30&quot; Background=&quot;#ddd&quot;/&gt;
+    &lt;/Panel&gt;
+&lt;/BlankButton&gt;
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.js:AddItemFunction -->
+<pre><code>function addItem(arg) {
+    todoList.add(new Task(titleInput.value));
+}
+</code></pre>
+<!-- snippet-end -->
+<p>Each item has a button which toggles whether the item is checked or not, and a button to delete it.</p>
+<ul>
+<li>Note: The following UX-snippet has been stripped to show the basic structure.</li>
+</ul>
+<!-- snippet-begin:code/MainView.ux:Each -->
+<pre><code>&lt;Each Items=&quot;{todoList}&quot;&gt;
+    &lt;Grid ux:Name=&quot;itemPanel&quot; Columns=&quot;auto,1*,auto&quot; Alignment=&quot;Top&quot; Height=&quot;60&quot; Opacity=&quot;1&quot; BoxSizing=&quot;Limit&quot; LimitHeight=&quot;100%&quot;&gt;
+
+
+        &lt;BlankButton Clicked=&quot;{toggleItem}&quot; Alignment=&quot;CenterLeft&quot; Width=&quot;60&quot; Height=&quot;60&quot;&gt;
+            ... this button toggles an items checked state ...
+        &lt;/BlankButton&gt;
+
+        &lt;Panel&gt;
+            &lt;Panel Alignment=&quot;Left&quot;&gt;
+                &lt;Rectangle ux:Name=&quot;textLine&quot; Height=&quot;1&quot; Opacity=&quot;0&quot; Margin=&quot;30,0,0,0&quot; Color=&quot;#bbb&quot;/&gt;
+                &lt;Text ux:Name=&quot;itemText&quot; Value=&quot;{title}&quot; Alignment=&quot;CenterLeft&quot; TextAlignment=&quot;Left&quot; Margin=&quot;30,0,0,0&quot; FontSize=&quot;20&quot; Color=&quot;#999&quot; TextWrapping=&quot;Wrap&quot; /&gt;
+            &lt;/Panel&gt;
+        &lt;/Panel&gt;
+
+
+        &lt;WhileTrue Value=&quot;{checked}&quot;&gt;
+            &lt;Change checkedCircleColor.Color=&quot;#50ac9a&quot; Duration=&quot;0.3&quot;/&gt;
+            &lt;Change checkedIcon.Opacity=&quot;1&quot; Duration=&quot;0.3&quot;/&gt;
+            &lt;Change textLine.Opacity=&quot;1&quot; Duration=&quot;0.3&quot;/&gt;
+            &lt;Change itemText.Color=&quot;#ddd&quot; Duration=&quot;0.3&quot;/&gt;
+        &lt;/WhileTrue&gt;
+
+        &lt;BlankButton Alignment=&quot;CenterRight&quot; Clicked=&quot;{deleteItem}&quot; Width=&quot;60&quot; Height=&quot;60&quot;
+                HitTestMode=&quot;LocalBoundsAndChildren&quot;&gt;
+            ... the delete button ...
+        &lt;/BlankButton&gt;
+
+        &lt;LayoutAnimation&gt;
+            &lt;Move RelativeTo=&quot;LayoutChange&quot; Y=&quot;1&quot; Duration=&quot;0.6&quot; Easing=&quot;BounceIn&quot;/&gt;
+        &lt;/LayoutAnimation&gt;
+        &lt;AddingAnimation&gt;
+            &lt;Move RelativeTo=&quot;Size&quot; X=&quot;1&quot; Duration=&quot;0.3&quot; Easing=&quot;CircularInOut&quot; /&gt;
+        &lt;/AddingAnimation&gt;
+        &lt;RemovingAnimation&gt;
+            &lt;Move RelativeTo=&quot;Size&quot; X=&quot;1&quot; Duration=&quot;0.3&quot; Easing=&quot;CircularInOut&quot; /&gt;
+        &lt;/RemovingAnimation&gt;
+
+        &lt;Rectangle Height=&quot;1&quot; ColumnSpan=&quot;3&quot; Row=&quot;0&quot; Alignment=&quot;Bottom&quot; Color=&quot;#ddd&quot;/&gt;
+    &lt;/Grid&gt;
+&lt;/Each&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Every Task-element has a delete button which is bound to the <code>deleteItem</code> function in javascript.</p>
+<!-- snippet-begin:code/MainView.js:DeleteItemFunction -->
+<pre><code>function deleteItem(arg){
+    todoList.tryRemove(arg.data);
+}
+</code></pre>
+<!-- snippet-end -->
+<h3>The tabs</h3
+<p>The tabs in the bottom lets us toggle between vieweing &quot;all&quot;, &quot;completed&quot; or &quot;active&quot; Tasks.
+They have a <code>Rectangle</code> whith a red border which jumps between the tabs, indicating which one is active.
+Such an animation is done easily with a <code>MultiLayoutPanel</code>.</p>
+<p>MultiLayoutPanel lets us define several layouts which we can switch and animate between using the <code>Placeholder</code> class.
+A <code>Placeholder</code> lets us reference the same element in the different layouts we put inside our <code>MultiLayoutPanel</code>.
+In our case we use Placeholders to reference the red indicator-rectangle to make it move between the tabs.</p>
+<!-- snippet-begin:code/MainView.ux:MultiLayout -->
+<pre><code>&lt;MultiLayoutPanel ux:Name=&quot;multiLayout&quot;&gt;
+    &lt;GridLayout Columns=&quot;1*,1*,1.5*&quot;/&gt;
+    &lt;BlankButton ux:Name=&quot;allButton&quot; Clicked=&quot;{showAll}&quot;&gt;
+        &lt;Panel Alignment=&quot;Center&quot;&gt;
+            &lt;SmallText Value=&quot;All&quot; TextAlignment=&quot;Center&quot;/&gt;
+            &lt;Placeholder&gt;
+                &lt;Rectangle ux:Name=&quot;indicator&quot; Column=&quot;0&quot; Row=&quot;0&quot; CornerRadius=&quot;3&quot; Margin=&quot;-10,-5,-10,-5&quot;&gt;
+                    &lt;LayoutAnimation&gt;
+                        &lt;Move RelativeTo=&quot;LayoutChange&quot; X=&quot;1&quot; Duration=&quot;0.5&quot; Easing=&quot;BackIn&quot;/&gt;
+                        &lt;Resize RelativeTo=&quot;LayoutChange&quot; Duration=&quot;0.5&quot; Easing=&quot;BackIn&quot;/&gt;
+                    &lt;/LayoutAnimation&gt;
+                    &lt;Stroke Width=&quot;1&quot; Brush=&quot;#E7D9DE&quot;/&gt;
+                &lt;/Rectangle&gt;
+            &lt;/Placeholder&gt;
+        &lt;/Panel&gt;
+
+        &lt;Clicked&gt;
+            &lt;Set multiLayout.LayoutElement=&quot;allButton&quot; /&gt;
+        &lt;/Clicked&gt;
+    &lt;/BlankButton&gt;
+    &lt;BlankButton ux:Name=&quot;activeButton&quot; Clicked=&quot;{showActive}&quot;&gt;
+        &lt;Panel Alignment=&quot;Center&quot;&gt;
+            &lt;SmallText TextAlignment=&quot;Center&quot; Value=&quot;Active&quot; /&gt;
+            &lt;Placeholder Target=&quot;indicator&quot;/&gt;
+        &lt;/Panel&gt;
+        &lt;Clicked&gt;
+            &lt;Set multiLayout.LayoutElement=&quot;activeButton&quot;/&gt;
+        &lt;/Clicked&gt;
+    &lt;/BlankButton&gt;
+    &lt;BlankButton ux:Name=&quot;completedButton&quot; Clicked=&quot;{showCompleted}&quot;&gt;
+        &lt;Panel Alignment=&quot;Center&quot;&gt;
+            &lt;SmallText TextAlignment=&quot;Center&quot; Value=&quot;Completed&quot;/&gt;
+            &lt;Placeholder Target=&quot;indicator&quot;/&gt;
+        &lt;/Panel&gt;
+        &lt;Clicked&gt;
+            &lt;Set multiLayout.LayoutElement=&quot;completedButton&quot;/&gt;
+        &lt;/Clicked&gt;
+    &lt;/BlankButton&gt;
+&lt;/MultiLayoutPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Each tab-button changes the <code>currentTab</code> variable in JavaScript by calling the following functions.</p>
+<!-- snippet-begin:code/MainView.js:ShowAllFunction -->
+<pre><code>function showAll() {
+    currentTab.value = &quot;all&quot;;
+}
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.js:ShowActiveFunction -->
+<pre><code>function showActive() {
+    currentTab.value = &quot;active&quot;;
+}
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.js:ShowCompletedFunction -->
+<pre><code>function showCompleted() {
+    currentTab.value = &quot;completed&quot;;
+}
+</code></pre>
+<!-- snippet-end -->
+<h3>Remaining indicator and clear all button</h3
+<p>The text indicating unfinished Tasks is made using a derived <code>Observable</code>.</p>
+<p>First we use <code>observable.count(func)</code> to calculate the number of unchecked Tasks.</p>
+<!-- snippet-begin:code/MainView.js:RemainingCount -->
+<pre><code>var remainingCount = todoList.count(function(x){
+    return x.checked.not();
+});
+</code></pre>
+<!-- snippet-end -->
+<p>Then we use <code>observable.map(func)</code> on <code>remainingCount</code> to create an observable string.</p>
+<!-- snippet-begin:code/MainView.js:RemainingText -->
+<pre><code>var remainingText = remainingCount.map(function(x){
+    return x + &quot; &quot; + ((x == 1) ? &quot;task&quot; : &quot;tasks&quot;) + &quot; remaining&quot;;
+});
+</code></pre>
+<!-- snippet-end -->
+<p>We can then just databind to <code>remainingText</code> from UX and it will be updated whenever the number of checked Task changes.
+Note that Task.checked is itself observable, which is necessary for this to work.</p>
+<!-- snippet-begin:code/MainView.ux:RemainingTextUX -->
+<pre><code>&lt;SmallText Value=&quot;{remainingText}&quot; Margin=&quot;10&quot; Alignment=&quot;Left&quot;/&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The <code>Clear completed</code> button should only be visible when one or more Tasks are checked.
+We hide the button with a <code>WhileDisabled</code> trigger and databinding the buttons IsEnabled property to the <code>canClearCompleted</code> variable in JavaScript.</p>
+<!-- snippet-begin:code/MainView.ux:ClearCompletedButton -->
+<pre><code>&lt;Panel ux:Name=&quot;clearCompletedButton&quot; Alignment=&quot;TopRight&quot; Clicked=&quot;{clearCompleted}&quot;  Margin=&quot;10&quot; IsEnabled=&quot;{canClearCompleted}&quot;&gt;
+    &lt;Text Value=&quot;Clear completed&quot; FontSize=&quot;14&quot; Color=&quot;#999&quot; Margin=&quot;10,0,10,0&quot; /&gt;
+    &lt;WhileDisabled&gt;
+        &lt;Change clearCompletedButton.Opacity=&quot;0&quot; Duration=&quot;0.3&quot;/&gt;
+    &lt;/WhileDisabled&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.js:CanClearCompleted -->
+<pre><code>var canClearCompleted = todoList.count(function(x){
+    return x.checked;
+}).map(function(x){
+    return x &gt; 0;
+});
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.js:ClearCompleted -->
+<pre><code>function clearCompleted() {
+    todoList.removeWhere(function(x) { return x.checked.value; });
+}
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Parallax pages - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/parallax-pages.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_navigation.html">Navigation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/enteringanimation.html" class="nav-link">EnteringAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/exitinganimation.html" class="nav-link">ExitingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/scrollinganimation.html" class="nav-link">ScrollingAnimation</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Parallax pages</h1>
+
+          <div class="example-content-preview example-content-preview-slot-3">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how you can create a neat parallax effect for pages in a <code>PageControl</code> using <code>EnteringAnimation</code>, <code>ExitingAnimation</code> and <code>ScrollingAnimation</code>.</p>
+<p>Each page has an <code>EnteringAnimation</code> and <code>ExitingAnimation</code> pair, which is used to move the background image and other parts of the UI in the <em>opposite</em> direction of the page.
+This results in the background image moving along with the page, but slower than the page itself.
+We also do the same for the <code>ScrollView</code> inside each page using <code>ScrollingAnimation</code>.
+To prevent the images from overlapping, we set <code>ClipToBounds=&quot;true&quot;</code> on each page.</p>
+<pre><code>&lt;App&gt;
+	&lt;iOS.StatusBarConfig Style=&quot;Light&quot; /&gt;
+	
+	&lt;Font ux:Global=&quot;RobotoThinItalic&quot; File=&quot;assets/Roboto-ThinItalic.ttf&quot; /&gt;
+	
+	&lt;Page ux:Class=&quot;ParallaxPage&quot;&gt;
+		&lt;string ux:Property=&quot;TitleText&quot; /&gt;
+		&lt;float4 ux:Property=&quot;ThemeColor&quot; /&gt;
+		&lt;FileSource ux:Property=&quot;ImageFile&quot; /&gt;
+		
+		&lt;ScrollView ux:Name=&quot;scrollView&quot; ClipToBounds=&quot;true&quot;&gt;
+			&lt;ScrollViewMotion Overflow=&quot;Clamp&quot; /&gt;
+			&lt;ScrollingAnimation From=&quot;0&quot; To=&quot;height(this)&quot;&gt;
+				&lt;Move Target=&quot;coverBackground&quot; Y=&quot;-80&quot; Duration=&quot;1&quot; /&gt;
+				&lt;Move Target=&quot;title&quot; Y=&quot;-120&quot; Duration=&quot;1&quot; /&gt;
+				&lt;Change contentShadow.Color=&quot;#0007&quot; Duration=&quot;1&quot; /&gt;
+			&lt;/ScrollingAnimation&gt;
+			
+			&lt;StackPanel&gt;
+				&lt;Panel Height=&quot;height(this)&quot; /&gt;
+				&lt;StackPanel Color=&quot;#eee&quot; Margin=&quot;-1,0&quot; ItemSpacing=&quot;10&quot; Padding=&quot;10&quot;&gt;
+					&lt;Shadow ux:Name=&quot;contentShadow&quot; Size=&quot;20&quot; Distance=&quot;10&quot; Angle=&quot;-90&quot; Color=&quot;#0000&quot; /&gt;
+					
+					&lt;LoremIpsum Margin=&quot;15,0&quot; /&gt;
+				&lt;/StackPanel&gt;
+			&lt;/StackPanel&gt;
+		&lt;/ScrollView&gt;
+		
+		&lt;Panel ux:Name=&quot;cover&quot; ClipToBounds=&quot;true&quot;&gt;
+			&lt;EnteringAnimation&gt;
+				&lt;Move Target=&quot;title&quot;           X=&quot;-0.2&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+				&lt;Move Target=&quot;swipeUpText&quot;     X=&quot;1&quot;    RelativeTo=&quot;ParentSize&quot; /&gt;
+				&lt;Move Target=&quot;coverBackground&quot; X=&quot;0.4&quot;  RelativeTo=&quot;ParentSize&quot; /&gt;
+			&lt;/EnteringAnimation&gt;
+			&lt;ExitingAnimation&gt;
+				&lt;Move Target=&quot;title&quot;           X=&quot;0.2&quot;  RelativeTo=&quot;ParentSize&quot; /&gt;
+				&lt;Move Target=&quot;swipeUpText&quot;     X=&quot;-1&quot;   RelativeTo=&quot;ParentSize&quot; /&gt;
+				&lt;Move Target=&quot;coverBackground&quot; X=&quot;-0.4&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+			&lt;/ExitingAnimation&gt;
+			
+			&lt;Text ux:Name=&quot;title&quot; Value=&quot;{ReadProperty TitleText}&quot;
+			      Alignment=&quot;Center&quot; Color=&quot;#fff&quot; Font=&quot;RobotoThinItalic&quot; FontSize=&quot;60&quot; /&gt;
+			
+			&lt;Text ux:Name=&quot;swipeUpText&quot; Alignment=&quot;BottomCenter&quot; Color=&quot;#fff&quot; Margin=&quot;0,0,0,25&quot;&gt;
+				Swipe up to read
+			&lt;/Text&gt;
+			&lt;WhileFalse&gt;
+				&lt;Cycle Target=&quot;swipeUpText.Opacity&quot; Low=&quot;0.05&quot; High=&quot;0.4&quot; Frequency=&quot;0.4&quot; Waveform=&quot;Sine&quot; /&gt;
+			&lt;/WhileFalse&gt;
+			
+			&lt;Rectangle ux:Name=&quot;coverBackground&quot;&gt;
+				&lt;Rectangle Color=&quot;#0002&quot;&gt;
+					&lt;LinearGradient AngleDegrees=&quot;55&quot; Opacity=&quot;0.8&quot;&gt;
+						&lt;GradientStop Color=&quot;#0000&quot; Offset=&quot;-0.2&quot; /&gt;
+						&lt;GradientStop Color=&quot;{ReadProperty ThemeColor}&quot; Offset=&quot;1.15&quot; /&gt;
+					&lt;/LinearGradient&gt;
+				&lt;/Rectangle&gt;
+				&lt;Image Layer=&quot;Background&quot; File=&quot;{ReadProperty ImageFile}&quot; StretchMode=&quot;UniformToFill&quot;&gt;
+					&lt;Desaturate Amount=&quot;0.4&quot; /&gt;
+				&lt;/Image&gt;
+			&lt;/Rectangle&gt;
+		&lt;/Panel&gt;
+	&lt;/Page&gt;
+	
+	&lt;PageControl ux:Name=&quot;pageControl&quot; InactiveState=&quot;Unchanged&quot;&gt;
+		&lt;ParallaxPage TitleText=&quot;TECH&quot;     ThemeColor=&quot;#9C27B0&quot; ImageFile=&quot;assets/tech.jpg&quot; /&gt;
+		&lt;ParallaxPage TitleText=&quot;CULTURE&quot;  ThemeColor=&quot;#E91E63&quot; ImageFile=&quot;assets/culture.jpg&quot; /&gt;
+		&lt;ParallaxPage TitleText=&quot;SPORTS&quot;   ThemeColor=&quot;#43A047&quot; ImageFile=&quot;assets/sports.jpg&quot; /&gt;
+		&lt;ParallaxPage TitleText=&quot;BUSINESS&quot; ThemeColor=&quot;#1A237E&quot; ImageFile=&quot;assets/business.jpg&quot; /&gt;
+	&lt;/PageControl&gt;
+&lt;/App&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

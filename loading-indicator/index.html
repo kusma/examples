@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>LoadingIndicator - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/loading-indicator.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/cycle_1.html" class="nav-link">Cycle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/spin.html" class="nav-link">Spin</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/busy.html" class="nav-link">Busy</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whilebusy.html" class="nav-link">WhileBusy</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/busy.html" class="nav-link">Busy</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>LoadingIndicator</h1>
+
+          <div class="example-content-preview example-content-preview-slot-8">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how we can create an animated loading indicator. It includes a simulated background operation in JavaScript that triggers the visibility of our animation in the custom <code>MyLoadingIndicator</code> class. In this case we make use of <code>Busy</code> and <code>WhileBusy</code> triggers.</p>
+<pre><code>&lt;App Background=&quot;#311B92&quot;&gt;
+	&lt;iOS.StatusBarConfig Style=&quot;Light&quot; /&gt;
+	&lt;JavaScript&gt;
+	exports.startLoading = function() {
+		isBusy.activate();
+		setTimeout(function() {
+			isBusy.deactivate();
+		}, 4000);
+	};
+	&lt;/JavaScript&gt;
+
+	&lt;Panel ux:Class=&quot;MyLoadingIndicator&quot; ThemeColor=&quot;#1565C0&quot;&gt;
+		&lt;float4 ux:Property=&quot;ThemeColor&quot; /&gt;
+		&lt;Circle ux:Name=&quot;rotatingStroke&quot; Width=&quot;50&quot; Height=&quot;50&quot; StartAngleDegrees=&quot;-45&quot; EndAngleDegrees=&quot;45&quot;&gt;
+			&lt;Stroke Width=&quot;2&quot; Color=&quot;{ReadProperty ThemeColor}&quot; /&gt;
+		&lt;/Circle&gt;
+		&lt;Circle Color=&quot;{ReadProperty ThemeColor}&quot; Width=&quot;20&quot; Height=&quot;20&quot;&gt;
+			&lt;Timeline ux:Name=&quot;myTimeline&quot;&gt;
+				&lt;Scale Factor=&quot;.5&quot; Duration=&quot;.25&quot; Easing=&quot;CircularOut&quot; EasingBack=&quot;CircularIn&quot; /&gt;
+				&lt;Scale Factor=&quot;2&quot; Duration=&quot;.25&quot; Delay=&quot;.25&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;BounceIn&quot; /&gt;
+			&lt;/Timeline&gt;
+		&lt;/Circle&gt;
+		&lt;WhileFalse&gt;
+			&lt;Cycle Target=&quot;myTimeline.TargetProgress&quot; Low=&quot;0&quot; High=&quot;1&quot; Frequency=&quot;.5&quot; /&gt;
+			&lt;Spin Target=&quot;rotatingStroke&quot; Frequency=&quot;1&quot; /&gt;
+		&lt;/WhileFalse&gt;
+	&lt;/Panel&gt;
+
+	&lt;Panel Clicked=&quot;{startLoading}&quot; HitTestMode=&quot;LocalBounds&quot;&gt;
+		&lt;Busy ux:Name=&quot;isBusy&quot; IsActive=&quot;false&quot; /&gt;
+		&lt;WhileBusy&gt;
+			&lt;Change loadingPanel.Opacity=&quot;1&quot; Duration=&quot;.4&quot; /&gt;
+		&lt;/WhileBusy&gt;
+		&lt;MyLoadingIndicator ux:Name=&quot;loadingPanel&quot; Opacity=&quot;0&quot; ThemeColor=&quot;#fff&quot; /&gt;
+		
+		&lt;Text Color=&quot;#fff6&quot; Alignment=&quot;Bottom&quot; TextAlignment=&quot;Center&quot; Margin=&quot;0,40&quot;&gt;Tap anywhere to load&lt;/Text&gt;
+	&lt;/Panel&gt;
+&lt;/App&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

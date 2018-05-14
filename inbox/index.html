@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Swipe actions - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/inbox.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_gesture.html">Gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/set_1.html" class="nav-link">Set</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipegesture.html" class="nav-link">SwipeGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/whileactive.html" class="nav-link">WhileActive</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/callback.html" class="nav-link">Callback</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/removinganimation.html" class="nav-link">RemovingAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html#event-binding-to-javascript-functions" class="nav-link">Event handler</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Swipe actions</h1>
+
+          <div class="example-content-preview example-content-preview-slot-6">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>A quite common use case is to use swipe gestures to perform actions on items in a list. This example uses <code>SwipeGesture</code> to create an inbox with items that can either be postponed or removed by swiping it to the left or right.</p>
+<h4>Setting up the data</h4
+<p>The data is defined as a simple Observable collection of <code>Message</code> objects:</p>
+<!-- snippet-begin:code/Inbox.ux:Message -->
+<pre><code>function Message(icon, sender, subject, summary) {
+    this.sender = sender;
+    this.subject = subject;
+    this.icon = icon;
+    this.summary = summary;
+}
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/Inbox.ux:DataSource -->
+<pre><code>var messages = Observable(
+	new Message(...
+    // ...The actual data...
+);
+</code></pre>
+<!-- snippet-end -->
+<p>This is then bound to from UX using an <code>Each</code> to create an item for each <code>Message</code>.</p>
+<h4>Handling swipe gestures</h4
+<p>For this example we'll use two SwipeGestures per item. One which listens to left swipes, and one that listens to right swipes:</p>
+<p>Structurally, each element in the inbox looks like this:</p>
+<pre><code>&lt;Panel&gt;
+	&lt;SwipeGesture ux:Name=&quot;swipeRight&quot; LengthNode=&quot;appDock&quot; Direction=&quot;Right&quot; Type=&quot;Active&quot; /&gt;
+	&lt;SwipeGesture ux:Name=&quot;swipeLeft&quot; LengthNode=&quot;appDock&quot; Direction=&quot;Left&quot; Type=&quot;Active&quot; /&gt;
+
+	&lt;!-- Swipe animations --&gt;
+	&lt;SwipingAnimation Source=&quot;swipeRight&quot;&gt;
+	&lt;/SwipingAnimation&gt;
+	&lt;SwipingAnimation Source=&quot;swipeLeft&quot;&gt;
+	&lt;/SwipingAnimation&gt;
+
+	&lt;!-- Swipe triggers --&gt;
+	&lt;Swiped Source=&quot;swipeRight&quot;&gt;
+	&lt;/Swiped&gt;
+	&lt;Swiped Source=&quot;swipeLeft&quot;&gt;
+	&lt;/Swiped&gt;
+
+	&lt;!-- The inbox entry --&gt;
+	&lt;Panel ux:Name=&quot;contents&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>The animation code for the &quot;postpone&quot; animation looks like this:</p>
+<pre><code>&lt;SwipingAnimation Source=&quot;swipeRight&quot;&gt;
+	&lt;Set postponeText.Opacity=&quot;0&quot; /&gt;
+	&lt;Set doneText.Opacity=&quot;1&quot; /&gt;
+	&lt;Set postponeIcon.Opacity=&quot;0&quot; /&gt;
+	&lt;Set checkmarkIcon.Opacity=&quot;1&quot; /&gt;
+	&lt;Change background.Color=&quot;#050&quot; Easing=&quot;ExponentialOut&quot; /&gt;
+	&lt;Scale Target=&quot;checkmarkIcon&quot; Factor=&quot;2.8&quot; Easing=&quot;BackOut&quot; /&gt;
+&lt;/SwipingAnimation&gt;
+&lt;Swiped Source=&quot;swipeRight&quot;&gt;
+	&lt;Callback Handler=&quot;{removeItem}&quot; /&gt;
+&lt;/Swiped&gt;
+</code></pre>
+<p>As you can see, we use @(SwipingAnimation) to change the color of the background element and at the same time fade out the icon at the opposite end. Then, when the item has been fully swiped to the right, we call the <code>removeItem</code> function in JavaScript using the @(Swiped)-trigger, which fires when the @(SwipeGesture) is complete.</p>
+<pre><code>// removes the item from the list
+function removeItem(sender) {
+    messages.remove(sender.data);
+}
+
+// move the item to the end of the list
+function postponeItem(sender) {
+    messages.remove(sender.data);
+    messages.add(sender.data);
+}
+</code></pre>
+<p>Finally, the main content is simple layout:</p>
+<!-- snippet-begin:code/Inbox.ux:Contents -->
+<pre><code>&lt;Page Background=&quot;#fff&quot; ux:Name=&quot;contents&quot;&gt;
+    &lt;DockPanel Margin=&quot;7,1,7,0&quot;&gt;
+        &lt;Circle Height=&quot;50&quot; Width=&quot;50&quot; Dock=&quot;Left&quot; Margin=&quot;7,7,0,7&quot; Alignment=&quot;TopLeft&quot;&gt;
+            &lt;ImageFill File=&quot;{icon}&quot; /&gt;
+        &lt;/Circle&gt;
+
+        &lt;StackPanel Margin=&quot;7,3,7,7&quot;&gt;
+            &lt;Text Font=&quot;Regular&quot; Value=&quot;{subject}&quot; FontSize=&quot;16&quot; /&gt;
+            &lt;Text Font=&quot;Regular&quot; Value=&quot;{sender}&quot; FontSize=&quot;16&quot; Color=&quot;#999&quot; /&gt;
+            &lt;Text TextWrapping=&quot;Wrap&quot; Font=&quot;Light&quot; Value=&quot;{summary}&quot; FontSize=&quot;14&quot; Color=&quot;#000&quot; /&gt;
+        &lt;/StackPanel&gt;
+    &lt;/DockPanel&gt;
+&lt;/Page&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We add some elements in the background so that we get an indication what operation we are doing:</p>
+<!-- snippet-begin:code/Inbox.ux:BackgroundElements -->
+<pre><code>&lt;Text ux:Class=&quot;Operation&quot; Font=&quot;Regular&quot; TextAlignment=&quot;Center&quot; Alignment=&quot;Center&quot;
+    Color=&quot;#fff&quot; FontSize=&quot;22&quot; /&gt;
+&lt;Operation ux:Name=&quot;doneText&quot; &gt;Done&lt;/Operation&gt;
+&lt;Operation ux:Name=&quot;postponeText&quot;&gt;Postponed&lt;/Operation&gt;
+&lt;Image ux:Class=&quot;Icon&quot; Width=&quot;20&quot; Height=&quot;20&quot; Margin=&quot;30&quot; /&gt;
+&lt;Icon ux:Name=&quot;checkmarkIcon&quot; Alignment=&quot;CenterLeft&quot;
+    File=&quot;Assets/Icons/Checkmark.png&quot; /&gt;
+&lt;Icon ux:Name=&quot;postponeIcon&quot; Alignment=&quot;CenterRight&quot;
+    File=&quot;Assets/Icons/Postpone.png&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Animation</h4
+<p>We finish the example off by adding some animations for when an item is removed:</p>
+<!-- snippet-begin:code/Inbox.ux:Animations -->
+<pre><code>&lt;RemovingAnimation&gt;
+    &lt;Move RelativeTo=&quot;Size&quot; Y=&quot;-1&quot; Duration=&quot;0.4&quot; Easing=&quot;CircularInOut&quot; /&gt;
+&lt;/RemovingAnimation&gt;
+
+&lt;LayoutAnimation&gt;
+    &lt;Move RelativeTo=&quot;LayoutChange&quot; Y=&quot;1&quot; Duration=&quot;0.8&quot; Easing=&quot;CircularInOut&quot; /&gt;
+&lt;/LayoutAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>This ensures that the user gets the desired visual feedback as the collection changes.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

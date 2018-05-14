@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Interactive infographic - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/wheel-navigation.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_tabs.html">Tabs</a>, <a href="../tag_menu.html">Menu</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pageindicator.html" class="nav-link">PageIndicator</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Interactive infographic</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This time we've implemented an awesome <a href="https://dribbble.com/shots/3266096--16-Dashboard-Navigation">interactive infographic concept</a> by <a href="https://twitter.com/ZubkoYaroslav">Yaroslav Zubko</a>.</p>
+<h4>The pie chart</h4
+<p>This example displays a pie chart where each piece has a corresponding page in a <code>PageControl</code>. The chart rotates with the navigation in the <code>PageControl</code>, but since each piece has a different size, each page must affect the rotation relative to its size (and as it turns out, the size of the previous piece). For this reason, we need to do use <code>JavaScript</code> to create a view-model from the raw values.</p>
+<p>The original data looks like this:</p>
+<pre><code>var items = Observable([
+	{ value: 25, color: &quot;#4CD8FC&quot; },
+	{ value: 15, color: &quot;#A943C1&quot; },
+	{ value: 30, color: &quot;#FFCE6B&quot; },
+	{ value: 10, color: &quot;#EB4CAF&quot; },
+	{ value: 20, color: &quot;#33CB9F&quot; }
+]);
+</code></pre>
+<p>For convenience, we've made them all add up to 100 (%). We could take another step back and make finding the percentage a part of our calculations, but we felt it was an unnecessary reason to convolute the example further.</p>
+<h4>Creating a view-model</h4
+<p>From these data, we do a mapping to compute some additional values that's needed by our view:</p>
+<ul>
+<li>Start and end angles for our pie pieces.</li>
+<li>How much should each page rotate the chart.</li>
+<li>Which piece currently corresponds to the active page.</li>
+</ul>
+<pre><code>items.map(function(i){
+	var lastItem = {
+		startAngle: 0,
+		endAngle: 0,
+		angle: 0
+	};
+	i.forEach(function(x, c) {
+		x.index = c;
+		x.angle = ((x.value / 100) * 360);
+		if (c === 0) {
+			defaultRotation.value = x.angle / 2 + 90;
+		}
+		if (c &gt; 0) {
+			lastItem.wheelRotate = (x.angle / 2) + (lastItem.angle / 2);
+		}
+
+		x.startAngle = lastItem.startAngle - x.angle;
+		x.endAngle = lastItem.startAngle;
+
+		x.isActive = Observable(function(){
+			return currentPage.value == x.index;
+		});
+
+		lastItem = x;
+
+	});
+	return i;
+}).expand()
+</code></pre>
+<p>The rotation of the pie chart is done using an <code>EnteringAnimation</code> inside each page in the <code>PageControl</code>:</p>
+<pre><code>&lt;EnteringAnimation&gt;
+	&lt;Rotate Target=&quot;wheel&quot; Degrees=&quot;{wheelRotate}&quot; /&gt;
+&lt;/EnteringAnimation&gt;
+</code></pre>
+<p>This works well because as we navigate to the right, each <code>EnteringAnimation</code> will stack on top of each other, rotating the chart smoothly from one page to the next. Because of this fact however, we need information about both the previous page and the current to figure out how much we need to rotate the chart:</p>
+<pre><code>lastItem.wheelRotate = (x.angle / 2) + (lastItem.angle / 2);
+</code></pre>
+<p>This is why we make our original data be an <code>Observable</code> of an array. This way we can use knowledge about the whole data-set as we map, and then use <code>Observable.expand</code> in the end, to turn it into a proper observable list.</p>
+<h4>Scrolling</h4
+<p>The rest of the example is fairly straight forward. It uses a few <code>ScrollingAnimation</code> triggers to hide and show various parts of the UI. Not how the pie chart fades into becoming a more traditional set of page indicators. This effect is achieved simply by having two separate elements. One fades in while the other fades out by animating their <code>Opacity</code> property.</p>
+<pre><code>&lt;ScrollingAnimation From=&quot;height(wheelPanel) - 30&quot; To=&quot;height(wheelPanel)&quot;&gt;
+	&lt;Change pageIndicator.Opacity=&quot;1&quot; /&gt;
+	&lt;Change topBarBackground.Opacity=&quot;1&quot; /&gt;
+	&lt;Change coverDot.Opacity=&quot;0&quot; /&gt;
+	&lt;Change flatPageIndicator.Opacity=&quot;1&quot; /&gt;
+&lt;/ScrollingAnimation&gt;
+</code></pre>
+<p>That's it for this example. Feel free to download and play with the source code.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

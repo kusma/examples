@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Empty state - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/empty-state.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_basics.html">Basics</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/whileempty.html" class="nav-link">WhileEmpty</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Empty state</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we are using <code>WhileEmpty</code> to show a temporary message while there is no content to display.</p>
+<pre><code>&lt;App Background=&quot;#212121&quot;&gt;
+	&lt;JavaScript&gt;
+		var Observable = require(&quot;FuseJS/Observable&quot;);
+		var items = exports.items = Observable();
+		
+		exports.addItem = function() {
+			items.add(Math.random());
+		}
+		
+		exports.removeItem = function(arg) {
+			items.tryRemove(arg.data);
+		}
+	&lt;/JavaScript&gt;
+	&lt;iOS.StatusBarConfig Style=&quot;Light&quot; /&gt;
+	&lt;DockPanel&gt;
+		&lt;StackPanel Dock=&quot;Top&quot; Color=&quot;#5E35B1&quot;&gt;
+			&lt;StatusBarBackground /&gt;
+			&lt;Panel Height=&quot;56&quot;&gt;
+				&lt;Panel Alignment=&quot;Right&quot; HitTestMode=&quot;LocalBounds&quot; Width=&quot;56&quot; Height=&quot;56&quot; Clicked=&quot;{addItem}&quot;&gt;
+					&lt;Rectangle Height=&quot;2&quot; Width=&quot;20&quot; Color=&quot;#fff&quot; /&gt;
+					&lt;Rectangle Width=&quot;2&quot; Height=&quot;20&quot; Color=&quot;#fff&quot; /&gt;
+				&lt;/Panel&gt;
+			&lt;/Panel&gt;
+			&lt;Shadow Distance=&quot;1&quot; Size=&quot;3&quot; /&gt;
+		&lt;/StackPanel&gt;
+		
+		&lt;WhileEmpty Items=&quot;{items}&quot;&gt;
+			&lt;StackPanel ux:Name=&quot;emptyView&quot; Alignment=&quot;Center&quot; ItemSpacing=&quot;20&quot;&gt;
+				&lt;Text Alignment=&quot;Center&quot; FontSize=&quot;20&quot;&gt;Nothing to see here&lt;/Text&gt;
+				&lt;Text Alignment=&quot;Center&quot;&gt;Add an item using the button above&lt;/Text&gt;
+
+				&lt;AddingAnimation&gt;
+					&lt;Change emptyView.Opacity=&quot;0&quot; Duration=&quot;0.2&quot; /&gt;
+					&lt;Scale Factor=&quot;0.4&quot; Duration=&quot;0.4&quot; Easing=&quot;CubicInOut&quot; /&gt;
+				&lt;/AddingAnimation&gt;				
+				&lt;RemovingAnimation&gt;
+					&lt;Change emptyView.Opacity=&quot;0&quot; Duration=&quot;0.2&quot; /&gt;
+				&lt;/RemovingAnimation&gt;
+			&lt;/StackPanel&gt;
+		&lt;/WhileEmpty&gt;
+		
+		&lt;ScrollView&gt;
+			&lt;StackPanel ItemSpacing=&quot;10&quot; Margin=&quot;10&quot;&gt;
+				&lt;Each Items=&quot;{items}&quot;&gt;
+					&lt;Rectangle ux:Name=&quot;item&quot; Color=&quot;#fff3&quot; Height=&quot;80&quot; CornerRadius=&quot;2&quot; Clicked=&quot;{removeItem}&quot;&gt;
+						&lt;AddingAnimation&gt;
+							&lt;Change item.Opacity=&quot;0&quot; Duration=&quot;0.3&quot; /&gt;
+						&lt;/AddingAnimation&gt;
+						&lt;RemovingAnimation&gt;
+							&lt;Change item.Opacity=&quot;0&quot; Duration=&quot;0.1&quot; /&gt;
+						&lt;/RemovingAnimation&gt;
+						&lt;LayoutAnimation&gt;
+							&lt;Move Y=&quot;1&quot; RelativeTo=&quot;PositionChange&quot; Duration=&quot;0.15&quot; Easing=&quot;CubicInOut&quot; /&gt;
+						&lt;/LayoutAnimation&gt;
+						&lt;Shadow Distance=&quot;1&quot; Size=&quot;2&quot; /&gt;
+					&lt;/Rectangle&gt;
+				&lt;/Each&gt;
+			&lt;/StackPanel&gt;
+		&lt;/ScrollView&gt;
+	&lt;/DockPanel&gt;
+&lt;/App&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Animated hamburger icon - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/animated-menu-icon.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/keyframe.html" class="nav-link">Keyframe</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Animated hamburger icon</h1>
+
+          <div class="example-content-preview example-content-preview-slot-5">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This examples shows how to implement an animated menu icon. It was inspired by <a href="https://dribbble.com/shots/2281614-Menu-Button-2">this cool piece</a> by Joby.</p>
+<p>The icon itself is composed of three rectangles in a <code>Grid</code> of three rows.</p>
+<p>The animation is divided into two parts. The scaling of the button when its pressed, and the animation from hamburger to cross icon.</p>
+<p>A <code>Clicked</code>-trigger is used with a <code>Scale</code>-animator for the first part. The <code>Clicked</code>-trigger also toggles a <code>WhileTrue</code>-trigger which handles moving and rotating the rectangles.</p>
+<!-- snippet-begin:code/MainView.ux:App -->
+<pre><code>&lt;App Background=&quot;#333&quot;&gt;
+	&lt;Panel ux:Class=&quot;Hamburger&quot; HitTestMode=&quot;LocalBounds&quot;&gt;
+		&lt;Rectangle ux:Class=&quot;BurgerPart&quot; Color=&quot;White&quot; StrokeWidth=&quot;1&quot; StrokeColor=&quot;#999&quot; CornerRadius=&quot;5&quot; Height=&quot;10&quot; Width=&quot;50&quot; Margin=&quot;0, 2.5&quot;/&gt;
+
+		&lt;Grid RowCount=&quot;3&quot;&gt;
+			&lt;BurgerPart ux:Name=&quot;rect1&quot; /&gt;
+			&lt;BurgerPart ux:Name=&quot;rect2&quot; /&gt;
+			&lt;BurgerPart ux:Name=&quot;rect3&quot; /&gt;
+		&lt;/Grid&gt;
+		
+		&lt;Clicked&gt;
+			&lt;Scale&gt;
+				&lt;Keyframe Value=&quot;0.8,0.8&quot; Time=&quot;0.05&quot;/&gt;
+				&lt;Keyframe Value=&quot;1,1&quot; Time=&quot;0.1&quot;/&gt;
+			&lt;/Scale&gt;
+			&lt;Toggle Target=&quot;clickedState&quot; Delay=&quot;0.1&quot;/&gt;
+		&lt;/Clicked&gt;
+		
+		&lt;WhileTrue ux:Name=&quot;clickedState&quot;&gt;
+			&lt;Change rect2.Width=&quot;10&quot; Duration=&quot;0.4&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;BounceIn&quot; DelayBack=&quot;0.6&quot;/&gt;
+			&lt;Move Target=&quot;rect1&quot; Easing=&quot;QuadraticInOut&quot; Y=&quot;1.5&quot; RelativeTo=&quot;Size&quot; Duration=&quot;0.3&quot; Delay=&quot;0.3&quot;/&gt;
+			&lt;Move Target=&quot;rect3&quot; Easing=&quot;QuadraticInOut&quot; Y=&quot;-1.5&quot; RelativeTo=&quot;Size&quot; Duration=&quot;0.3&quot; Delay=&quot;0.3&quot;/&gt;
+			&lt;Rotate Target=&quot;rect1&quot; Easing=&quot;QuadraticInOut&quot; Degrees=&quot;45&quot; Duration=&quot;0.3&quot; Delay=&quot;0.45&quot; DelayBack=&quot;0&quot;/&gt;
+			&lt;Rotate Target=&quot;rect3&quot; Easing=&quot;QuadraticInOut&quot; Degrees=&quot;-45&quot; Duration=&quot;0.3&quot; Delay=&quot;0.45&quot; DelayBack=&quot;0&quot;/&gt;
+		&lt;/WhileTrue&gt;
+	&lt;/Panel&gt;
+
+	&lt;Hamburger Alignment=&quot;Center&quot; /&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

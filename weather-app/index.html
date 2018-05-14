@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>A weather app - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/weather-app.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_menu.html">Menu</a>, <a href="../tag_navigation.html">Navigation</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/cycle_1.html" class="nav-link">Cycle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/enteringanimation.html" class="nav-link">EnteringAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/exitinganimation.html" class="nav-link">ExitingAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/javascript.html" class="nav-link">data-model</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>A weather app</h1>
+
+          <div class="example-content-preview example-content-preview-slot-3">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This examples shows how to make a cool weather app with animated weather icons.</p>
+<h3>Structuring the app</h3
+<p>The app is structured using a <code>LinearNavigation</code> with a <code>SwipeNavigate</code> behavior. By setting the <code>SwipeDirection</code> property of <code>SwipeNavigate</code> to Down, we make the gesture a downward swipe instead of horizontal.</p>
+<p>Each page of the app actually contains the same elements, but with different settings. Some elements, like the rain and snow, are turned on or off using data-bound <code>WhileTrue</code> triggers. We use data-binding and JavaScript to supply the different pages, and draw them with an <code>Each</code>.</p>
+<h3>The rain</h3
+<p>The rain is composed of two classes: <code>Raindrop</code> and <code>RaindropRow</code>.</p>
+<!-- snippet-begin:code/MainView.ux:raindrop -->
+<pre><code>&lt;Panel ux:Class=&quot;Raindrop&quot;&gt;
+    &lt;Image Width=&quot;15&quot; Height=&quot;15&quot; File=&quot;Assets/raindrops.png&quot; Color=&quot;{dropletcolor}&quot;&gt;
+        &lt;Rotation Degrees=&quot;20.6&quot; /&gt;
+    &lt;/Image&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<!-- snippet-begin:code/MainView.ux:raindroprow -->
+<pre><code>&lt;Grid ux:Class=&quot;RaindropRow&quot; ColumnCount=&quot;3&quot;&gt;
+    &lt;Raindrop ux:Name=&quot;drop1&quot;/&gt;
+    &lt;Raindrop ux:Name=&quot;drop2&quot;/&gt;
+    &lt;Raindrop ux:Name=&quot;drop3&quot;/&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We then instantiate 5 rows, and animate each of them using <code>Cycle</code> animators with their <code>Waveform</code> property set to <code>Sawtooth</code>. This means that the animation will go linearly from <code>Low</code> to <code>High</code> and then instantly jump back to <code>Low</code>.</p>
+<!-- snippet-begin:code/MainView.ux:rainanimation -->
+<pre><code>&lt;WhileTrue Value=&quot;{runDroplets}&quot;&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;20&quot; Target=&quot;dropTranslation1.Y&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;-5&quot; Target=&quot;dropTranslation1.X&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;20&quot; Target=&quot;dropTranslation2.Y&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;-5&quot; Target=&quot;dropTranslation2.X&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;20&quot; Target=&quot;dropTranslation3.Y&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;-5&quot; Target=&quot;dropTranslation3.X&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;20&quot; Target=&quot;dropTranslation4.Y&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;-5&quot; Target=&quot;dropTranslation4.X&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;20&quot; Target=&quot;dropTranslation5.Y&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0&quot; High=&quot;-5&quot; Target=&quot;dropTranslation5.X&quot;  Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;1&quot; High=&quot;0.5&quot; Target=&quot;raindropRow2.Opacity&quot;   Waveform=&quot;Sawtooth&quot;/&gt;
+    &lt;Cycle Frequency=&quot;8&quot; Low=&quot;0.5&quot; High=&quot;0&quot; Target=&quot;raindropRow3.Opacity&quot;      Waveform=&quot;Sawtooth&quot;/&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The snow</h3
+<p>The snow flakes are also animated using <code>Cycle</code> animators. They have slightly different <code>Frequency</code> in order to make the animation look more natural.</p>
+<!-- snippet-begin:code/MainView.ux:snowflakeanimation -->
+<pre><code>&lt;Cycle Target=&quot;snowflakeTranslation1.Y&quot; Frequency=&quot;0.4&quot;  Low=&quot;0&quot; High=&quot;155&quot; Waveform=&quot;Sawtooth&quot;/&gt;
+&lt;Cycle Target=&quot;snowflakeTranslation2.Y&quot; Frequency=&quot;0.43&quot; Low=&quot;0&quot; High=&quot;155&quot; Waveform=&quot;Sawtooth&quot;/&gt;
+&lt;Cycle Target=&quot;snowflakeTranslation3.Y&quot; Frequency=&quot;0.46&quot; Low=&quot;0&quot; High=&quot;155&quot; Waveform=&quot;Sawtooth&quot;/&gt;
+&lt;Cycle Target=&quot;snowflakeTranslation4.Y&quot; Frequency=&quot;0.50&quot; Low=&quot;0&quot; High=&quot;155&quot; Waveform=&quot;Sawtooth&quot;/&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The info</h3
+<p>The weather information panel is made with a simple <code>StackPanel</code> containing data-bound <code>Text</code> elements. They are also animated using <code>Entering-</code> and <code>ExitingAnimation</code> triggers in order to make them &quot;jump in&quot; a bit as we swipe.</p>
+<!-- snippet-begin:code/MainView.ux:textpart -->
+<pre><code>&lt;StackPanel Width=&quot;43%&quot; Alignment=&quot;TopRight&quot; Height=&quot;100%&quot; &gt;
+    &lt;Text Value=&quot;{TOD}&quot;  Font=&quot;NunitoBold&quot;  FontSize=&quot;19&quot; Color=&quot;#ffffff80&quot; Margin=&quot;0,14,0,0&quot;/&gt;
+    &lt;Text Value=&quot;{Temp}&quot; Font=&quot;NunitoLight&quot; FontSize=&quot;32&quot; Color=&quot;#fff&quot;      Margin=&quot;0,0,0,14&quot; Alignment=&quot;CenterLeft&quot;/&gt;
+    &lt;StackPanel Alignment=&quot;TopLeft&quot;&gt;
+        &lt;Body Value=&quot;{Summary}&quot; FontSize=&quot;26&quot; /&gt;
+        &lt;Body Value=&quot;{Wind}&quot; /&gt;
+        &lt;Body Value=&quot;{Humidity}&quot; /&gt;
+        &lt;ExitingAnimation&gt;
+            &lt;Move Y=&quot;0.5&quot; RelativeTo=&quot;ParentSize&quot; Easing=&quot;Linear&quot; /&gt;
+        &lt;/ExitingAnimation&gt;
+        &lt;EnteringAnimation&gt;
+            &lt;Move Y=&quot;0.5&quot; RelativeTo=&quot;ParentSize&quot; Easing=&quot;Linear&quot;/&gt;
+        &lt;/EnteringAnimation&gt;
+    &lt;/StackPanel&gt;
+&lt;/StackPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

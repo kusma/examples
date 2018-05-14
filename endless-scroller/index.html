@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Endless scroller - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/endless-scroller.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_javascript.html">JavaScript</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/scrolled.html" class="nav-link">Scrolled</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/deferred.html" class="nav-link">Deferred</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/imagefill.html" class="nav-link">ImageFill</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#addall-items" class="nav-link">Observable.addAll</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/polyfills.html" class="nav-link">promises</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Endless scroller</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example demonstrates how we can create an endless scrolling list that removes elements as they scroll out of view.</p>
+<p>When making large lists, we use <code>Each</code> and data-bind its <code>Items</code> property to an Observable list in JavaScript. When making <em>infinite</em> lists, we have to avoid extensive memory use by employing two less known properties available on <code>Each</code>: <code>Limit</code> and <code>Offset</code>. By setting the <code>Limit</code> we limit the number of items being output by the <code>Each</code> at any given moment, and by changing the <code>Offset</code> we can move through our list of items forward and back.</p>
+<pre><code>&lt;Each Items=&quot;{list}&quot; Offset=&quot;{offset}&quot; Limit=&quot;{limit}&quot;&gt;
+</code></pre>
+<p>We want to trigger the offset change at the top and bottom of the <code>ScrollView</code>, and we achieve this by using a pair of <code>Scrolled</code> triggers which activate when the user scrolls to a certain distance from either of the edges. We bind the <code>Handler</code> properties to JavaScript functions that manipulate an offset variable.</p>
+<pre><code>&lt;ScrollView LayoutMode=&quot;PreserveVisual&quot;&gt;
+	&lt;Scrolled To=&quot;Start&quot; Within=&quot;104&quot; Handler=&quot;{decreaseOffset}&quot; /&gt;
+	&lt;Scrolled ux:Name=&quot;atEnd&quot; To=&quot;End&quot; Within=&quot;104&quot; Handler=&quot;{increaseOffset}&quot; /&gt;
+&lt;/ScrollView&gt;
+</code></pre>
+<p>The <code>Within</code> property sets how close to the start or end of the <code>ScrollView</code> the user has to be for the trigger to be activated. Depending on the complexity of each item and the amount of items we add, we might want to adjust the <code>Within</code> property to trigger earlier (or later) to give the app more time to create all the elements.</p>
+<p>It is important that we set the <code>limit</code> variable high enough so that the items take up a big enough space in the <code>ScrollView</code> to avoid unnecessary <code>Scrolled</code> triggering as we change the <code>offset</code>. We must also change the <code>offset</code> by a number that is <em>just right</em>: low enough so that the list can be pre-populated quickly, and high enough to avoid loading new items too frequently.</p>
+<pre><code>var limit = 20;
+var offset = Observable(0);
+
+function increaseOffset() {
+	changeOffset(5);
+}
+
+function decreaseOffset() {
+	changeOffset(-5);
+}
+
+function changeOffset(diff) {
+	var nextOffset = offset.value + diff;
+	if (nextOffset &gt;= 0) {
+		offset.value = nextOffset;
+		if ((list.length - nextOffset) &lt;= limit) {
+			loadItems().then(function() {
+				atEnd.check();
+			});
+		}
+	}
+}
+</code></pre>
+<p>If our users scroll really fast on a slow internet connection, they can hit the bottom of our <code>ScrollView</code> while we're still busy appending items to the list. To work around that, we wrap the loading of new items in a Promise-function and as seen in the <code>changeOffset</code> function above, we check if we're at the end of our <code>ScrollView</code> when it's done. In this example, we use a simple list of image IDs from <a href="https://unsplash.com/">unsplash.com</a>.</p>
+<pre><code>var images = [
+	&quot;eWFdaPRFjwE&quot;,&quot;_FjegPI89aU&quot;,&quot;_RBcxo9AU-U&quot;,&quot;PQvRco_SnpI&quot;,&quot;6hxvm0NzYP8&quot;,
+	&quot;b-yEdfrvQ50&quot;,&quot;pHANr-CpbYM&quot;,&quot;45FJgZMXCK8&quot;,&quot;9wociMvaquU&quot;,&quot;tI_Odb7ZU6M&quot;,
+	&quot;o0RZkkL072U&quot;,&quot;N-sxA8vEGDk&quot;,&quot;324ovGl1BwM&quot;,&quot;RSOxw9X-suY&quot;,&quot;qv5yb436qRI&quot;,
+	&quot;iWFRUyqpCbQ&quot;,&quot;ZJ4yhJFIzaY&quot;,&quot;ze0tqwj86S4&quot;,&quot;gQR4STZ24kM&quot;,&quot;xMYnPo53ukE&quot;
+];
+
+function loadItems() {
+	var p = new Promise(function(resolve) {
+		var items = images.map(function(i) {
+			return {image: &quot;https://source.unsplash.com/&quot; + i + &quot;/416x208&quot;};
+		});
+		list.addAll(items);
+		resolve();
+	});
+	return p;
+}
+</code></pre>
+<p>When it comes to displaying items, we data-bind the <code>Limit</code> and <code>Offset</code> properties on the <code>Each</code> to the JavaScript variables we created. This allows us to limit the number of items output by the <code>Each</code> and move through the list as we scroll up and down.</p>
+<pre><code>&lt;Each Items=&quot;{list}&quot; Offset=&quot;{offset}&quot; Limit=&quot;{limit}&quot;&gt;
+	&lt;ListItem /&gt;
+&lt;/Each&gt;
+</code></pre>
+<p>The <code>ListItem</code> component uses <code>Deferred</code> tag to prevent lag-spikes due to addition of new items by allowing Fuse to spread the work over multiple frames. Coupled with an <code>AddingAnimation</code>, this results in a subtle fade-in transition as the images arrive. Note that we set a <code>MemoryPolicy=&quot;UnloadUnused&quot;</code> on the <code>ImageFill</code> tag to make sure memory is freed from the images that are off-screen.</p>
+<pre><code>&lt;Panel ux:Class=&quot;ListItem&quot; Height=&quot;104&quot;&gt;
+	&lt;Deferred&gt;
+		&lt;Rectangle ux:Name=&quot;imageHolder&quot; CornerRadius=&quot;2&quot; Opacity=&quot;1&quot;&gt;
+			&lt;AddingAnimation&gt;
+				&lt;Change imageHolder.Opacity=&quot;0&quot; Delay=&quot;0.16&quot; Duration=&quot;0.32&quot; /&gt;
+			&lt;/AddingAnimation&gt;
+			&lt;ImageFill Url=&quot;{image}&quot; StretchMode=&quot;UniformToFill&quot; WrapMode=&quot;ClampToEdge&quot; MemoryPolicy=&quot;UnloadUnused&quot; /&gt;
+		&lt;/Rectangle&gt;
+	&lt;/Deferred&gt;
+	&lt;Rectangle CornerRadius=&quot;2&quot; Color=&quot;#0003&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>That's it! Feel free to download the source code and play around.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Details view animation - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/exploring.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_.html"></a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/resize.html" class="nav-link">Resize</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pageindicator.html" class="nav-link">PageIndicator</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/selection/selection.html" class="nav-link">Selection</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Details view animation</h1>
+
+          <div class="example-content-preview example-content-preview-slot-5">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we implement <a href="https://dribbble.com/shots/2311820-Exploring">this</a> really cool list item to detail view animation by <a href="https://dribbble.com/DejanMarkovic">Dejan Markovic</a></p>
+<p>In this article we focus on the high level concepts used in creating the transition from list item to details view.</p>
+<h3>The transition</h3
+<p>The transition from list item to details view is achieved by predefining the details view with placeholder panels. Each part of this placeholder layout is passed in to each of the list items using ux:Dependency. When an item is selected, it is then animated to the correct placeholder panel using the <code>RelativeTo=&quot;PositionOffset&quot;</code> of <code>Move</code>. We also use <code>Resize</code> since the items has to change slightly in size to fit the new layout. The <code>PositionOffset</code> option of <code>RelativeTo</code> means that the item will move in the direction of the item specified by <code>RelativeNode</code>.</p>
+<p>Here is an example of those animators:</p>
+<pre><code>&lt;Move   Easing=&quot;CubicInOut&quot; Target=&quot;img&quot; Vector=&quot;1&quot; RelativeTo=&quot;PositionOffset&quot; RelativeNode=&quot;detailsImagePanel&quot; Duration=&quot;0.6&quot; /&gt;
+&lt;Resize Easing=&quot;CubicInOut&quot; Target=&quot;img&quot; Vector=&quot;1&quot; RelativeTo=&quot;Size&quot; RelativeNode=&quot;detailsImagePanel&quot; Duration=&quot;0.6&quot; /&gt;
+</code></pre>
+<h3>Exclusive selection</h3
+<p>To make sure only one item can be selected at once (in case the user clicked on two at the same time), we make all the items in the list be a part of a <code>Selection</code> with max selection count of 1:</p>
+<pre><code>&lt;Selection MinCount=&quot;0&quot; MaxCount=&quot;1&quot; Value=&quot;{Write current}&quot;/&gt;
+</code></pre>
+<p>We give each item a <code>Selectable</code> with its <code>Value</code> set to a unique <code>id</code> coming from JavaScript. We can then use a <code>WhileSelected</code> trigger to flip the switch on the <code>WhileTrue</code> which animates the item to its details view layout.</p>
+<p>Feel free to download the full source code and dig around.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

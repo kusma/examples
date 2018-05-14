@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Cube transition - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/cube-transition.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_3d.html">3D</a>, <a href="../tag_menu.html">Menu</a>, <a href="../tag_transition.html">Transition</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/viewport.html" class="nav-link">Viewport</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/transformorigin.html" class="nav-link">TransformOrigin</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/transformorigins/verticalboxcenter.html" class="nav-link">VerticalBoxCenter</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Cube transition</h1>
+
+          <div class="example-content-preview example-content-preview-slot-6">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<h3>Cube transition</h3
+<p>This example illustrates how you can create a neat 3D transition effect between two screens.</p>
+<h4>The viewport</h4
+<p>To get proper 3D perspective projection, we place everything inside a <code>Viewport</code> at the root of the app.
+Note that we set <code>CullFace=&quot;Back&quot;</code>. This makes it so that only the front face of any element is visible.</p>
+<p>The <code>Perspective</code> property controls the distance (in points) between the camera and the <code>Z = 0</code> plane (where graphics are drawn by default).
+The field of view is then calculated based on this distance and the size of the viewport.
+By setting <code>PerspectiveRelativeTo=&quot;Width&quot;</code>, the <code>Perspective</code> property is treated as a factor, and the final distance is computed as <code>Perspective * Viewport width</code>. Now the camera distance is always proportional to the width of the viewport, making the field of view independent of the width of the viewport – which is what we want in this case.</p>
+<!-- snippet-begin:code/MainView.ux:Viewport -->
+<pre><code>&lt;Viewport Perspective=&quot;1.7&quot; PerspectiveRelativeTo=&quot;Width&quot; CullFace=&quot;Back&quot;&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>The box</h4
+<p>Here's the secret: our box is not actually a box. It's simply two Panels that line up correctly at a 90 degree angle.
+To make the Panels line up, we set our <code>TransformOrigin</code> to <code>VerticalBoxCenter</code>.</p>
+<p>The <code>TransformOrigin</code> property determines the origin of transformation for an element.
+<code>VerticalBoxCenter</code> makes an element act as the front face of a box.
+It achieves this by measuring the width of the element, and interpreting that as the depth of an &quot;imaginary&quot; box.
+The resulting point of origin will be at <code>X = Y = -Z = width / 2</code>, since we want to transform around the center of the box.</p>
+<p>Inside our <code>box</code> panel, we have a second panel called <code>sidePage</code>.
+It also has the <code>VerticalBoxCenter</code> TransformOrigin, but is rotated 90 degrees around the Y axis.
+This places it as the left face of the box.</p>
+<!-- snippet-begin:code/MainView.ux:Box -->
+<pre><code>&lt;Panel ux:Name=&quot;box&quot; TransformOrigin=&quot;VerticalBoxCenter&quot;&gt;
+    &lt;Panel ux:Name=&quot;sidePage&quot; TransformOrigin=&quot;VerticalBoxCenter&quot;&gt;
+        &lt;Rotation DegreesY=&quot;90&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>The transition</h4
+<p>The transition itself is actually very simple.
+We rotate the <code>box</code> 90 degrees counter-clockwise around the Y-axis, so that the <code>sidePanel</code> faces the &quot;camera&quot;.
+We also fade out the content, fade in the menu, and tell the hamburger icon to morph into a close icon.</p>
+<!-- snippet-begin:code/MainView.ux:MenuIsOpenTrigger -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;menuIsOpen&quot; Value=&quot;false&quot;&gt;
+    &lt;Rotate Target=&quot;box&quot; DegreesY=&quot;-90&quot; Duration=&quot;.7&quot; Delay=&quot;0&quot; DelayBack=&quot;0&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+    &lt;Change content.Opacity=&quot;0&quot; Duration=&quot;.7&quot; DelayBack=&quot;0&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+    &lt;Change menu.Opacity=&quot;1&quot; Duration=&quot;.3&quot; DelayBack=&quot;0&quot; Easing=&quot;QuarticIn&quot; EasingBack=&quot;QuarticIn&quot; /&gt; 
+    &lt;Change hamburger.IsOpen=&quot;true&quot; DelayBack=&quot;0&quot; /&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>The search field</h4
+<p>Although the search button and the other menu items look the same initially, they're implemented completely differently.
+To avoid copying the same code between the search field and the rest of the menu items, we've created a tiny <code>MenuItem</code> component that applies the same height and underline to both.</p>
+<!-- snippet-begin:code/MainView.ux:MenuItem -->
+<pre><code>&lt;Size ux:Global=&quot;MenuItemHeight&quot; ux:Value=&quot;40&quot; /&gt;
+&lt;Panel ux:Class=&quot;MenuItem&quot; Height=&quot;MenuItemHeight&quot;&gt;
+    &lt;Rectangle Alignment=&quot;Bottom&quot; Height=&quot;2&quot; Color=&quot;#fff2&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The search field itself is a <code>MenuItem</code>, containing a <code>TextInput</code> set up to look like the other menu items.</p>
+<p>There are two cases where we want the search field to be expanded – while it's either in focus, or has a non-empty value.
+We implement this using a <code>WhileFocused</code> and a <code>WhileString</code> trigger, which both activate the same <code>searchFieldActive</code> trigger.</p>
+<!-- snippet-begin:code/MainView.ux:SearchField -->
+<pre><code>&lt;MenuItem ux:Name=&quot;searchField&quot;&gt;
+    &lt;TextInput ux:Name=&quot;searchInput&quot; FontSize=&quot;28&quot; PlaceholderText=&quot;search&quot; PlaceholderColor=&quot;ForegroundColor&quot; TextColor=&quot;ForegroundColor&quot; CaretColor=&quot;#fffa&quot; Alignment=&quot;Top&quot;&gt;
+        &lt;WhileFocused&gt;
+            &lt;Change searchFieldActive.Value=&quot;true&quot; /&gt;
+        &lt;/WhileFocused&gt;
+        &lt;WhileString Test=&quot;IsNotEmpty&quot; Value=&quot;{ReadProperty searchInput.Value}&quot;&gt;
+            &lt;Change searchFieldActive.Value=&quot;true&quot; /&gt;
+        &lt;/WhileString&gt;
+    &lt;/TextInput&gt;
+    
+    &lt;LayoutAnimation&gt;
+        &lt;Resize X=&quot;1&quot; Y=&quot;1&quot; RelativeTo=&quot;SizeChange&quot; DurationBack=&quot;.3&quot; DelayBack=&quot;.2&quot; Easing=&quot;ExponentialInOut&quot; /&gt;
+        &lt;Move X=&quot;1&quot; Y=&quot;1&quot; RelativeTo=&quot;WorldPositionChange&quot; DelayBack=&quot;0&quot; Duration=&quot;.3&quot; Easing=&quot;QuarticIn&quot; /&gt;
+    &lt;/LayoutAnimation&gt;
+&lt;/MenuItem&gt;
+</code></pre>
+<!-- snippet-end -->
+<p><code>searchFieldActive</code> performs the transition from menu to search layout.
+Most of the animation is simply setting the <code>LayoutMaster</code> and <code>Alignment</code> of the search field, which will trigger the <code>LayoutAnimation</code> above. We also move the close button and the other menu items out of view.</p>
+<!-- snippet-begin:code/MainView.ux:SearchFieldTransitionAndLayout -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;searchFieldActive&quot; Value=&quot;false&quot;&gt;
+    &lt;Change searchField.LayoutMaster=&quot;searchFieldLayoutMaster&quot; Delay=&quot;.07&quot; DelayBack=&quot;.07&quot; /&gt;
+    &lt;Change transitionToSearchLayout.TargetProgress=&quot;1&quot; /&gt;
+&lt;/WhileTrue&gt;
+
+&lt;Timeline ux:Name=&quot;transitionToSearchLayout&quot;&gt;
+    &lt;Move Target=&quot;normalMenuItems&quot; Y=&quot;1&quot; RelativeTo=&quot;Size&quot; Delay=&quot;.1&quot; Duration=&quot;.5&quot; Easing=&quot;CubicInOut&quot; /&gt;
+    &lt;Change normalMenuItems.Opacity=&quot;0&quot; Delay=&quot;.1&quot; Duration=&quot;.3&quot; Easing=&quot;CubicInOut&quot; /&gt;
+    &lt;Move Target=&quot;hamburger&quot; Y=&quot;-2&quot; RelativeTo=&quot;Size&quot; Duration=&quot;.4&quot; Easing=&quot;CubicIn&quot; /&gt;
+    &lt;Change searchInput.PlaceholderColor=&quot;#ccc6&quot; Duration=&quot;.5&quot; Easing=&quot;QuadraticInOut&quot; /&gt;
+    &lt;Change searchCloseButton.Opacity=&quot;1&quot; Duration=&quot;.2&quot; DelayBack=&quot;0&quot; Easing=&quot;QuadraticInOut&quot; /&gt;
+&lt;/Timeline&gt;
+
+&lt;DockPanel ux:Name=&quot;searchLayout&quot; Alignment=&quot;Top&quot; Margin=&quot;30&quot; Height=&quot;MenuItemHeight&quot;&gt;
+    &lt;Panel ux:Name=&quot;searchFieldLayoutMaster&quot; /&gt;
+    &lt;Rectangle ux:Name=&quot;searchCloseButton&quot; Dock=&quot;Right&quot; Opacity=&quot;0&quot; HitTestMode=&quot;LocalBounds&quot; Margin=&quot;15,0,0,0&quot;&gt;
+        &lt;Clicked&gt;
+            &lt;Set searchInput.Value=&quot;&quot; /&gt;
+        &lt;/Clicked&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And that's pretty much it for this example!
+As always, feel free to download and play around with the code yourself.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

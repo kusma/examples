@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>WhileBusy - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/while-busy.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whilebusy.html" class="nav-link">WhileBusy</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/image.html" class="nav-link">Image</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/clientpanel.html" class="nav-link">ClientPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects/desaturate.html" class="nav-link">Desaturate</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/removinganimation.html" class="nav-link">RemovingAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#map-func-item" class="nav-link">Observable.map</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>WhileBusy</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how we can use the <code>WhileBusy</code> trigger to display meaningful visual feedback while a large image is loading. We use the <code>WhileBusy</code> trigger on our thumbnail images to display a gray rectangle until the thumbnails arrive. We use the same technique to animate between low and high resolution images to get quicker feedback while loading.</p>
+<pre><code>&lt;App&gt;
+	&lt;JavaScript&gt;
+	var Images = require(&quot;images&quot;);
+
+	// on app startup, select the first image to initiate the high quality image loading
+	Images.selectImage({data:{id:0}});
+
+	module.exports = {
+		thumbs: Images.thumbs,
+		selectImage: Images.selectImage,
+		highQualityImage: Images.highQualityImage,
+		lowQualityImage: Images.lowQualityImage
+	};
+	&lt;/JavaScript&gt;
+
+	&lt;ClientPanel&gt;
+
+		&lt;ScrollView Dock=&quot;Top&quot; AllowedScrollDirections=&quot;Horizontal&quot;&gt;
+			&lt;StackPanel Padding=&quot;5&quot; ItemSpacing=&quot;5&quot; Orientation=&quot;Horizontal&quot;&gt;
+				&lt;Each Items=&quot;{thumbs}&quot;&gt;
+					&lt;Image Url=&quot;{low}&quot; Width=&quot;50&quot; Height=&quot;50&quot; Clicked=&quot;{selectImage}&quot; StretchMode=&quot;UniformToFill&quot; MemoryPolicy=&quot;UnloadUnused&quot;&gt;
+						&lt;WhileBusy&gt;
+							&lt;Rectangle Color=&quot;#EEE&quot;&gt;
+								&lt;Stroke Width=&quot;1&quot; Color=&quot;#CCC&quot; /&gt;
+							&lt;/Rectangle&gt;
+						&lt;/WhileBusy&gt;
+						&lt;WhileFalse Value=&quot;{selected}&quot;&gt;
+							&lt;Desaturate Amount=&quot;1&quot; /&gt;
+						&lt;/WhileFalse&gt;
+					&lt;/Image&gt;
+				&lt;/Each&gt;
+			&lt;/StackPanel&gt;
+		&lt;/ScrollView&gt;
+
+		&lt;Panel Dock=&quot;Fill&quot; Margin=&quot;5,0,5,5&quot; ClipToBounds=&quot;true&quot;&gt;
+			&lt;WhileBusy&gt;
+				&lt;Image ux:Name=&quot;lowQualityImage&quot; Url=&quot;{lowQualityImage}&quot; StretchMode=&quot;UniformToFill&quot; MemoryPolicy=&quot;UnloadUnused&quot;&gt;
+					&lt;Desaturate Amount=&quot;1&quot; /&gt;
+					&lt;RemovingAnimation&gt;
+						&lt;Change lowQualityImage.Opacity=&quot;0&quot; Duration=&quot;0.35&quot;/&gt;
+					&lt;/RemovingAnimation&gt;
+				&lt;/Image&gt;
+			&lt;/WhileBusy&gt;
+			&lt;Image Url=&quot;{highQualityImage}&quot; StretchMode=&quot;UniformToFill&quot; MemoryPolicy=&quot;UnloadUnused&quot; /&gt;
+		&lt;/Panel&gt;
+
+	&lt;/ClientPanel&gt;
+&lt;/App&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

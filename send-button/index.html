@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Send Button - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/send-button.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_customcontrol.html">Custom control</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/stroke.html" class="nav-link">Stroke</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/cycle_1.html" class="nav-link">Cycle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Send Button</h1>
+
+          <div class="example-content-preview example-content-preview-slot-7">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example, we are making a button with a fancy loading animation.</p>
+<p>The icons used in this example are from <a href="http://fontawesome.io/">Font Awesome</a>.</p>
+<blockquote>
+<p><em>Note:</em> Although this example contains a complete app screen for context, the focus of this article is only on the button itself.</p>
+</blockquote>
+<h4>Making the button</h4
+<p>We begin by declaring our <code>SendButton</code> component.
+It has a boolean property, <code>IsLoading</code>, which controls the animation.
+The animation begins when <code>IsLoading</code> becomes <code>true</code>, and plays until it becomes <code>false</code>.
+From here on, we'll refer to these two states as <em>idle</em> (<code>IsLoading=&quot;false&quot;</code>) and <em>loading</em>  (<code>IsLoading=&quot;true&quot;</code>).</p>
+<p>We also declare the <code>PrimaryColor</code> and <code>SecondaryColor</code> properties to allow customizing the colors of the component.</p>
+<!-- snippet-begin:code/SendButton.ux:Declaration -->
+<pre><code>&lt;Panel ux:Class=&quot;SendButton&quot; Width=&quot;70&quot; Height=&quot;70&quot; IsLoading=&quot;false&quot; PrimaryColor=&quot;#F73859&quot; SecondaryColor=&quot;#fff&quot;&gt;
+    &lt;bool ux:Property=&quot;IsLoading&quot; /&gt;
+    
+    &lt;float4 ux:Property=&quot;PrimaryColor&quot; /&gt;
+    &lt;float4 ux:Property=&quot;SecondaryColor&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Our component is made up of a <code>Panel</code> containing several controls.
+Because of how <code>Panel</code> performs layout on its children, the controls will be layered on top of each other – which is exactly what we want in this case.</p>
+<p>The paper plane icon is simply an <code>Image</code> element backed by a <code>MultiDensityImageSource</code>.
+We give it a name, <code>icon</code>, so we can animate it later on.</p>
+<!-- snippet-begin:code/SendButton.ux:Icon -->
+<pre><code>&lt;Image ux:Name=&quot;icon&quot; StretchMode=&quot;Uniform&quot; Width=&quot;24&quot; Alignment=&quot;Center&quot; Offset=&quot;-2,1&quot; Color=&quot;{ReadProperty this.SecondaryColor}&quot;&gt;
+    &lt;MultiDensityImageSource&gt;
+        &lt;FileImageSource Density=&quot;1&quot; File=&quot;Assets/fa-paper-plane@1x.png&quot; /&gt;
+        &lt;FileImageSource Density=&quot;2&quot; File=&quot;Assets/fa-paper-plane@2x.png&quot; /&gt;
+        &lt;FileImageSource Density=&quot;4&quot; File=&quot;Assets/fa-paper-plane@4x.png&quot; /&gt;
+    &lt;/MultiDensityImageSource&gt;
+&lt;/Image&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We want to give the user some visual feedback while they are pressing down on the button, but before the animation starts.
+For that, we use a <code>Circle</code> with a semi-transparent white fill, and a <code>WhilePressed</code> trigger with a <code>Change</code> animator that fades its opacity from <code>0</code> to <code>1</code>.</p>
+<!-- snippet-begin:code/SendButton.ux:TapOverlayCircle -->
+<pre><code>&lt;Circle ux:Name=&quot;tapOverlayCircle&quot; Color=&quot;#fff6&quot; Opacity=&quot;0&quot; /&gt;
+&lt;WhilePressed&gt;
+    &lt;Change tapOverlayCircle.Opacity=&quot;1&quot; Duration=&quot;0.05&quot; DurationBack=&quot;0.15&quot; /&gt;
+&lt;/WhilePressed&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Now for the good stuff.</p>
+<p>We have a <code>Circle</code> named <code>mainCircle</code>, which has a single <code>Stroke</code> and no other brushes.
+<code>mainCircle</code> is used as both the background while the button is idle, <em>and</em> as the rotating arc while it is loading.</p>
+<p>While the button is idle, the <code>Width</code> of this <code>Stroke</code> is larger than the radius of the circle.
+This results in the circle being completely covered, as if we would have just assigned it a <code>Color</code>.
+When transitioning to the loading state however, we animate the <code>Width</code> of this stroke to a lower value.</p>
+<p>During this transition, we also animate the <code>LengthAngleDegrees</code> property of the <code>Circle</code> to <code>90</code>.
+Combined with <code>StartAngleDegrees</code>, this property allows us to draw a slice of the circle instead of the whole 360 degrees.</p>
+<!-- snippet-begin:code/SendButton.ux:MainCircle -->
+<pre><code>&lt;Circle ux:Name=&quot;mainCircle&quot; StartAngleDegrees=&quot;0&quot; LengthAngleDegrees=&quot;360&quot;&gt;
+    &lt;Stroke ux:Name=&quot;mainCircleStroke&quot; Width=&quot;100&quot; Color=&quot;{ReadProperty this.PrimaryColor}&quot;  /&gt;
+    &lt;Rotation ux:Name=&quot;mainCircleRotation&quot; /&gt;
+&lt;/Circle&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The remaining elements are static <code>Circle</code> elements which serve as a background while the button is loading.
+These are hidden underneath the <code>mainCircle</code> while the button is idle.</p>
+<p>The first of these is the &quot;track&quot; underneath the spinning arc.
+It is scaled with a factor of <code>0.85</code> to match the same scaling being performed on <code>mainCircle</code> during the transition to the loading state.</p>
+<p>The second <code>Circle</code> is the background that's visible while loading, and also provides the shadow underneath the button.</p>
+<!-- snippet-begin:code/SendButton.ux:StaticBackgroundCircles -->
+<pre><code>&lt;Circle&gt;
+    &lt;Stroke Width=&quot;5&quot; Color=&quot;#6662&quot; /&gt;
+    &lt;Scaling Factor=&quot;0.85&quot; /&gt;
+&lt;/Circle&gt;
+
+&lt;Circle Color=&quot;{ReadProperty this.SecondaryColor}&quot; Margin=&quot;1&quot;&gt;
+    &lt;Shadow Angle=&quot;90&quot; Size=&quot;5&quot; Distance=&quot;3&quot; Color=&quot;#0005&quot; /&gt;
+&lt;/Circle&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Let's move on to animation.
+We'll add a <code>WhileTrue</code> trigger to play back the animation based on the value of the <code>IsLoading</code> property.</p>
+<!-- snippet-begin:code/SendButton.ux:WhileTrue -->
+<pre><code>&lt;WhileTrue Value=&quot;{ReadProperty this.IsLoading}&quot;&gt;
+    &lt;PulseForward Target=&quot;flightAnimation&quot; /&gt;
+    &lt;Change icon.Opacity=&quot;0&quot; Delay=&quot;0.68&quot; DurationBack=&quot;0.1&quot; Easing=&quot;CubicInOut&quot; /&gt;
+    
+    &lt;Scale Target=&quot;mainCircle&quot; Factor=&quot;0.85&quot; Duration=&quot;0.5&quot; Easing=&quot;BackInOut&quot; Delay=&quot;0.35&quot; /&gt;
+    &lt;Change mainCircleStroke.Width=&quot;5&quot; Duration=&quot;0.2&quot; Delay=&quot;0.35&quot; Easing=&quot;SinusoidalInOut&quot; /&gt;
+    &lt;Change mainCircle.LengthAngleDegrees=&quot;90&quot; Duration=&quot;0.5&quot; Delay=&quot;0.75&quot; DelayBack=&quot;0&quot; Easing=&quot;CubicInOut&quot; /&gt;
+    &lt;Change spin.Value=&quot;true&quot; Delay=&quot;1.4&quot; /&gt;
+&lt;/WhileTrue&gt;
+&lt;WhileTrue ux:Name=&quot;spin&quot;&gt;
+    &lt;Cycle Target=&quot;mainCircleRotation.Degrees&quot; Low=&quot;0&quot; High=&quot;360&quot; Frequency=&quot;0.666&quot; Easing=&quot;CubicInOut&quot; Waveform=&quot;Sawtooth&quot; /&gt;
+    &lt;Cycle Target=&quot;mainCircleRotation.Degrees&quot; Low=&quot;0&quot; High=&quot;360&quot; Frequency=&quot;0.999&quot; FrequencyBack=&quot;-1&quot; Waveform=&quot;Sawtooth&quot; MixOp=&quot;Add&quot; /&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The <code>PulseForward</code> above sets off the animation that makes the plane fly away.
+By keeping this animation in a separate <code>Timeline</code> we ensure it is played in its entirety, even though <code>IsLoading</code> stays active for shorter than the duration of the animation.</p>
+<!-- snippet-begin:code/SendButton.ux:FlightAnimation -->
+<pre><code>&lt;Timeline ux:Name=&quot;flightAnimation&quot;&gt;
+    &lt;Move Target=&quot;icon&quot; RelativeTo=&quot;Size&quot; KeyframeInterpolation=&quot;Smooth&quot;&gt;
+        &lt;Keyframe Time=&quot;0&quot; X=&quot;0&quot; Y=&quot;0&quot; /&gt;
+        &lt;Keyframe TimeDelta=&quot;0.38&quot; X=&quot;-0.8&quot; Y=&quot;0.5&quot; /&gt;
+        &lt;Keyframe TimeDelta=&quot;0.3&quot; X=&quot;20&quot; Y=&quot;-12&quot; /&gt;
+    &lt;/Move&gt;
+    &lt;Rotate Target=&quot;icon&quot; Degrees=&quot;25&quot; Duration=&quot;0.4&quot; Easing=&quot;SinusoidalInOut&quot; DurationBack=&quot;0&quot; /&gt;
+    &lt;Scale Target=&quot;icon&quot; Factor=&quot;0&quot; Easing=&quot;CubicIn&quot; Delay=&quot;0.38&quot; Duration=&quot;0.3&quot; /&gt;
+    &lt;Change icon.Opacity=&quot;0&quot; Duration=&quot;0.25&quot; Delay=&quot;0.38&quot; Easing=&quot;CubicInOut&quot; /&gt;
+&lt;/Timeline&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And that's it! Here is our finished button:</p>
+<!-- snippet-begin:code/SendButton.ux:SendButton -->
+<pre><code>&lt;Panel ux:Class=&quot;SendButton&quot; Width=&quot;70&quot; Height=&quot;70&quot; IsLoading=&quot;false&quot; PrimaryColor=&quot;#F73859&quot; SecondaryColor=&quot;#fff&quot;&gt;
+    &lt;bool ux:Property=&quot;IsLoading&quot; /&gt;
+    
+    &lt;float4 ux:Property=&quot;PrimaryColor&quot; /&gt;
+    &lt;float4 ux:Property=&quot;SecondaryColor&quot; /&gt;
+
+    &lt;Image ux:Name=&quot;icon&quot; StretchMode=&quot;Uniform&quot; Width=&quot;24&quot; Alignment=&quot;Center&quot; Offset=&quot;-2,1&quot; Color=&quot;{ReadProperty this.SecondaryColor}&quot;&gt;
+        &lt;MultiDensityImageSource&gt;
+            &lt;FileImageSource Density=&quot;1&quot; File=&quot;Assets/fa-paper-plane@1x.png&quot; /&gt;
+            &lt;FileImageSource Density=&quot;2&quot; File=&quot;Assets/fa-paper-plane@2x.png&quot; /&gt;
+            &lt;FileImageSource Density=&quot;4&quot; File=&quot;Assets/fa-paper-plane@4x.png&quot; /&gt;
+        &lt;/MultiDensityImageSource&gt;
+    &lt;/Image&gt;
+    
+    &lt;Circle ux:Name=&quot;tapOverlayCircle&quot; Color=&quot;#fff6&quot; Opacity=&quot;0&quot; /&gt;
+    &lt;WhilePressed&gt;
+        &lt;Change tapOverlayCircle.Opacity=&quot;1&quot; Duration=&quot;0.05&quot; DurationBack=&quot;0.15&quot; /&gt;
+    &lt;/WhilePressed&gt;
+    
+    &lt;Circle ux:Name=&quot;mainCircle&quot; StartAngleDegrees=&quot;0&quot; LengthAngleDegrees=&quot;360&quot;&gt;
+        &lt;Stroke ux:Name=&quot;mainCircleStroke&quot; Width=&quot;100&quot; Color=&quot;{ReadProperty this.PrimaryColor}&quot;  /&gt;
+        &lt;Rotation ux:Name=&quot;mainCircleRotation&quot; /&gt;
+    &lt;/Circle&gt;
+    
+    &lt;Circle&gt;
+        &lt;Stroke Width=&quot;5&quot; Color=&quot;#6662&quot; /&gt;
+        &lt;Scaling Factor=&quot;0.85&quot; /&gt;
+    &lt;/Circle&gt;
+
+    &lt;Circle Color=&quot;{ReadProperty this.SecondaryColor}&quot; Margin=&quot;1&quot;&gt;
+        &lt;Shadow Angle=&quot;90&quot; Size=&quot;5&quot; Distance=&quot;3&quot; Color=&quot;#0005&quot; /&gt;
+    &lt;/Circle&gt;
+    
+    &lt;Timeline ux:Name=&quot;flightAnimation&quot;&gt;
+        &lt;Move Target=&quot;icon&quot; RelativeTo=&quot;Size&quot; KeyframeInterpolation=&quot;Smooth&quot;&gt;
+            &lt;Keyframe Time=&quot;0&quot; X=&quot;0&quot; Y=&quot;0&quot; /&gt;
+            &lt;Keyframe TimeDelta=&quot;0.38&quot; X=&quot;-0.8&quot; Y=&quot;0.5&quot; /&gt;
+            &lt;Keyframe TimeDelta=&quot;0.3&quot; X=&quot;20&quot; Y=&quot;-12&quot; /&gt;
+        &lt;/Move&gt;
+        &lt;Rotate Target=&quot;icon&quot; Degrees=&quot;25&quot; Duration=&quot;0.4&quot; Easing=&quot;SinusoidalInOut&quot; DurationBack=&quot;0&quot; /&gt;
+        &lt;Scale Target=&quot;icon&quot; Factor=&quot;0&quot; Easing=&quot;CubicIn&quot; Delay=&quot;0.38&quot; Duration=&quot;0.3&quot; /&gt;
+        &lt;Change icon.Opacity=&quot;0&quot; Duration=&quot;0.25&quot; Delay=&quot;0.38&quot; Easing=&quot;CubicInOut&quot; /&gt;
+    &lt;/Timeline&gt;
+    &lt;WhileTrue Value=&quot;{ReadProperty this.IsLoading}&quot;&gt;
+        &lt;PulseForward Target=&quot;flightAnimation&quot; /&gt;
+        &lt;Change icon.Opacity=&quot;0&quot; Delay=&quot;0.68&quot; DurationBack=&quot;0.1&quot; Easing=&quot;CubicInOut&quot; /&gt;
+        
+        &lt;Scale Target=&quot;mainCircle&quot; Factor=&quot;0.85&quot; Duration=&quot;0.5&quot; Easing=&quot;BackInOut&quot; Delay=&quot;0.35&quot; /&gt;
+        &lt;Change mainCircleStroke.Width=&quot;5&quot; Duration=&quot;0.2&quot; Delay=&quot;0.35&quot; Easing=&quot;SinusoidalInOut&quot; /&gt;
+        &lt;Change mainCircle.LengthAngleDegrees=&quot;90&quot; Duration=&quot;0.5&quot; Delay=&quot;0.75&quot; DelayBack=&quot;0&quot; Easing=&quot;CubicInOut&quot; /&gt;
+        &lt;Change spin.Value=&quot;true&quot; Delay=&quot;1.4&quot; /&gt;
+    &lt;/WhileTrue&gt;
+    &lt;WhileTrue ux:Name=&quot;spin&quot;&gt;
+        &lt;Cycle Target=&quot;mainCircleRotation.Degrees&quot; Low=&quot;0&quot; High=&quot;360&quot; Frequency=&quot;0.666&quot; Easing=&quot;CubicInOut&quot; Waveform=&quot;Sawtooth&quot; /&gt;
+        &lt;Cycle Target=&quot;mainCircleRotation.Degrees&quot; Low=&quot;0&quot; High=&quot;360&quot; Frequency=&quot;0.999&quot; FrequencyBack=&quot;-1&quot; Waveform=&quot;Sawtooth&quot; MixOp=&quot;Add&quot; /&gt;
+    &lt;/WhileTrue&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Using the button</h4
+<p>Now, the button doesn't automatically play the animation when clicked, since it doesn't know how long to play it for.
+Instead, we have to change <code>IsLoading</code> to <code>true</code> when the button is clicked, then perform some time-expensive operation, and set it back to <code>false</code> when the operation has completed.
+Below is an example of how you can use the button in your own app.</p>
+<pre><code>&lt;JavaScript&gt;
+    var Observable = require(&quot;FuseJS/Observable&quot;);
+    
+    var isLoading = Observable(false);
+    
+    function clicked() {
+        isLoading.value = true;
+        
+        setTimeout(function() {
+            isLoading.value = false;
+        }, 3000);
+    }
+    
+    module.exports = {
+        isLoading: isLoading,
+        clicked: clicked
+    };
+&lt;/JavaScript&gt;
+
+&lt;SendButton Clicked=&quot;{clicked}&quot; IsLoading=&quot;{isLoading}&quot; /&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

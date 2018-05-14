@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Reveal actions - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/reveal-actions.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_menu.html">Menu</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/image.html" class="nav-link">Image</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/resourcebinding.html" class="nav-link">Resource-binding</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/resources/fileimagesource.html" class="nav-link">FileImageSource</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Reveal actions</h1>
+
+          <div class="example-content-preview example-content-preview-slot-1">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we implement a cool reveal animation from the <a href="http://medium.stfi.re/swlh/exploring-the-product-design-of-the-stripe-dashboard-for-iphone-e54e14f3d87e?ref=hackingui&amp;sf=lroyzg#.bgjivpv68">Stripe Dashboard</a></p>
+<h3>The animated menu</h3
+<p>We define a class called <code>MenuButton</code>. This allows for a nicer split up of code, but in this case we do not make it a reusable component.</p>
+<p>The menu icon consists of three circles. We want to animate their size and position so that they morph into one larger circle when clicked. We use the <code>Scale</code> animator for this. One thing to notice is that we define the circles at their maximum size, and scale them down using the <code>Scaling</code> transform. This ensures that we do not get aliasing when using the <code>Scale</code> animator to increase their size.</p>
+<!-- snippet:reveal-actions:MenuButton.ux:CirclesButton -->
+<p>We trigger a <code>WhileTrue</code> in our <code>Clicked</code>-trigger, and perform almost all the animation there. The menu icon moves from the right to the left. This is done by changing its <code>Alignment</code> property, and then using a <code>LayoutAnimation</code> to make it move smoothly.</p>
+<!-- snippet:reveal-actions:MenuButton.ux:LayoutAnimation -->
+<p>In our <code>WhileTrue</code> we also animate the <code>Scaling</code> and <code>Opacity</code> of the menu items and the thin divider rectangle.</p>
+<!-- snippet-begin:code/MenuButton.ux:MenuAnimation -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;menuLayout&quot; &gt;
+    &lt;Change sp.Alignment=&quot;Left&quot; DurationBack=&quot;0&quot;/&gt;
+    &lt;Change circleScale1.Factor=&quot;1&quot; Duration=&quot;0.3&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change circleScale2.Factor=&quot;1&quot; Duration=&quot;0.3&quot; DelayBack=&quot;0.025&quot;/&gt;
+    &lt;Change circleScale3.Factor=&quot;1&quot; Duration=&quot;0.3&quot; DelayBack=&quot;0.05&quot;/&gt;
+    &lt;Move Target=&quot;c1&quot; X=&quot;0.5&quot; RelativeTo=&quot;Size&quot; Duration=&quot;.3&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Move Target=&quot;c3&quot; X=&quot;-0.5&quot; RelativeTo=&quot;Size&quot; Duration=&quot;.3&quot; DelayBack=&quot;0&quot;/&gt;
+
+    &lt;Change menuButtons.Opacity=&quot;1&quot; Duration=&quot;0.4&quot; DurationBack=&quot;.2&quot; /&gt;
+
+    &lt;Change Easing=&quot;BackOut&quot; shareScaling.Factor=&quot;1&quot;  Duration=&quot;0.5&quot; DelayBack=&quot;0.1&quot; DurationBack=&quot;0.1&quot;/&gt;
+    &lt;Change Easing=&quot;BackOut&quot; refundScaling.Factor=&quot;1&quot; Duration=&quot;0.5&quot; Delay=&quot;0.1&quot; DelayBack=&quot;0&quot; DurationBack=&quot;0.1&quot;/&gt;
+    &lt;Change arrow.Opacity=&quot;1&quot;       Duration=&quot;0.4&quot;             DurationBack=&quot;0.15&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change dividerRect.Opacity=&quot;1&quot; Duration=&quot;0.2&quot; Delay=&quot;0.2&quot; DurationBack=&quot;0.15&quot; DelayBack=&quot;0&quot;/&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The list items</h3
+<p>Notice that there are two types of list items. One with green icons and only one row, and one with blue icons and two rows, as well as an arrow icon on the right.</p>
+<p>We define two classes do represent the two types:</p>
+<!-- snippet-begin:code/MainView.ux:ListItems -->
+<pre><code>&lt;Grid ux:Class=&quot;Entry&quot; Columns=&quot;40, 60, 1*&quot; Padding=&quot;10,10&quot;&gt;
+    &lt;Image Source=&quot;{Resource icon}&quot; Width=&quot;25&quot; Alignment=&quot;CenterLeft&quot; Color=&quot;#89C372&quot;/&gt;
+    &lt;Text Value=&quot;{Resource name}&quot; FontSize=&quot;15&quot; Color=&quot;#777&quot; Alignment=&quot;CenterLeft&quot; /&gt;
+    &lt;Text Value=&quot;{Resource text}&quot; FontSize=&quot;15&quot; Alignment=&quot;CenterLeft&quot;/&gt;
+&lt;/Grid&gt;
+
+&lt;Grid ux:Class=&quot;ButtonEntry&quot; Columns=&quot;40, 1*, 40&quot; Padding=&quot;10,10&quot;&gt;
+    &lt;Image Source=&quot;{Resource icon}&quot; Width=&quot;25&quot; Alignment=&quot;CenterLeft&quot; Color=&quot;#018BDB&quot;/&gt;
+    &lt;StackPanel&gt;
+        &lt;Text Value=&quot;{Resource name}&quot; Alignment=&quot;CenterLeft&quot; /&gt;
+        &lt;Text Value=&quot;{Resource text}&quot; Color=&quot;#777&quot; FontSize=&quot;13&quot; Alignment=&quot;CenterLeft&quot;/&gt;
+    &lt;/StackPanel&gt;
+    &lt;Image File=&quot;Icons/arrow.png&quot; Width=&quot;20&quot; Color=&quot;#018bdb&quot;/&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We use resource-bindings for the icon, name and text values of the items, so that we can set these values per item as we instantiate them:</p>
+<!-- snippet-begin:code/MainView.ux:ListItemsInstances -->
+<pre><code>    &lt;StackPanel Background=&quot;#eee&quot; ClipToBounds=&quot;True&quot; Dock=&quot;Top&quot;&gt;
+        &lt;Divider /&gt;
+        &lt;Entry&gt;
+            &lt;string ux:Key=&quot;name&quot; ux:Value=&quot;Date&quot;/&gt;
+            &lt;string ux:Key=&quot;text&quot; ux:Value=&quot;Apr 2, 2015, 9:41 AM&quot;/&gt;
+            &lt;FileImageSource  ux:Key=&quot;icon&quot; File=&quot;Icons/date.png&quot;/&gt;
+        &lt;/Entry&gt;
+        &lt;Divider /&gt;
+        &lt;Entry&gt;
+            &lt;string ux:Key=&quot;name&quot; ux:Value=&quot;Fee&quot;/&gt;
+            &lt;string ux:Key=&quot;text&quot; ux:Value=&quot;$0.31&quot;/&gt;
+            &lt;FileImageSource  ux:Key=&quot;icon&quot; File=&quot;Icons/credit_card.png&quot;/&gt;
+        &lt;/Entry&gt;
+        &lt;Divider /&gt;
+        &lt;Entry&gt;
+            &lt;string ux:Key=&quot;name&quot; ux:Value=&quot;Status&quot;/&gt;
+            &lt;string ux:Key=&quot;text&quot; ux:Value=&quot;Paid&quot;/&gt;
+            &lt;FileImageSource  ux:Key=&quot;icon&quot; File=&quot;Icons/info.png&quot;/&gt;
+        &lt;/Entry&gt;
+        &lt;Divider /&gt;
+        &lt;Entry&gt;
+            &lt;string ux:Key=&quot;name&quot; ux:Value=&quot;Desc.&quot;/&gt;
+            &lt;string ux:Key=&quot;text&quot; ux:Value=&quot;Recurrent Pro Plan&quot;/&gt;
+            &lt;FileImageSource  ux:Key=&quot;icon&quot; File=&quot;Icons/menu.png&quot;/&gt;
+        &lt;/Entry&gt;
+    &lt;/StackPanel&gt;
+    &lt;StackPanel&gt;
+        &lt;Rectangle Color=&quot;#FDFDFD&quot; CornerRadius=&quot;8&quot; Layer=&quot;Background&quot;/&gt;
+        &lt;Divider /&gt;
+        &lt;ButtonEntry&gt;
+            &lt;string ux:Key=&quot;name&quot; ux:Value=&quot;Card&quot;/&gt;
+            &lt;string ux:Key=&quot;text&quot; ux:Value=&quot;Visa **** 4242&quot;/&gt;
+            &lt;FileImageSource  ux:Key=&quot;icon&quot; File=&quot;Icons/credit_card.png&quot;/&gt;
+        &lt;/ButtonEntry&gt;
+        &lt;Divider /&gt;
+        &lt;ButtonEntry&gt;
+            &lt;string ux:Key=&quot;name&quot; ux:Value=&quot;Customer&quot;/&gt;
+            &lt;string ux:Key=&quot;text&quot; ux:Value=&quot;example@example.com&quot;/&gt;
+            &lt;FileImageSource  ux:Key=&quot;icon&quot; File=&quot;Icons/account.png&quot;/&gt;
+        &lt;/ButtonEntry&gt;
+    &lt;/StackPanel&gt;
+&lt;/DockPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>That's it. Feel free to download the project.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Alternative Dropdown - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/alternative-dropdown.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_javascript.html">JavaScript</a>, <a href="../tag_reusablecomponents.html">Reusable components</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/statusbarbackground.html" class="nav-link">StatusBarBackground</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/bottombarbackground.html" class="nav-link">BottomBarBackground</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/grid.html" class="nav-link">Grid</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle.html" class="nav-link">Rectangle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/uno/ux/resource.html#global-resources-ux-global" class="nav-link">ux:Global</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/solidcolor.html" class="nav-link">SolidColor</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/properties.html" class="nav-link">ux:Property</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/whilepressed.html" class="nav-link">WhilePressed</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Alternative Dropdown</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we will create a button that serves as a good alternative to a dropdown.</p>
+<p>We noticed this clever approach in the <a href="https://mailchimp.com/">MailChimp</a> mobile app and decided to recreate it in Fuse. That little button, when clicked, simply cycles through a list of modes unlike a dropdown menu that you select things from.</p>
+<h3>Basic app structure</h3
+<p>Our <code>MainView.ux</code> holds the basic markup for our apps layout, as well as the top-level <code>JavaScript</code> data context responsible for showing the right numbers, depending on the selected value in our alternative dropdown button.</p>
+<p>Here's what the module that feeds our view looks like. <code>modes</code> holds the labels for the button, and <code>data</code> holds the numbers for all of the modes. <code>info</code> is a reactive Observable that picks a subset of data from the <code>data</code> array, depending on what the value of <code>currentMode</code> Observable is.</p>
+<pre><code>&lt;JavaScript&gt;
+    var Observable = require(&quot;FuseJS/Observable&quot;);
+    var currentMode = Observable(0);
+
+    var modes = [
+        {label: &quot;7 DAYS&quot;},
+        {label: &quot;30 DAYS&quot;},
+        {label: &quot;90 DAYS&quot;},
+        {label: &quot;1 YEAR&quot;}
+    ];
+
+    var data = [
+        {change: 492, total: 12774, unsubs: 327},
+        {change: 1279, total: 42891, unsubs: 1183},
+        {change: 2631, total: 99657, unsubs: 2478},
+        {change: 7395, total: 125758, unsubs: 5492}
+    ];
+
+    var info = currentMode.map(function(x) {
+        return data[x];
+    });
+
+    module.exports = {
+        modes: modes,
+        currentMode: currentMode,
+        info: info
+    };
+&lt;/JavaScript&gt;
+</code></pre>
+<p>The UX code responsibe for showing the data and the alternative dropdown button is just a <code>Grid</code> with 4 cells. Three of the cells hold our statistics and one is occupied by our <code>CycleButton</code> component.</p>
+<pre><code>&lt;Grid RowCount=&quot;2&quot; ColumnCount=&quot;2&quot; Margin=&quot;16&quot;&gt;
+    &lt;StackPanel Alignment=&quot;CenterLeft&quot;&gt;
+        &lt;Text Value=&quot;{info.change}&quot; TextColor=&quot;DarkerTextColor&quot; FontSize=&quot;24&quot; /&gt;
+        &lt;Text Value=&quot;Audience change&quot; TextColor=&quot;LighterTextColor&quot; FontSize=&quot;15&quot; /&gt;
+    &lt;/StackPanel&gt;
+
+    &lt;CycleButton Width=&quot;100&quot; Alignment=&quot;TopRight&quot; Modes=&quot;{modes}&quot; CurrentMode=&quot;{currentMode}&quot; /&gt;
+    
+    &lt;StackPanel Alignment=&quot;CenterLeft&quot;&gt;
+        &lt;Text Value=&quot;{info.total}&quot; TextColor=&quot;DarkerTextColor&quot; FontSize=&quot;18&quot; /&gt;
+        &lt;Text Value=&quot;Total audience&quot; TextColor=&quot;LighterTextColor&quot; FontSize=&quot;15&quot; /&gt;
+    &lt;/StackPanel&gt;
+    &lt;StackPanel Alignment=&quot;CenterLeft&quot;&gt;
+        &lt;Text Value=&quot;{info.unsubs}&quot; TextColor=&quot;DarkerTextColor&quot; FontSize=&quot;18&quot; /&gt;
+        &lt;Text Value=&quot;Unsubs/Bounces&quot; TextColor=&quot;LighterTextColor&quot; FontSize=&quot;15&quot; /&gt;
+    &lt;/StackPanel&gt;
+&lt;/Grid&gt;
+</code></pre>
+<p>As you can see, we're passing <code>{modes}</code> and <code>{currentMode}</code> as properties to the <code>CycleButton</code> component, so let's take a look at how that is implemented.</p>
+<h3>The alternative dropdown component</h3
+<p>Our custom <code>CycleButton</code> component is a simple <code>Rectangle</code> that accepts two properties: <code>Modes</code> and <code>CurrentMode</code>.</p>
+<pre><code>&lt;Rectangle ux:Class=&quot;CycleButton&quot; Padding=&quot;4&quot; StrokeColor=&quot;BorderColor&quot; StrokeWidth=&quot;2&quot; Color=&quot;White&quot; CornerRadius=&quot;2&quot;&gt;
+    &lt;object ux:Property=&quot;Modes&quot; /&gt;
+    &lt;int ux:Property=&quot;CurrentMode&quot; /&gt;
+</code></pre>
+<p>Inside of the parent <code>Rectangle</code>, we put a <code>DockPanel</code> which holds the current selected mode label, as well as a list of dots to represent the number of modes (and highlight the active one). To determine which mode is active, we use the <code>index()</code> UX expression, available when we're inside of an <code>Each</code> tag - all we need to do is compare the index to the current selected mode.</p>
+<pre><code>&lt;DockPanel&gt;
+    &lt;Text Value=&quot;{currentModeLabel}&quot; Alignment=&quot;Center&quot; Dock=&quot;Fill&quot; Color=&quot;LightBlue&quot;/&gt;
+    &lt;Panel Margin=&quot;8,0,0,0&quot; Width=&quot;16&quot; Dock=&quot;Right&quot;&gt;
+        &lt;StackPanel Alignment=&quot;Center&quot; ItemSpacing=&quot;2&quot;&gt;
+            &lt;Each Items=&quot;{ReadProperty Modes}&quot;&gt;
+                &lt;ModeIndicator IsActive=&quot;index() == {currentMode}&quot; /&gt;
+            &lt;/Each&gt;
+        &lt;/StackPanel&gt;
+    &lt;/Panel&gt;
+&lt;/DockPanel&gt;
+
+&lt;Circle ux:Class=&quot;ModeIndicator&quot; IsActive=&quot;false&quot; Width=&quot;4&quot; BoxSizing=&quot;FillAspect&quot; Color=&quot;BorderColor&quot;&gt;
+    &lt;bool ux:Property=&quot;IsActive&quot; /&gt;
+    &lt;WhileTrue Value=&quot;{Property IsActive}&quot;&gt;
+        &lt;Change this.Color=&quot;LightBlue&quot; /&gt;
+    &lt;/WhileTrue&gt;
+&lt;/Circle&gt;
+</code></pre>
+<p>Finally, we add a <code>Clicked</code> handler on the component so that we can cycle through the different modes.</p>
+<pre><code>&lt;Clicked Handler=&quot;{nextState}&quot; /&gt;
+</code></pre>
+<p>Our component has its own <code>JavaScript</code> module responsible for cycling through the different modes and picking the right label to show on the button. Since variables that are passed to components via <code>ux:Property</code> are implicitly available as derived Observables in <code>JavaScript</code>, we can refer to them using the <code>this.*</code> syntax. That way, we get access to both the list of modes passed to the component, as well as the original instance of the <code>currentMode</code> Observable. That is very important, because we want the parent data context to know about mode changes in our component, so that it can select the right subset of data to show in UI.</p>
+<pre><code>&lt;JavaScript&gt;
+    var modes = this.Modes;
+    var currentMode = this.CurrentMode;
+
+    var currentModeLabel = currentMode.combineLatest(modes, function(idx, list) {
+        return list[idx].label;
+    });
+
+    function nextState() {
+        currentMode.value = (currentMode.value + 1) % modes.value.length;
+    }
+
+    module.exports = {
+        nextState: nextState,
+        currentMode: currentMode,
+        currentModeLabel: currentModeLabel
+    }
+&lt;/JavaScript&gt;
+</code></pre>
+<p>And that's about it. Feel free to download the full example, play with it and use it in your own projects!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

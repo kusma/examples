@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Tab bar navigation - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/tab-bar-navigation.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_tabs.html">Tabs</a>, <a href="../tag_menu.html">Menu</a>, <a href="../tag_navigation.html">Navigation</a>, <a href="../tag_javascript.html">JavaScript</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/image.html" class="nav-link">Image</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/resources/fileimagesource.html" class="nav-link">FileImageSource</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pageindicator.html" class="nav-link">PageIndicator</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/layouts/gridlayout.html" class="nav-link">GridLayout</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/activatinganimation.html" class="nav-link">ActivatingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/navigateto.html" class="nav-link">NavigateTo</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Tab bar navigation</h1>
+
+          <div class="example-content-preview example-content-preview-slot-5">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how to implement tab bar navigation using <code>PageControl</code>, <code>PageIndicator</code> and <code>GridLayout</code>.</p>
+<h4>The markup</h4
+<!-- snippet-begin:code/TabBarNavigation.ux:UXApp -->
+<pre><code>&lt;App Background=&quot;#333&quot;&gt;
+    &lt;JavaScript&gt;
+        var pages = [
+            {&quot;name&quot;:&quot;page1&quot;, &quot;highlight&quot;:&quot;#34495e&quot;, &quot;icon&quot;:&quot;Assets/icon-hexagon.png&quot;},
+            {&quot;name&quot;:&quot;page2&quot;, &quot;highlight&quot;:&quot;#3498db&quot;, &quot;icon&quot;:&quot;Assets/icon-star.png&quot;},
+            {&quot;name&quot;:&quot;page3&quot;, &quot;highlight&quot;:&quot;#aa3377&quot;, &quot;icon&quot;:&quot;Assets/icon-square.png&quot;},
+            {&quot;name&quot;:&quot;page4&quot;, &quot;highlight&quot;:&quot;#88cc22&quot;, &quot;icon&quot;:&quot;Assets/icon-triangle.png&quot;}
+        ];
+        module.exports = {
+            pages: pages,
+            pageCount: pages.length
+        };
+    &lt;/JavaScript&gt;
+
+    &lt;Page ux:Class=&quot;MyPage&quot;&gt;
+        &lt;ResourceFloat4 Key=&quot;Highlight&quot; Value=&quot;{highlight}&quot; /&gt;
+        &lt;FileImageSource ux:Key=&quot;Icon&quot; File=&quot;{icon}&quot; /&gt;
+        &lt;Image File=&quot;Assets/fuse-logo.png&quot; StretchDirection=&quot;DownOnly&quot; /&gt;
+        &lt;Rectangle Color=&quot;{highlight}&quot; /&gt;
+    &lt;/Page&gt;
+
+
+    &lt;DockPanel&gt;
+        &lt;StatusBarBackground Dock=&quot;Top&quot;/&gt;
+        &lt;BottomBarBackground Dock=&quot;Bottom&quot;/&gt;
+
+        &lt;PageControl ux:Name=&quot;pages&quot;&gt;
+            &lt;Each Items=&quot;{pages}&quot;&gt;
+                &lt;MyPage /&gt;
+            &lt;/Each&gt;
+        &lt;/PageControl&gt;
+
+        &lt;PageIndicator Dock=&quot;Bottom&quot; Height=&quot;45&quot; Navigation=&quot;pages&quot;&gt;
+            &lt;GridLayout ColumnCount=&quot;{pageCount}&quot; /&gt;
+            &lt;Panel ux:Template=&quot;Dot&quot; Height=&quot;45&quot;&gt;
+                &lt;ActivatingAnimation&gt;
+                    &lt;Scale Target=&quot;icon&quot; Factor=&quot;1.5&quot; /&gt;
+                &lt;/ActivatingAnimation&gt;
+                &lt;Clicked&gt;
+                    &lt;NavigateTo Target=&quot;{Page Visual}&quot;/&gt;
+                &lt;/Clicked&gt;
+                &lt;Panel ux:Name=&quot;icon&quot; Padding=&quot;10&quot;&gt;
+                    &lt;Image Source=&quot;{Page Icon}&quot; /&gt;
+                &lt;/Panel&gt;
+                &lt;Rectangle Color=&quot;{Page Highlight}&quot; /&gt;
+            &lt;/Panel&gt;
+        &lt;/PageIndicator&gt;
+
+    &lt;/DockPanel&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

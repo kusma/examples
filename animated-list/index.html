@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Animated list - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/animated-list.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/removinganimation.html" class="nav-link">RemovingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/statusbarbackground.html" class="nav-link">StatusBarBackground</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#add-value" class="nav-link">Observable.add</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#remove-value" class="nav-link">observable.remove</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Animated list</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how to use <code>AddingAnimation</code> and <code>RemovingAnimation</code> to animate items being added and removed in a list. <code>LayoutAnimation</code> is used to adjust the position of the other list items inside the <code>StackPanel</code>.</p>
+<h4>The markup</h4
+<!-- snippet-begin:code/AnimatedList.ux:App -->
+<pre><code>&lt;App Background=&quot;#eee&quot;&gt;
+    &lt;DockPanel&gt;
+        &lt;JavaScript&gt;
+            var Observable = require(&quot;FuseJS/Observable&quot;);
+            var items = Observable();
+
+            function addItem() {
+                items.add({ text: &quot;This is an item&quot; });
+            }
+
+            function removeItem(sender) {
+                items.remove(sender.data);
+            }
+
+            module.exports = {
+                items: items,
+                addItem: addItem,
+                removeItem: removeItem
+            };
+        &lt;/JavaScript&gt;
+
+        &lt;StatusBarBackground Dock=&quot;Top&quot; /&gt;
+        &lt;Basic.Button Text=&quot;Add item&quot; Clicked=&quot;{addItem}&quot; Dock=&quot;Top&quot; /&gt;
+        &lt;ScrollView&gt;
+            &lt;StackPanel&gt;
+                &lt;Each Items=&quot;{items}&quot;&gt;
+                    &lt;DockPanel Padding=&quot;10&quot; Margin=&quot;0,1&quot; Background=&quot;#fff&quot;&gt;
+                        &lt;Text Value=&quot;{text}&quot; Alignment=&quot;CenterLeft&quot; /&gt;
+                        &lt;Basic.Button Text=&quot;Delete&quot; Clicked=&quot;{removeItem}&quot; Dock=&quot;Right&quot; /&gt;
+
+                        &lt;LayoutAnimation&gt;
+                            &lt;Move RelativeTo=&quot;LayoutChange&quot; Y=&quot;1&quot; Duration=&quot;0.8&quot; Easing=&quot;ElasticIn&quot; /&gt;
+                        &lt;/LayoutAnimation&gt;
+
+                        &lt;AddingAnimation&gt;
+                            &lt;Move RelativeTo=&quot;Size&quot; X=&quot;1&quot; Duration=&quot;0.3&quot; Easing=&quot;CircularIn&quot; /&gt;
+                        &lt;/AddingAnimation&gt;
+
+                        &lt;RemovingAnimation&gt;
+                            &lt;Move RelativeTo=&quot;Size&quot; X=&quot;-1&quot; Duration=&quot;0.4&quot; Easing=&quot;CircularOut&quot; /&gt;
+                        &lt;/RemovingAnimation&gt;
+                    &lt;/DockPanel&gt;
+                &lt;/Each&gt;
+            &lt;/StackPanel&gt;
+        &lt;/ScrollView&gt;
+    &lt;/DockPanel&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

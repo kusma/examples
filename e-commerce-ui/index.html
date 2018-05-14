@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Rotating pages - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/e-commerce-ui.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_3d.html">3D</a>, <a href="../tag_navigation.html">Navigation</a>, <a href="../tag_gesture.html">Gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/viewport.html" class="nav-link">Viewport</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipegesture.html" class="nav-link">SwipeGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipinganimation.html" class="nav-link">SwipingAnimation</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Rotating pages</h1>
+
+          <div class="example-content-preview example-content-preview-slot-8">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example, based on the awesome <a href="https://dribbble.com/shots/2249964-Ecommerce-UX">Ecommerce-UX</a> design by <a href="https://dribbble.com/Amboka">Levani Ambokadze</a>, shows the use of <code>SwipeGesture</code> and <code>SwipeNavigate</code>, as well as how you can achieve 3D transformations using <code>Rotate</code> and <code>Viewport</code>.</p>
+<p>The icons are from Google's <a href="https://design.google.com/icons/">Material Icons pack</a>.</p>
+<h3>Swipe navigation</h3
+<p>Swiping left and right on both detail cards and the preview photos is done using a <code>PageControl</code>, which handles linear navigation between panels using swipes. The following is a simplification of the two <code>PageControl</code>s used in the app:</p>
+<pre><code>&lt;Panel&gt;
+    &lt;PageControl&gt;
+    	&lt;Each Count=&quot;3&quot;&gt;
+			&lt;Panel Margin=&quot;10,10,10,10&quot;&gt;
+				&lt;Panel Color=&quot;#F00&quot;&gt;
+					&lt;Translation Y=&quot;0.46&quot; RelativeTo=&quot;ParentSize&quot; ux:Name=&quot;pageTranslation&quot; /&gt;
+				&lt;/Panel&gt;
+			   	&lt;Panel Alignment=&quot;Top&quot; Height=&quot;60%&quot;&gt; &lt;!-- Preview images --&gt;
+					&lt;PageControl&gt;
+						&lt;Panel Color=&quot;#0FA&quot; /&gt;
+						&lt;Panel Color=&quot;#0AF&quot; /&gt;
+						&lt;Panel Color=&quot;#F0A&quot; /&gt;
+					&lt;/PageControl&gt;
+				&lt;/Panel&gt;
+		   	&lt;/Panel&gt;
+	    &lt;/Each&gt;
+    &lt;/PageControl&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>Note that the <code>PageControl</code> for navigating the preview images is a child of the <code>PageControl</code> which navigates the pages. In cases like this, the child <code>PageControl</code> will always get input, rather than the parent. Additionally, this snippet uses default transition animations instead of custom ones. In our example app, we set <code>Transition=&quot;None&quot;</code> on the <code>PageControl</code>s to enable custom animations, and specified our own <code>EnteringAnimation</code> and <code>ExitingAnimation</code>. These will be discussed in further detail later in the article.</p>
+<h3>Swiping up to reveal more details</h3
+<p>This effect uses a <code>SwipingAnimation</code> hooked up to a <code>SwipeGesture</code> in order to translate the detail card upwards as the user swipes up. While a <code>PageControl</code> uses swipe gestures to navigate pages, <code>SwipeGesture</code> is a more general way of handling swipes.</p>
+<p>The <code>SwipeGesture</code> itself is a child of the first panel after our <code>Viewport</code> element (More on this later). This ensures the entire app can take swipe events through that <code>SwipeGesture</code>. This is because <code>SwipeGesture</code>s listen for swipes in the area of the screen their parent container populates.</p>
+<p>For the actual translation of the cards, we put a <code>SwipingAnimation</code> and <code>Translation</code> element in the cards, like this:</p>
+<pre><code>&lt;SwipingAnimation Source=&quot;swipeGesture&quot;&gt;
+	&lt;Change pageTranslation.Y=&quot;.12&quot; /&gt;
+	&lt;Change moreDiv.Opacity=&quot;1&quot; Easing=&quot;ExponentialOut&quot; /&gt;
+	&lt;Change infoPointPanel.Opacity=&quot;1&quot; Easing=&quot;CubicIn&quot; /&gt;
+	&lt;Change ratingsGrid.Opacity=&quot;1&quot; Easing=&quot;ExponentialIn&quot; /&gt;
+&lt;/SwipingAnimation&gt;
+&lt;Translation Y=&quot;0.46&quot; RelativeTo=&quot;ParentSize&quot; ux:Name=&quot;pageTranslation&quot; /&gt;
+</code></pre>
+<h4>The unused SwipeGesture in the preview image container</h4
+<p>If you had a keen eye while looking over the example code, you might of noticed there is an unused <code>SwipeGesture</code> in the preview image container:</p>
+<pre><code>&lt;Panel ux:Name=&quot;topPart&quot; Alignment=&quot;Top&quot; Height=&quot;60%&quot;&gt;
+	&lt;SwipeGesture Direction=&quot;Up&quot;/&gt;
+	&lt;!-- [...] --&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>This works as a mask, telling the <code>SwipeGesture</code> closer to the root node (<code>App</code>) to ignore swipes happening on that panel. This happens because <code>SwipeGesture</code> respects other <code>SwipeGesture</code>s deeper down on the node tree. This way, by putting an unused <code>SwipeGesture</code> on the top container, the parent <code>SwipeGesture</code> will ignore that area.</p>
+<h3>Rotating the detail cards in 3D</h3
+<p>Fuse supports 3D transformation out of the box. However, to pull this off, you need to wrap your UX in a <code>Viewport</code> element. This element handles perspective projection. We initialize the viewport like this:</p>
+<pre><code>&lt;App&gt;
+	&lt;Viewport Perspective=&quot;300&quot; CullFace=&quot;Back&quot;&gt;
+		&lt;!-- Your app --&gt;
+	&lt;/Viewport&gt;
+&lt;/App&gt;
+</code></pre>
+<p>It is important to set <code>CullFace</code> to <code>Back</code> so any rotated elements aren't visible if they face away from the camera.</p>
+<p>The cards look rather ugly the last degrees before they are rotated out of the way, as there is a considerable amount of aliasing. To fix this, we fade out the cards as they leave the center of the screen using an exponential easing method.</p>
+<p>Lastly, the other elements that make up the cloth display have to be moved out of the way as the clothing card is swiped away. In our example, this is the preview image navigation panel, and the progress dots for said navigation panel. The following snippet shows the enter/exit animations in their entirety:</p>
+<pre><code>&lt;EnteringAnimation&gt;
+	&lt;Rotate Target=&quot;bottomPartOuter&quot; DegreesY=&quot;70&quot; Duration=&quot;1&quot; /&gt;
+	&lt;Change bottomPart.Opacity=&quot;0&quot; Easing=&quot;ExponentialIn&quot; Duration=&quot;.75&quot; Delay=&quot;.0&quot;/&gt;
+	&lt;Change topScaling.Factor=&quot;0.5&quot; Duration=&quot;1&quot; /&gt;
+	&lt;Change topPart.Opacity=&quot;0&quot; Duration=&quot;1&quot; Easing=&quot;ExponentialOut&quot; /&gt;
+	&lt;Change pageIndicatorPart.Opacity=&quot;0&quot; Duration=&quot;1&quot; Easing=&quot;ExponentialOut&quot; /&gt;
+&lt;/EnteringAnimation&gt;
+&lt;ExitingAnimation&gt;
+	&lt;Rotate Target=&quot;bottomPartOuter&quot; DegreesY=&quot;-70&quot; Duration=&quot;1&quot; /&gt;
+	&lt;Change bottomPart.Opacity=&quot;0&quot; Easing=&quot;ExponentialIn&quot; Duration=&quot;.75&quot; Delay=&quot;.0&quot;/&gt;
+	&lt;Change topScaling.Factor=&quot;0.5&quot; Duration=&quot;1&quot; /&gt;
+	&lt;Change topPart.Opacity=&quot;0&quot; Duration=&quot;1&quot; Easing=&quot;ExponentialOut&quot; /&gt;
+	&lt;Change pageIndicatorPart.Opacity=&quot;0&quot; Duration=&quot;1&quot; Easing=&quot;ExponentialOut&quot; /&gt;
+&lt;/ExitingAnimation&gt;
+</code></pre>
+<h3>Styling</h3
+<p>It is good practice when writing UX to define all custom UI elements as classes with semantic names. This results in the UX communicating well to a third party reader what different parts of the UX document does. The example has therefore almost all items that visually look like an UI element defined in classes. Additionally, due to the amount of classes used in this example, we put them in a separate UX file which we included. This reduces clutter in <code>MainView.ux</code>, something which is very useful when working with large projects.</p>
+<p>We pre-define all our theme colors. This helps make the UX more understandable, as it is easier to comprehend which visual element you are looking at the UX for:</p>
+<pre><code>&lt;float4 ux:Global=&quot;FontColor&quot; ux:Value=&quot;#556E7A&quot; /&gt;
+&lt;float4 ux:Global=&quot;LighterFontColor&quot; ux:Value=&quot;#556D79&quot; /&gt;
+&lt;float4 ux:Global=&quot;InactiveColor&quot; ux:Value=&quot;#ABB5BC&quot; /&gt;
+&lt;float4 ux:Global=&quot;HintColor&quot; ux:Value=&quot;#DEEBF4&quot; /&gt;
+
+&lt;float4 ux:Global=&quot;CardBackground&quot; ux:Value=&quot;#FFF&quot; /&gt;
+&lt;float4 ux:Global=&quot;BackgroundColor&quot; ux:Value=&quot;#f3f3f5&quot; /&gt;
+
+&lt;float4 ux:Global=&quot;ColorSelRed&quot; ux:Value=&quot;#F25254&quot; /&gt;
+&lt;float4 ux:Global=&quot;ColorSelBlue&quot; ux:Value=&quot;#6389AF&quot; /&gt;
+&lt;float4 ux:Global=&quot;ColorSelGreen&quot; ux:Value=&quot;#70C1B3&quot; /&gt;
+&lt;float4 ux:Global=&quot;ColorSelYellow&quot; ux:Value=&quot;#FFE664&quot; /&gt;
+</code></pre>
+<p>Further, we use classes to define both regularly used sets of properties, and more complicated custom UI elements. The following snippet shows how the circular <code>SizeButton</code> is defined. Notice how we utilize <code>ux:Property</code> to add our own property to our new class:</p>
+<pre><code>&lt;Circle ux:Class=&quot;SizeButton&quot; Width=&quot;40&quot; Height=&quot;40&quot; Margin=&quot;15&quot;&gt;
+  &lt;string ux:Property=&quot;Label&quot; /&gt;
+  &lt;Text Alignment=&quot;Center&quot; Value=&quot;{ReadProperty Label}&quot; Color=&quot;FontColor&quot; /&gt;
+  &lt;Stroke Width=&quot;2&quot;&gt;
+    &lt;SolidColor Color=&quot;InactiveColor&quot; /&gt;
+  &lt;/Stroke&gt;
+&lt;/Circle&gt;
+</code></pre>
+<p>The following is an example of a more simple use of <code>ux:Class</code>, for often used properties.</p>
+<pre><code>&lt;Image ux:Class=&quot;Icon&quot; Margin=&quot;15&quot; Color=&quot;FontColor&quot; Height=&quot;40&quot; /&gt;
+</code></pre>
+<p>Last but not least, we include <code>Style.ux</code> in our main file using:</p>
+<pre><code>&lt;ux:Include File=&quot;Style.ux&quot; /&gt;
+</code></pre>
+<p>That's about it!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

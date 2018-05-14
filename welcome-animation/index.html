@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Welcome animation - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/welcome-animation.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/resources/fileimagesource.html" class="nav-link">FileImageSource</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/scaling.html" class="nav-link">Scaling</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/translation.html" class="nav-link">Translation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/rotation.html" class="nav-link">Rotation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/easing.html" class="nav-link">Easing</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Welcome animation</h1>
+
+          <div class="example-content-preview example-content-preview-slot-6">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we use the <code>Timeline</code> to make an animated introduction screen inspired by <a href="https://dribbble.com/scr33nag3r">Stephen Pearsons</a> <a href="https://dribbble.com/shots/2372039-Tour-Animation">animation</a>.</p>
+<h4>Creating our resources</h4
+<p>We start of by defining our resources. In particular, the icons.</p>
+<h5>Defining a base Icon class</h5
+<p>Since we have several similar looking icons, we define a base class which contains a stroked circle and places the icon image in the middle.</p>
+<!-- snippet-begin:code/MainView.ux:baseicon -->
+<pre><code>&lt;Panel ux:Class=&quot;Icon&quot; Width=&quot;80&quot; Height=&quot;80&quot;&gt;
+    &lt;Image Source=&quot;{Resource iconFile}&quot; Width=&quot;60%&quot; Height=&quot;60%&quot;/&gt;
+    &lt;Circle Color=&quot;#6334A4&quot;&gt;
+        &lt;Stroke Brush=&quot;#fff&quot; Width=&quot;3&quot;/&gt;
+    &lt;/Circle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h5>Deriving from Icon</h5
+<p>We can then derive from this base class to create our icons. The last icon needs some animation of its inner elements, so we define it inline instead of creating a class.</p>
+<!-- snippet-begin:code/MainView.ux:DerivingIcon -->
+<pre><code>&lt;Icon ux:Class=&quot;Payment&quot;&gt;
+    &lt;FileImageSource File=&quot;Icons/payment.png&quot; ux:Key=&quot;iconFile&quot;/&gt;
+&lt;/Icon&gt;
+&lt;Icon ux:Class=&quot;Notes&quot;&gt;
+    &lt;FileImageSource File=&quot;Icons/notes.png&quot; ux:Key=&quot;iconFile&quot;/&gt;
+&lt;/Icon&gt;
+&lt;Icon ux:Class=&quot;Camera&quot;&gt;
+    &lt;FileImageSource File=&quot;Icons/camera.png&quot; ux:Key=&quot;iconFile&quot;/&gt;
+&lt;/Icon&gt;
+</code></pre>
+<!-- snippet-end -->
+<h5>The custom send icon</h5
+<p>We need to animate the send icons image element, and so we define it inline instead of creating a class. We add a larger copy of the image with and set its <code>Color</code> property to the same color as the background. The <code>Color</code> property of <code>Image</code> is multiplied by the image sources color. It's placed underneath the icon image so that scaling it beyond the circle gives the image a border.</p>
+<!-- snippet-begin:code/MainView.ux:SendIcon -->
+<pre><code>&lt;Panel ux:Name=&quot;Send&quot; Width=&quot;80&quot; Height=&quot;80&quot; Opacity=&quot;0&quot;&gt;
+    &lt;Panel ux:Name=&quot;sendImage&quot;&gt;
+        &lt;Image File=&quot;Icons/send.png&quot; Width=&quot;60%&quot; Height=&quot;60%&quot;/&gt;
+        &lt;Image File=&quot;Icons/send.png&quot; Width=&quot;90%&quot; Height=&quot;90%&quot; Color=&quot;#6334A4&quot;/&gt;
+        &lt;Scaling ux:Name=&quot;sendScaling&quot; Factor=&quot;0.7&quot;/&gt;
+        &lt;Translation X=&quot;5&quot; /&gt;
+        &lt;Rotation Degrees=&quot;-45&quot; /&gt;
+    &lt;/Panel&gt;
+    &lt;Circle Color=&quot;#6334A4&quot;&gt;
+        &lt;Stroke Brush=&quot;#fff&quot; Width=&quot;3&quot;/&gt;
+    &lt;/Circle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Animating with Timeline</h4
+<p>We use a <code>Timeline</code> to define all our animation. The <code>Timeline</code> can be played by changing its <code>TargetProgress</code> property from 0 to 1. We do this when the <code>Page</code> becomes active using the <a href="https://www.fusetools.com/learn/fuse#whileactive"><code>WhileActive</code></a> trigger.</p>
+<!-- snippet-begin:code/MainView.ux:Timeline -->
+<pre><code>&lt;Timeline ux:Name=&quot;timeline&quot;&gt;
+    &lt;Change camera.Opacity=&quot;1&quot;     Duration=&quot;1&quot; /&gt;
+    &lt;Change text1.Opacity=&quot;1&quot;      Duration=&quot;1&quot; /&gt;
+    &lt;Move Target=&quot;camera&quot; Y=&quot;-2&quot;   Duration=&quot;1&quot;   Delay=&quot;1&quot; Easing=&quot;BackOut&quot; RelativeTo=&quot;Size&quot; /&gt;
+    &lt;Change paymentTrans.X=&quot;-30&quot;   Duration=&quot;1&quot;   Delay=&quot;1&quot; Easing=&quot;BackOut&quot;/&gt;
+    &lt;Change notesTrans.X=&quot;30&quot;      Duration=&quot;1&quot;   Delay=&quot;1&quot; Easing=&quot;BackOut&quot;/&gt;
+    &lt;Change payment.Opacity=&quot;1&quot;    Duration=&quot;1&quot;   Delay=&quot;1&quot; Easing=&quot;BackOut&quot;/&gt;
+    &lt;Change notes.Opacity=&quot;1&quot;      Duration=&quot;1&quot;   Delay=&quot;1&quot; Easing=&quot;BackOut&quot;/&gt;
+    &lt;Change paymentRot.Degrees=&quot;0&quot; Duration=&quot;1&quot;   Delay=&quot;1&quot; Easing=&quot;BackOut&quot;/&gt;
+    &lt;Change notesRot.Degrees=&quot;0&quot;   Duration=&quot;1&quot;   Delay=&quot;1&quot; Easing=&quot;BackOut&quot;/&gt;
+    &lt;Change text2.Opacity=&quot;1&quot;      Duration=&quot;1&quot;   Delay=&quot;1&quot;/&gt;
+
+    &lt;Change arrow1.Opacity=&quot;1&quot;     Duration=&quot;0.6&quot;   Delay=&quot;1.5&quot;/&gt;
+    &lt;Change text3.Opacity=&quot;1&quot;      Duration=&quot;1&quot;   Delay=&quot;2&quot;/&gt;
+
+    &lt;Move Target=&quot;panel2&quot; Y=&quot;-0.25&quot; Duration=&quot;1&quot;   Delay=&quot;3&quot; Easing=&quot;BackOut&quot; RelativeTo=&quot;Size&quot;/&gt;
+    &lt;Change Send.Opacity=&quot;1&quot;       Duration=&quot;1&quot;   Delay=&quot;3&quot;/&gt;
+    &lt;Change text3.Opacity=&quot;1&quot;      Duration=&quot;1&quot;   Delay=&quot;3&quot;/&gt;
+
+    &lt;Change arrow2.Opacity=&quot;1&quot;     Duration=&quot;0.6&quot;   Delay=&quot;3.5&quot;/&gt;
+    &lt;Move Target=&quot;sendImage&quot;       Duration=&quot;0.8&quot; Delay=&quot;3.5&quot; Easing=&quot;BackOut&quot; X=&quot;25&quot;/&gt;
+    &lt;Change sendScaling.Factor=&quot;1&quot; Duration=&quot;0.8&quot; Delay=&quot;3.5&quot; Easing=&quot;BackOut&quot; /&gt;
+
+    &lt;Change text4.Opacity=&quot;1&quot;      Duration=&quot;1&quot; Delay=&quot;4.7&quot; /&gt;
+
+
+&lt;/Timeline&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Since we do use some absolute values in our animation, we surround the entire thing in a <a href="https://www.fusetools.com/learn/fuse#viewbox"><code>Viewbox</code></a>. This lets us scale the content to different screen sizes without layout making our absolute values invalid.</p>
+<p>That's it!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>News feed - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/news-feed.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_javascript.html">JavaScript</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/image.html" class="nav-link">Image</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/expressions.html" class="nav-link">UX Expressions</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle.html" class="nav-link">Rectangle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/clientpanel.html" class="nav-link">ClientPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/shadow.html" class="nav-link">Shadow</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#replaceall-array" class="nav-link">Observable.replaceAll</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/http.html#fetch" class="nav-link">fetch</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/bundle.html" class="nav-link">json</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>News feed</h1>
+
+          <div class="example-content-preview example-content-preview-slot-8">
+<img src="media/preview.png" alt="">
+</div>
+<div class="example-content-body">
+<p>In this example we'll explore how to create a simple news feed using <code>JavaScript</code> data binding. In this example we will be fetching data from http://www.digg.com popular articles JSON feed.</p>
+<p>You can look at the raw data <a href="http://digg.com/api/news/popular.json">here</a>.</p>
+<!-- snippet-begin:code/MyApp.ux:App -->
+<pre><code>&lt;App Background=&quot;#ECEFF1&quot;&gt;
+
+	&lt;JavaScript&gt;
+		var Observable = require(&quot;FuseJS/Observable&quot;);
+
+		var data = Observable();
+
+		function Article(data) {
+			this.title = data.content.title;
+			this.description = data.content.description;
+			this.author = data.content.author;
+			this.published = new Date(data.date_published * 1000).toDateString();
+			this.image = &quot;&quot;;
+			if (data.content.media.images.length &gt; 0) this.image = data.content.media.images[0].original_url;
+		};
+
+		fetch(&quot;http://digg.com/api/news/popular.json&quot;)
+		.then(function(response) { return response.json(); })
+		.then(function(responseObject) {
+			var items = [];
+			for (var i in responseObject.data.feed) {
+				items.push(new Article(responseObject.data.feed[i]));
+			}
+			data.replaceAll(items);
+		});
+
+		module.exports = {
+			dataSource: data
+		};
+	&lt;/JavaScript&gt;
+
+	&lt;Panel ux:Class=&quot;NewsItem&quot;&gt;
+		&lt;StackPanel ItemSpacing=&quot;10&quot; Margin=&quot;15&quot;&gt;
+			&lt;Text Value=&quot;{title}&quot; TextWrapping=&quot;Wrap&quot; FontSize=&quot;20&quot; /&gt;
+			&lt;DockPanel&gt;
+				&lt;Text Value=&quot;{description}&quot; TextWrapping=&quot;Wrap&quot; FontSize=&quot;13&quot; /&gt;
+				&lt;WhileString Value=&quot;{image}&quot; Test=&quot;IsNotEmpty&quot;&gt;
+					&lt;Panel Dock=&quot;Left&quot;&gt;
+						&lt;Image Url=&quot;{image}&quot; Width=&quot;80&quot; Margin=&quot;0,0,10,0&quot; Alignment=&quot;TopLeft&quot; /&gt;
+					&lt;/Panel&gt;
+				&lt;/WhileString&gt;
+			&lt;/DockPanel&gt;
+			&lt;DockPanel&gt;
+				&lt;Text Value=&quot;{published}&quot; FontSize=&quot;10&quot; Color=&quot;#999&quot; Dock=&quot;Left&quot; /&gt;
+				&lt;WhileString Value=&quot;{author}&quot; Test=&quot;IsNotEmpty&quot;&gt;
+			 		&lt;Text Value=&quot;by {author}&quot; FontSize=&quot;10&quot; Color=&quot;#999&quot; Dock=&quot;Right&quot; /&gt;
+			 	&lt;/WhileString&gt;
+			&lt;/DockPanel&gt;
+		&lt;/StackPanel&gt;
+		&lt;Rectangle Color=&quot;#FFF&quot; /&gt;
+	&lt;/Panel&gt;
+
+	&lt;ClientPanel&gt;
+		&lt;Panel Dock=&quot;Top&quot; Height=&quot;46&quot;&gt;
+			&lt;Text Value=&quot;NEWS&quot; Color=&quot;#ECEFF1&quot; FontSize=&quot;28&quot; Alignment=&quot;Center&quot; /&gt;
+			&lt;Rectangle Color=&quot;#37474F&quot; /&gt;
+			&lt;Shadow /&gt;
+		&lt;/Panel&gt;
+		&lt;ScrollView&gt;
+			&lt;StackPanel ItemSpacing=&quot;1&quot;&gt;
+				&lt;Each Items=&quot;{dataSource}&quot;&gt;
+					&lt;NewsItem /&gt;
+				&lt;/Each&gt;
+			&lt;/StackPanel&gt;
+		&lt;/ScrollView&gt;
+	&lt;/ClientPanel&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>When the data is received from the server, our JavaScript code creates an object for each news article and puts them inside of an Observable collection. Our UX code takes care of iterating over the collection using <code>Each</code> and formats the visual of each news item entry with the help of a conventient custom <code>ux:Class</code> we created.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

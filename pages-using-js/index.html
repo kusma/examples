@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Pages using Javascript - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/pages-using-js.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_navigation.html">Navigation</a>, <a href="../tag_javascript.html">JavaScript</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/directnavigation.html" class="nav-link">DirectNavigation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/names.html" class="nav-link">ux:Name</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">Data-binding</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/enteringanimation.html" class="nav-link">EnteringAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/exitinganimation.html" class="nav-link">ExitingAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#map-func-item" class="nav-link">Observable.map</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#add-value" class="nav-link">Observable.add</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html#event-binding-to-javascript-functions" class="nav-link">Event handler</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Pages using Javascript</h1>
+
+          <div class="example-content-preview example-content-preview-slot-3">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example uses <code>Router</code> and <code>Navigator</code> to create a list of pages that can be navigated to with corresponding buttons.</p>
+<p>We create a list of 20 pages by calling the <code>createPage</code> function inside a for-loop and adding each page to an <code>Observable</code>.
+Each page has a <code>title</code> string and a <code>clicked</code> function.
+When <code>clicked</code> is called on a page, it pushes a new instance of <code>subPage</code> onto the router's navigation stack, and sends the <code>title</code> of the page as a parameter.</p>
+<!-- snippet-begin:pages-using-js/MainView.js:MainJS -->
+<pre><code>var Observable = require(&quot;FuseJS/Observable&quot;);
+
+function createPage(title) {
+    return {
+        title: title,
+        clicked: function() {
+            router.push(&quot;subPage&quot;, { title: title })
+        }
+    };
+}
+
+var pages = Observable();
+
+for (var i = 1; i &lt;= 20; i++) {
+    pages.add(createPage(&quot;PAGE &quot; + i));
+}
+
+module.exports = { pages: pages };
+</code></pre>
+<!-- snippet-end -->
+<p>Inside <code>mainPage</code>, we iterate over the <code>pages</code> Observable using an <code>Each</code>, creating a button for each page using a <code>Panel</code>. We bind the <code>Clicked</code> property of our button panel to the <code>clicked</code> function we defined above.</p>
+<!-- snippet-begin:pages-using-js/MainView.ux:MainPage -->
+<pre><code>&lt;Navigator DefaultPath=&quot;mainPage&quot;&gt;
+    &lt;Page ux:Template=&quot;mainPage&quot;&gt;
+        &lt;ScrollView&gt;
+            &lt;StackPanel ItemSpacing=&quot;7&quot; Margin=&quot;7&quot;&gt;
+                &lt;Each Items=&quot;{pages}&quot;&gt;
+                    &lt;Panel Clicked=&quot;{clicked}&quot; Height=&quot;50&quot;&gt;
+                        &lt;Rectangle Layer=&quot;Background&quot; CornerRadius=&quot;3&quot; Color=&quot;#FF8362&quot; /&gt;
+                        &lt;Text Value=&quot;{title}&quot; Alignment=&quot;Center&quot; Color=&quot;#fff&quot; FontSize=&quot;15&quot; /&gt;
+                    &lt;/Panel&gt;
+                &lt;/Each&gt;
+            &lt;/StackPanel&gt;
+        &lt;/ScrollView&gt;
+        
+        &lt;AlternateRoot ParentNode=&quot;navBar&quot;&gt;
+            &lt;NavBarTitle&gt;PAGES&lt;/NavBarTitle&gt;
+        &lt;/AlternateRoot&gt;
+    &lt;/Page&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Next up: <code>SubPage</code>. We map over the navigation parameter passed through <code>push()</code>, and export the title as an <code>Observable</code>. This is then data bound to a <code>Text</code> control inside the page.</p>
+<!-- snippet-begin:pages-using-js/SubPage.ux:SubPage -->
+<pre><code>&lt;Page ux:Class=&quot;SubPage&quot;&gt;
+    &lt;JavaScript&gt;
+        exports.title = this.Parameter.map(function(param) {
+            return param.title;
+        });
+    &lt;/JavaScript&gt;
+    
+    &lt;Text Value=&quot;{title}&quot; FontSize=&quot;50&quot; TextColor=&quot;#3C4663&quot; Alignment=&quot;Center&quot;/&gt;
+    
+</code></pre>
+<!-- snippet-end -->
+<p>To make the navigation bar at the top change title depending on the currently active page, we introduce a new <code>NavBarTitle</code> component. This is simply a <code>Text</code> with an <code>EnteringAnimation</code> and an <code>ExitingAnimation</code> to fade it in/out when its parent page is navigated to and from.</p>
+<!-- snippet-begin:pages-using-js/NavBarTitle.ux:NavBarTitle -->
+<pre><code>&lt;Text ux:Class=&quot;NavBarTitle&quot; HitTestMode=&quot;None&quot; Alignment=&quot;Center&quot; FontSize=&quot;25&quot; TextColor=&quot;#FFF&quot;&gt;
+    &lt;EnteringAnimation&gt;
+        &lt;Move X=&quot;50&quot; Duration=&quot;0.35&quot; Easing=&quot;CubicInOut&quot; /&gt;
+        &lt;Change this.Opacity=&quot;0&quot; Duration=&quot;0.25&quot; Easing=&quot;CubicIn&quot; /&gt;
+    &lt;/EnteringAnimation&gt;
+    &lt;ExitingAnimation&gt;
+        &lt;Move X=&quot;-50&quot; Duration=&quot;0.35&quot; Easing=&quot;CubicInOut&quot; /&gt;
+        &lt;Change this.Opacity=&quot;0&quot; Duration=&quot;0.25&quot; Easing=&quot;CubicIn&quot; /&gt;
+    &lt;/ExitingAnimation&gt;
+&lt;/Text&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>To make this appear inside the navigation bar, we use <code>AlternateRoot</code> and declare the navigation bar as a dependency of our <code>SubPage</code> component.</p>
+<!-- snippet-begin:pages-using-js/SubPage.ux:NavBarTitle -->
+<pre><code>    &lt;Visual ux:Dependency=&quot;navBar&quot; /&gt;
+    &lt;Panel&gt;
+        &lt;AlternateRoot ParentNode=&quot;navBar&quot;&gt;
+            &lt;NavBarTitle Value=&quot;{title}&quot; /&gt;
+        &lt;/AlternateRoot&gt;
+    &lt;/Panel&gt;
+&lt;/Page&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Now, let's tie this together.
+We instantiate <code>SubPage</code> as a <em>template</em> for our <code>Navigator</code> with the key <code>subPage</code>, as well as satisfying its dependency on the <code>navBar</code>.</p>
+<p>Here is our final <code>MainView.ux</code>:</p>
+<!-- snippet-begin:pages-using-js/MainView.ux:MainView -->
+<pre><code>&lt;App Background=&quot;#eee&quot;&gt;
+    &lt;Router ux:Name=&quot;router&quot; /&gt;
+
+    &lt;DockPanel&gt;
+        &lt;JavaScript File=&quot;MainView.js&quot;/&gt;
+        &lt;StackPanel Dock=&quot;Top&quot; Background=&quot;#3CB5D0&quot;&gt;
+            &lt;StatusBarBackground/&gt;
+            &lt;Fuse.iOS.StatusBarConfig Style=&quot;Light&quot;/&gt;
+            &lt;Panel ux:Name=&quot;navBar&quot; Dock=&quot;Top&quot; Height=&quot;50&quot;&gt;
+                &lt;WhileCanGoBack&gt;
+                    &lt;Panel ux:Name=&quot;backButton&quot; Width=&quot;90&quot; Height=&quot;50&quot; Alignment=&quot;Left&quot; 
+                           Padding=&quot;20,0,0,0&quot; HitTestMode=&quot;LocalBounds&quot;&gt;
+                        &lt;DockPanel&gt;
+                            &lt;Image File=&quot;arrow-left-white.png&quot; Height=&quot;20&quot; Color=&quot;#fff&quot; Dock=&quot;Left&quot;/&gt;
+                            &lt;Text Alignment=&quot;Center&quot; Margin=&quot;5,0,0,0&quot; FontSize=&quot;18&quot; Color=&quot;#fff&quot; Dock=&quot;Right&quot;&gt;
+                                BACK
+                            &lt;/Text&gt;
+                        &lt;/DockPanel&gt;
+                        &lt;AddingAnimation&gt;
+                            &lt;Change backButton.Opacity=&quot;0&quot; Duration=&quot;.3&quot; /&gt;
+                        &lt;/AddingAnimation&gt;
+                        &lt;RemovingAnimation&gt;
+                            &lt;Change backButton.Opacity=&quot;0&quot; Duration=&quot;.3&quot; /&gt;
+                        &lt;/RemovingAnimation&gt;
+                        &lt;Clicked&gt;
+                            &lt;GoBack /&gt;
+                        &lt;/Clicked&gt;
+                    &lt;/Panel&gt;
+                &lt;/WhileCanGoBack&gt;
+            &lt;/Panel&gt;
+        &lt;/StackPanel&gt;
+        
+        &lt;BottomBarBackground Dock=&quot;Bottom&quot; /&gt;
+        
+        &lt;Navigator DefaultPath=&quot;mainPage&quot;&gt;
+            &lt;Page ux:Template=&quot;mainPage&quot;&gt;
+                &lt;ScrollView&gt;
+                    &lt;StackPanel ItemSpacing=&quot;7&quot; Margin=&quot;7&quot;&gt;
+                        &lt;Each Items=&quot;{pages}&quot;&gt;
+                            &lt;Panel Clicked=&quot;{clicked}&quot; Height=&quot;50&quot;&gt;
+                                &lt;Rectangle Layer=&quot;Background&quot; CornerRadius=&quot;3&quot; Color=&quot;#FF8362&quot; /&gt;
+                                &lt;Text Value=&quot;{title}&quot; Alignment=&quot;Center&quot; Color=&quot;#fff&quot; FontSize=&quot;15&quot; /&gt;
+                            &lt;/Panel&gt;
+                        &lt;/Each&gt;
+                    &lt;/StackPanel&gt;
+                &lt;/ScrollView&gt;
+                
+                &lt;AlternateRoot ParentNode=&quot;navBar&quot;&gt;
+                    &lt;NavBarTitle&gt;PAGES&lt;/NavBarTitle&gt;
+                &lt;/AlternateRoot&gt;
+            &lt;/Page&gt;
+
+            &lt;SubPage ux:Template=&quot;subPage&quot; navBar=&quot;navBar&quot; /&gt;
+        &lt;/Navigator&gt;
+    &lt;/DockPanel&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Material up-vote - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/material-upvote.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/bringtofront.html" class="nav-link">BringToFront</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/translation.html" class="nav-link">Translation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/cliptobounds.html" class="nav-link">ClipToBounds</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/scaling.html" class="nav-link">Scaling</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/stategroup.html" class="nav-link">StateGroup</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/state.html" class="nav-link">State</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Material up-vote</h1>
+
+          <div class="example-content-preview example-content-preview-slot-7">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>We discovered a blog post by <a href="http://www.materialup.com/">MaterialUp</a> with a nice list of UX designs and felt like taking on the <a href="https://stories.uplabs.io/can-you-code-this-design-concept-efe0132b9744">challenge of turning it into code</a>. Here is an implementation of their material up-vote design.</p>
+<p>Update: <a href="https://www.youtube.com/watch?v=2asBMD9eMm8&amp;list=PLdlqWm6b-XALJgM3fGa4q95Yipsgb8Q1o&amp;index=19">watch a video of Jake going through this example</a>.</p>
+<h3>The structure</h3
+<p>The structure can be split into three parts. The button, the background and the animation.</p>
+<h3>The inner circles</h3
+<p>The actual button is composed of two filled circles. They each contain a <code>Scaling</code> with <code>Factor=&quot;0&quot;</code> which gives them a size of 0. We want to animate them from the center and outwards and having a rest state at the center lets us describe our animations as deviation from size 0. <code>Scaling</code> is also a lot faster than animating <code>Width</code> and <code>Height</code>. This is because <code>Scaling</code> scales a texture instead of changing actual layout properties. Therefore, scaling an element with a <code>Width</code> and <code>Height</code> of 0 wouldn't work.</p>
+<p>We group the circles using a panel. This is so that we can change their ordering using <code>BringToFront</code> on the individual circles without having them move all the way in front of the text. See the animation section further down.</p>
+<!-- snippet-begin:code/MainView.ux:InnerCircles -->
+<pre><code>&lt;Panel ClipToBounds=&quot;True&quot; Height=&quot;90%&quot; Width=&quot;90%&quot;&gt;
+    &lt;Panel ux:Name=&quot;textPanel&quot;&gt;
+        &lt;Arrow ux:Name=&quot;arrow&quot;/&gt;
+        &lt;DarkText ux:Name=&quot;unupvotedText&quot; Value=&quot;22&quot; Offset=&quot;0,5&quot;/&gt;
+        &lt;LightText ux:Name=&quot;upvotedText&quot; Value=&quot;23&quot;&gt;
+            &lt;Translation Y=&quot;1&quot; RelativeTo=&quot;ParentSize&quot;/&gt;
+        &lt;/LightText&gt;
+    &lt;/Panel&gt;
+&lt;/Panel&gt;
+&lt;Panel&gt;
+    &lt;Circle ux:Name=&quot;pinkCircle&quot; Color=&quot;#FF4081&quot;&gt;
+        &lt;Scaling ux:Name=&quot;pinkScaling&quot; Factor=&quot;0&quot;/&gt;
+    &lt;/Circle&gt;
+    &lt;Circle ux:Name=&quot;grayCircle&quot; Color=&quot;#D7D7D7&quot;&gt;
+        &lt;Scaling ux:Name=&quot;grayScaling&quot; Factor=&quot;0&quot;/&gt;
+    &lt;/Circle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The background</h3
+<p>The background works in pretty much the same way as the button. The circles are placed in the bottom of the UX so that they appear behind everything else.</p>
+<!-- snippet-begin:code/MainView.ux:OuterCircles -->
+<pre><code>&lt;Panel&gt;
+    &lt;Circle ux:Name=&quot;lightCircle&quot; Color=&quot;#D7D7D7&quot; MaxWidth=&quot;2000&quot; Width=&quot;2000&quot; MaxHeight=&quot;2000&quot; Height=&quot;1200&quot;&gt;
+        &lt;Scaling ux:Name=&quot;lightScaling&quot; Factor=&quot;0&quot; /&gt;
+    &lt;/Circle&gt;
+    &lt;Circle ux:Name=&quot;darkCircle&quot; Color=&quot;#363F45&quot; MaxWidth=&quot;2000&quot; Width=&quot;2000&quot; MaxHeight=&quot;2000&quot; Height=&quot;1200&quot;&gt;
+        &lt;Scaling ux:Name=&quot;darkScaling&quot; Factor=&quot;0&quot; /&gt;
+    &lt;/Circle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The animation</h3
+<p>A <code>StateGroup</code> is used for animation. It has two states, &quot;upvoted&quot; and &quot;unupvoted&quot;. They each describe an animated deviation from the rest state. The &quot;unupvoted&quot; is assigned to the <code>Rest</code> property of the <code>StateGroup</code> and so becomes the default state when the app is launched.</p>
+<p>Both states animates the <code>Factor</code> property of the circles so that they animate back to their original size. We also use <code>BringToFront</code> to make sure the circles being animated are on top.</p>
+<!-- snippet-begin:code/MainView.ux:Animation -->
+<pre><code>&lt;StateGroup ux:Name=&quot;sg&quot; Rest=&quot;unupvoted&quot;&gt;
+    &lt;State ux:Name=&quot;unupvoted&quot;&gt;
+        &lt;Change grayScaling.Factor=&quot;1&quot; Duration=&quot;0.4&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0.4&quot; Easing=&quot;CircularInOut&quot;/&gt;
+        &lt;Change darkScaling.Factor=&quot;1&quot; Duration=&quot;0.4&quot; Delay=&quot;0.15&quot; DelayBack=&quot;0.4&quot; DurationBack=&quot;0.2&quot; Easing=&quot;CircularInOut&quot;/&gt;
+        &lt;Change statusBar.Style=&quot;Light&quot; Duration=&quot;0.4&quot; DurationBack=&quot;0&quot;/&gt;
+
+        &lt;BringToFront Target=&quot;grayCircle&quot;/&gt;
+        &lt;BringToFront Target=&quot;darkCircle&quot;/&gt;
+    &lt;/State&gt;
+    &lt;State ux:Name=&quot;upvoted&quot;&gt;
+        &lt;Change pinkScaling.Factor=&quot;1&quot; Duration=&quot;0.4&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0.4&quot; Easing=&quot;CircularInOut&quot;/&gt;
+        &lt;Change lightScaling.Factor=&quot;1&quot; Duration=&quot;0.4&quot; Delay=&quot;0.15&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0.4&quot; Easing=&quot;CircularInOut&quot;/&gt;
+
+        &lt;Change statusBar.Style=&quot;Dark&quot; Duration=&quot;0.4&quot; DurationBack=&quot;0&quot;/&gt;
+        &lt;Move Target=&quot;arrow&quot; RelativeTo=&quot;Size&quot; Y=&quot;-1&quot; Duration=&quot;0.4&quot; DelayBack=&quot;0.2&quot; Easing=&quot;CircularInOut&quot;/&gt;
+        &lt;Move Target=&quot;textPanel&quot; RelativeTo=&quot;Size&quot; Y=&quot;-1&quot; Duration=&quot;0.4&quot; Delay=&quot;0.2&quot; Easing=&quot;CircularInOut&quot;/&gt;
+
+        &lt;BringToFront Target=&quot;pinkCircle&quot;/&gt;
+        &lt;BringToFront Target=&quot;lightCircle&quot;/&gt;
+    &lt;/State&gt;
+&lt;/StateGroup&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Pan- Zoom- and RotateGesture - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/pan-zoom-rotate.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_gesture.html">Gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/pangesture.html" class="nav-link">PanGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/zoomgesture.html" class="nav-link">ZoomGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/rotategesture.html" class="nav-link">RotateGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/interactivetransform.html" class="nav-link">InteractiveTransform</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/expressions.html" class="nav-link">UX Expressions</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Pan- Zoom- and RotateGesture</h1>
+
+          <div class="example-content-preview example-content-preview-slot-5">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we use <code>PanGesture</code>, <code>ZoomGesture</code> and <code>RotateGesture</code> to allow direct manipulation of an element's 2D transformation.
+All of these gestures require an <code>InteractiveTransform</code>, which is passed through the <code>Target</code> parameter.
+This <code>InteractiveTransform</code> is what actually transforms its parent element in response to the movement interpreted by Pan- Zoom- and RotateGesture.</p>
+<p>We've also included a <code>Shadow</code> whose parameters are controlled by <a href="/docs/ux-markup/expressions">UX Expressions</a> to give the illusion of depth.</p>
+<p><strong>Note:</strong> Some of the gestures in this example requires multi-touch, and thus won't be usable from local preview. Please run the example on a device.</p>
+<pre><code>&lt;App&gt;
+	&lt;iOS.StatusBarConfig Style=&quot;Light&quot; /&gt;
+	&lt;Panel Color=&quot;#2196F3&quot;&gt;
+		&lt;Rectangle ux:Name=&quot;theRect&quot; Color=&quot;#fff&quot; Width=&quot;120&quot; Height=&quot;120&quot; CornerRadius=&quot;3&quot; HitTestMode=&quot;None&quot;&gt;
+			&lt;InteractiveTransform ux:Name=&quot;transform&quot; /&gt;
+			&lt;Shadow Color=&quot;#0004&quot;
+			        Angle=&quot;{Property transform.Rotation} * (180/3.14159) + 90&quot;
+			     Distance=&quot;max(1, ({ReadProperty transform.ZoomFactor} - 1) * 25)&quot;
+			         Size=&quot;max(2, ({ReadProperty transform.ZoomFactor} - 1) * 30)&quot; /&gt;
+		&lt;/Rectangle&gt;
+		
+		&lt;PanGesture Target=&quot;transform&quot; ConstrainElement=&quot;theRect&quot; /&gt;
+		&lt;ZoomGesture Target=&quot;transform&quot; Minimum=&quot;1&quot; Maximum=&quot;2.5&quot; /&gt;
+		&lt;RotateGesture Target=&quot;transform&quot; /&gt;
+	&lt;/Panel&gt;
+&lt;/App&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

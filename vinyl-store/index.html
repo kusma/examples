@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Vinyl store - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/vinyl-store.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_basics.html">Basics</a>, <a href="../tag_cards.html">Cards</a>, <a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_layout.html">Layout</a>, <a href="../tag_navigation.html">Navigation</a>, <a href="../tag_transition.html">Transition</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/whileactive.html" class="nav-link">WhileActive</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/set_1.html" class="nav-link">Set</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pageindicator.html" class="nav-link">PageIndicator</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/deactivatinganimation.html" class="nav-link">DeactivatingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/rotate.html" class="nav-link">Rotate</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/attractor_1.html" class="nav-link">Attractor</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/lineargradient.html" class="nav-link">LinearGradient</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/properties.html" class="nav-link">ux:Property</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/navigation/whileinactive.html" class="nav-link">WhileInactive</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/spin.html" class="nav-link">Spin</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/tapped.html" class="nav-link">Tapped</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/toggle.html" class="nav-link">Toggle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/shadow.html" class="nav-link">Shadow</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Vinyl store</h1>
+
+          <div class="example-content-preview example-content-preview-slot-4">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how to create an immersive swipeable cards experience. The screen pops with color and you can even interact with the products shown!</p>
+<p>Inspiration: <a href="https://dribbble.com/shots/3467160-Sample-interaction-with-cards-interface">this good-looking cards animation</a> by <a href="https://dribbble.com/imickaa">Artem Miskevich</a>. All images are taken from <a href="https://unsplash.com/">unsplash.com</a>.</p>
+<h3>Animated folder and vinyl</h3
+<p>The products in our application are represented as &quot;cards&quot;, so we start out by creating a reusable <code>ux:Class</code> component for them. Although the <code>Card</code> class holds the whole layout for a product, we'll take a look at how the animated folder and vinyl are created.</p>
+<p>Inside of our <code>Card</code> class, we put a <code>Panel</code> that holds our folder and vinyl. While the folder <code>Rectangle</code> is simply styled with <code>ImageFill</code> that fills it with the supplied cover image, the vinyl element uses a semi-transparent <code>vinyl.png</code> image as a mask on top of a scaled-down version of the same cover art. Finally, we set the <code>Alignment=&quot;HorizontalCenter&quot;</code> on both elements, so that the folder is right on top of the vinyl.</p>
+<pre><code>&lt;Panel Margin=&quot;16&quot; MaxWidth=&quot;320&quot;&gt;
+
+	&lt;Rectangle ux:Name=&quot;folder&quot; CornerRadius=&quot;1&quot; Color=&quot;#fff8&quot; Alignment=&quot;HorizontalCenter&quot; Width=&quot;168&quot;&gt;
+		&lt;ImageFill File=&quot;{ReadProperty Cover}&quot; StretchMode=&quot;UniformToFill&quot; WrapMode=&quot;ClampToEdge&quot; /&gt;
+		&lt;Stroke Width=&quot;1&quot; Color=&quot;#FFF3&quot; /&gt;
+		&lt;Shadow /&gt;
+	&lt;/Rectangle&gt;
+
+	&lt;Panel ux:Name=&quot;vinyl&quot; Alignment=&quot;HorizontalCenter&quot; Width=&quot;168&quot;&gt;
+		&lt;Circle ux:Name=&quot;disc&quot; Margin=&quot;2&quot;&gt;
+			&lt;Image File=&quot;Assets/vinyl.png&quot; /&gt;
+			&lt;Circle Width=&quot;50%&quot; Height=&quot;50%&quot;&gt;
+				&lt;ImageFill File=&quot;{ReadProperty Cover}&quot; StretchMode=&quot;UniformToFill&quot; WrapMode=&quot;ClampToEdge&quot; /&gt;
+			&lt;/Circle&gt;
+		&lt;/Circle&gt;
+		&lt;Circle Color=&quot;#0004&quot; Smoothness=&quot;24&quot; /&gt;
+	&lt;/Panel&gt;
+
+&lt;/Panel&gt;
+</code></pre>
+<p>To make the vinyl slide in and out of the folder, we will change their <code>Alignment</code>. For that to work, we need to do several things. On the parent container, we set <code>MaxWidth=&quot;320&quot;</code> so that the vinyl can never fully leave the folder. In addition to that, we add a <code>WhileTrue</code> trigger that changes the <code>Alignment</code> on both <code>vinyl</code> and <code>folder</code>.</p>
+<pre><code>&lt;Panel Margin=&quot;16&quot; MaxWidth=&quot;320&quot;&gt;
+	&lt;WhileTrue ux:Name=&quot;folderOpen&quot;&gt;
+		&lt;Change folder.Alignment=&quot;Left&quot; /&gt;
+		&lt;Change vinyl.Alignment=&quot;Right&quot; /&gt;
+	&lt;/WhileTrue&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>Since we don't want to move the <code>folder</code> and <code>vinyl</code> elements over a fixed width, we add a <code>LayoutAnimation</code> trigger to both of them. As we <code>Change</code> the <code>Alignment</code>, they will <code>Move</code> in an arbitrary direction (specified by <code>Vector=&quot;1&quot;</code>), relative to the position change.</p>
+<pre><code>&lt;LayoutAnimation&gt;
+	&lt;Move Vector=&quot;1&quot; RelativeTo=&quot;PositionChange&quot; DurationBack=&quot;0.4&quot; Easing=&quot;QuarticOut&quot; EasingBack=&quot;QuarticIn&quot; /&gt;
+&lt;/LayoutAnimation&gt;
+</code></pre>
+<p>Finally, we add a <code>Tapped</code> trigger on the <code>folder</code> element, which calls <code>Toggle</code> on the <code>WhileTrue</code> that triggers the alignment change.</p>
+<pre><code>&lt;Tapped&gt;
+	&lt;Toggle Target=&quot;folderOpen&quot; /&gt;
+&lt;/Tapped&gt;
+</code></pre>
+<p>For the final touch here, we want to get the record spinning! We add another <code>WhileTrue</code> and <code>Toggle</code> it from a <code>Tapped</code> trigger on the <code>vinyl</code> circle. The enclosed <code>Spin</code> animator then continuously rotates the <code>disc</code> element.</p>
+<pre><code>&lt;WhileTrue ux:Name=&quot;recordSpinning&quot;&gt;
+	&lt;Spin Target=&quot;disc&quot; Frequency=&quot;0.8&quot; /&gt;
+&lt;/WhileTrue&gt;
+
+&lt;Panel ux:Name=&quot;vinyl&quot; Alignment=&quot;Center&quot; Width=&quot;168&quot; Height=&quot;100%&quot;&gt;
+	&lt;LayoutAnimation&gt;
+		&lt;Move Vector=&quot;1&quot; RelativeTo=&quot;PositionChange&quot; DurationBack=&quot;0.4&quot; Easing=&quot;QuarticOut&quot; EasingBack=&quot;QuarticIn&quot; /&gt;
+	&lt;/LayoutAnimation&gt;
+	&lt;Tapped&gt;
+		&lt;Toggle Target=&quot;recordSpinning&quot; /&gt;
+	&lt;/Tapped&gt;
+	&lt;Circle ux:Name=&quot;disc&quot; Margin=&quot;2&quot;&gt;
+		&lt;Image File=&quot;Assets/vinyl.png&quot; /&gt;
+		&lt;Circle Width=&quot;50%&quot; Height=&quot;50%&quot;&gt;
+			&lt;ImageFill File=&quot;{ReadProperty Cover}&quot; StretchMode=&quot;UniformToFill&quot; WrapMode=&quot;ClampToEdge&quot; /&gt;
+		&lt;/Circle&gt;
+	&lt;/Circle&gt;
+	&lt;Circle Color=&quot;#0004&quot; Smoothness=&quot;24&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<h3>Background gradient transitions</h3
+<p>We put all the cards in a <code>PageControl</code> which allows us to swipe between them. The data for our cards comes from JavaScript.</p>
+<pre><code>&lt;JavaScript&gt;
+	var cards = [
+		{
+			title: &quot;FREE LIMITED LP&quot;,
+			description: &quot;Despite the title, Hundredth's third LP Free doesn't feel liberating by any means. There hasn't been a reinvention of t...&quot;,
+			artist: &quot;Hundredth&quot;,
+			artistPic: &quot;Assets/artist1.jpeg&quot;,
+			cover: &quot;Assets/1.jpg&quot;,
+			albums: &quot;4&quot;,
+			topColor: &quot;#cdb8b5&quot;,
+			bottomColor: &quot;#4f3250&quot;
+		},
+		...
+	];
+	module.exports = {
+		cards: cards
+	};
+&lt;/JavaScript&gt;
+...
+&lt;PageControl ux:Name=&quot;cards&quot; Padding=&quot;24,32,24,8&quot;&gt;
+	&lt;Each Items=&quot;{cards}&quot;&gt;
+		&lt;Card Title=&quot;{title}&quot; Description=&quot;{description}&quot; Artist=&quot;{artist}&quot;
+				ArtistPic=&quot;{artistPic}&quot; Cover=&quot;{cover}&quot; Albums=&quot;{albums}&quot;
+				TopColor=&quot;{topColor}&quot; BottomColor=&quot;{bottomColor}&quot;&gt;
+		&lt;/Card&gt;
+	&lt;/Each&gt;
+&lt;/PageControl&gt;
+</code></pre>
+<p>We can use a <code>WhileActive</code> trigger together with our <code>PageControl</code>, and that comes in handy for the gradient color transitions. Under each card, we put a <code>WhileActive</code> trigger with a <code>Threshold=&quot;0.5&quot;</code> property, making the trigger activate when the card we're navigating to is half-way in. From there we set values of two <code>Attractor</code> nodes.</p>
+<p>The <code>Attractor</code> values are bound to the <code>Color</code> property of <code>GradientStop</code> nodes in a <code>LinearGradient</code>. The use of an <code>Attractor</code> allows us to smoothly animate colors between multiple arbitrary values, - and since we can swipe between our cards both left and right, it's exactly what we need!</p>
+<pre><code>&lt;Card&gt;
+	&lt;WhileActive Threshold=&quot;0.5&quot;&gt;
+		&lt;Set topColor.Value=&quot;{topColor}&quot; /&gt;
+		&lt;Set bottomColor.Value=&quot;{bottomColor}&quot; /&gt;
+	&lt;/WhileActive&gt;
+&lt;/Card&gt;
+...
+&lt;Attractor ux:Name=&quot;topColor&quot; Target=&quot;colorTop.Color&quot; Value=&quot;#cdb8b5&quot; Type=&quot;Easing&quot; Duration=&quot;0.2&quot; DurationExp=&quot;0&quot; /&gt;
+&lt;Attractor ux:Name=&quot;bottomColor&quot; Target=&quot;colorBottom.Color&quot; Value=&quot;#4f3250&quot; Type=&quot;Easing&quot; Duration=&quot;0.2&quot; DurationExp=&quot;0&quot; /&gt;
+&lt;Rectangle&gt;
+	&lt;LinearGradient StartPoint=&quot;0,0&quot; EndPoint=&quot;0,1&quot; AngleDegrees=&quot;72&quot;&gt;
+		&lt;GradientStop ux:Name=&quot;colorTop&quot; Offset=&quot;0&quot; /&gt;
+		&lt;GradientStop ux:Name=&quot;colorBottom&quot; Offset=&quot;1&quot; /&gt;
+	&lt;/LinearGradient&gt;
+&lt;/Rectangle&gt;
+</code></pre>
+<h3>Custom page indicators</h3
+<p>The use of <code>PageControl</code> presents another advantage, since it allows us to use the flexible <code>PageIndicator</code> class. Our indicator is a simple white <code>Circle</code> with a tiny <code>Rectangle</code> inside. We make it pop with a <code>DeactivatingAnimation</code> - as we navigate away from a card, the corresponding page indicator is faded out, rotated by 360 degrees and made a bit smaller. When a card is activated, the same animation is played backwards, so we only need one!</p>
+<pre><code>&lt;PageIndicator Height=&quot;56&quot; Navigation=&quot;cards&quot; Alignment=&quot;Center&quot;&gt;
+	&lt;StackLayout ItemSpacing=&quot;12&quot; Orientation=&quot;Horizontal&quot; /&gt;
+	&lt;Panel ux:Template=&quot;Dot&quot;&gt;
+		&lt;DeactivatingAnimation&gt;
+			&lt;Scale Factor=&quot;0.8&quot; /&gt;
+			&lt;Change indicator.Opacity=&quot;0.4&quot; /&gt;
+			&lt;Rotate Degrees=&quot;360&quot; /&gt;
+		&lt;/DeactivatingAnimation&gt;
+		&lt;Circle ux:Name=&quot;indicator&quot; Width=&quot;12&quot; Height=&quot;12&quot; Color=&quot;#fff&quot;&gt;
+			&lt;Rectangle Width=&quot;2&quot; Height=&quot;7&quot; Color=&quot;#0008&quot; CornerRadius=&quot;1&quot;&gt;
+				&lt;Translation Vector=&quot;-2,-2,0&quot; /&gt;
+				&lt;Rotation Degrees=&quot;-45&quot; /&gt;
+			&lt;/Rectangle&gt;
+		&lt;/Circle&gt;
+	&lt;/Panel&gt;
+&lt;/PageIndicator&gt;
+</code></pre>
+<p>That's it for this example. Feel free to download and play with the source code.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

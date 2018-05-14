@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Overlay menu - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/overlay-menu.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_menu.html">Menu</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/keyframe.html" class="nav-link">Keyframe</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/statusbarbackground.html" class="nav-link">StatusBarBackground</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Overlay menu</h1>
+
+          <div class="example-content-preview example-content-preview-slot-3">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how to use <code>Keyframe</code> with <code>Scaling</code> and <code>Translation</code> to make a set of wobbly buttons. The example was inspired by <a href="https://dribbble.com/shots/2493667-overlay-menu-Add-animation">this awesome piece</a> by <a href="https://dribbble.com/Radziu">Radek Skrzypczak</a>, which is a design for a task list app.</p>
+<p>The <a href="https://www.iconfinder.com/icons/185091/danger_death_delete_destroy_skull_streamline_icon">skull icon</a> was created by <a href="http://www.webalys.com/">Vincent Le Moign</a>.</p>
+<p>The arrow icon is from Google's <a href="https://design.google.com/icons/">Material Icons pack</a>.</p>
+<p>This example has two main parts: the background task page and the animated overlay menu. The overlay menu is probably the most interesting part, so we'll start with that.</p>
+<h4>Animating the menu</h4
+<p>We place the &quot;menu&quot;-<code>Panel</code> on top of the task page by placing the <code>Panel</code> on top of the task <code>Panel</code> as its sibling.</p>
+<!-- snippet-begin:code/MainView.ux:AddTaskButtonpage -->
+<pre><code>&lt;DockPanel&gt;
+    &lt;Panel HitTestMode=&quot;None&quot;&gt;
+        &lt;Rectangle ux:Name=&quot;addTaskButtons&quot; Layer=&quot;Background&quot; Margin=&quot;0,0,0,80&quot;/&gt;
+        &lt;DockPanel&gt;
+            &lt;StatusBarBackground Dock=&quot;Top&quot;/&gt;
+            &lt;ux:Include File=&quot;AddTaskPage.ux&quot; /&gt;
+        &lt;/DockPanel&gt;
+    &lt;/Panel&gt;
+
+    &lt;Grid Rows=&quot;auto,auto,3*,2*,auto&quot;&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The buttons and their animation is defined in their own file and included in <code>MainView.ux</code> using the <code>&lt;ux:Include /&gt;</code> syntax:</p>
+<pre><code>&lt;ux:Include File=&quot;AddTaskPage.ux&quot;/&gt;
+</code></pre>
+<!-- snippet-begin:code/AddTaskPage.ux:TheEllipses -->
+<pre><code>&lt;Panel ux:Name=&quot;ellipse1&quot; Alignment=&quot;Bottom&quot; Width=&quot;60&quot; Height=&quot;60&quot; Opacity=&quot;0&quot;&gt;
+    &lt;Image File=&quot;Assets/skull.png&quot; Margin=&quot;17&quot;/&gt;
+    &lt;Circle Color=&quot;Red1&quot;&gt;
+        &lt;Stroke Color=&quot;Red3&quot; Width=&quot;2&quot; Offset=&quot;4&quot; /&gt;
+    &lt;/Circle&gt;
+
+    &lt;Translation ux:Name=&quot;ellipseTrans1&quot; /&gt;
+    &lt;Scaling ux:Name=&quot;ellipseScaling1&quot; Y=&quot;0.1&quot; X=&quot;0.1&quot;/&gt;
+&lt;/Panel&gt;
+
+&lt;Text ux:Class=&quot;EllipseText&quot; Alignment=&quot;Center&quot; FontSize=&quot;26&quot;/&gt;
+&lt;Panel ux:Name=&quot;ellipse2&quot; Alignment=&quot;Bottom&quot;  Width=&quot;60&quot; Height=&quot;60&quot; Opacity=&quot;0&quot;&gt;
+    &lt;EllipseText Value=&quot;!!!&quot; Color=&quot;Orange1&quot;/&gt;
+    &lt;Circle Color=&quot;White1&quot;/&gt;
+    &lt;Translation ux:Name=&quot;ellipseTrans2&quot; /&gt;
+    &lt;Scaling ux:Name=&quot;ellipseScaling2&quot; Y=&quot;0.1&quot; X=&quot;0.1&quot;/&gt;
+&lt;/Panel&gt;
+&lt;Panel ux:Name=&quot;ellipse3&quot; Alignment=&quot;Bottom&quot; Width=&quot;60&quot; Height=&quot;60&quot; Opacity=&quot;0&quot;&gt;
+    &lt;EllipseText Value=&quot;!!&quot; Color=&quot;Gray1&quot;/&gt;
+    &lt;Circle Color=&quot;White1&quot;/&gt;
+    &lt;Translation ux:Name=&quot;ellipseTrans3&quot; /&gt;
+    &lt;Scaling ux:Name=&quot;ellipseScaling3&quot; Y=&quot;0.1&quot; X=&quot;0.1&quot;/&gt;
+&lt;/Panel&gt;
+&lt;Panel ux:Name=&quot;ellipse4&quot; Alignment=&quot;Bottom&quot; Width=&quot;60&quot; Height=&quot;60&quot; Opacity=&quot;0&quot;&gt;
+    &lt;EllipseText Value=&quot;!&quot; Color=&quot;Gray2&quot;/&gt;
+    &lt;Circle Color=&quot;White1&quot; /&gt;
+    &lt;Translation ux:Name=&quot;ellipseTrans4&quot; /&gt;
+    &lt;Scaling ux:Name=&quot;ellipseScaling4&quot; Y=&quot;0.1&quot; X=&quot;0.1&quot;/&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The buttons are created using a <code>Panel</code> with a containing <code>Circle</code>. Note that we do not actually use the <code>Button</code> class in this case. They also each have their own <code>Translation</code> and <code>Scaling</code>, which we use to create their animation.</p>
+<p>Their animation is triggered by toggling a <code>WhileTrue</code> in response to a <code>Clicked</code> event. Each button is animated individually by a <code>Change</code> of their <code>Scaling</code> and <code>Transform</code>. They also have their <code>Opacity</code> animated in the same way.</p>
+<!-- snippet-begin:code/AddTaskPage.ux:TheButtonAnimations -->
+<pre><code>&lt;Change Target=&quot;ellipseScaling1.Vector&quot;&gt;
+    &lt;Keyframe Time=&quot;0.1&quot; Value=&quot;1.4,1.0&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.2&quot; Value=&quot;0.8,1.0&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.3&quot; Value=&quot;1.0,1.0&quot;/&gt;
+&lt;/Change&gt;
+&lt;Change ellipseTrans1.Y=&quot;-80&quot;  Duration=&quot;0.2&quot; Delay=&quot;0&quot; Easing=&quot;QuinticInOut&quot;/&gt;
+&lt;Change ellipse1.Opacity=&quot;1&quot; Duration=&quot;0.3&quot; Easing=&quot;QuinticOut&quot;/&gt;
+
+&lt;Change Target=&quot;ellipseScaling2.Vector&quot;&gt;
+    &lt;Keyframe Time=&quot;0.15&quot; Value=&quot;1.0,1.4&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.3&quot; Value=&quot;1.0,0.9&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.4&quot; Value=&quot;1.0,1.0&quot;/&gt;
+&lt;/Change&gt;
+&lt;Change ellipseTrans2.Y=&quot;-160&quot;  Duration=&quot;0.25&quot; Delay=&quot;0&quot; Easing=&quot;QuinticInOut&quot; /&gt;
+&lt;Change ellipse2.Opacity=&quot;1&quot; Duration=&quot;0.4&quot; Easing=&quot;QuinticOut&quot;/&gt;
+
+&lt;Change Target=&quot;ellipseScaling3.Vector&quot;&gt;
+    &lt;Keyframe Time=&quot;0.2&quot; Value=&quot;1.0,1.6&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.3&quot; Value=&quot;1.0,0.9&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.4&quot; Value=&quot;1.0,1.0&quot;/&gt;
+&lt;/Change&gt;
+&lt;Change ellipseTrans3.Y=&quot;-240&quot; Duration=&quot;0.3&quot; Delay=&quot;0&quot; Easing=&quot;QuinticInOut&quot;/&gt;
+&lt;Change ellipse3.Opacity=&quot;1&quot; Duration=&quot;0.45&quot; Easing=&quot;QuinticOut&quot;/&gt;
+
+&lt;Change Target=&quot;ellipseScaling4.Vector&quot;&gt;
+    &lt;Keyframe Time=&quot;0.25&quot; Value=&quot;1.0,1.4&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.4&quot; Value=&quot;1.0,0.9&quot;/&gt;
+    &lt;Keyframe Time=&quot;0.5&quot; Value=&quot;1.0,1.0&quot;/&gt;
+&lt;/Change&gt;
+&lt;Change ellipseTrans4.Y=&quot;-320&quot; Duration=&quot;0.35&quot; Delay=&quot;0&quot; Easing=&quot;QuinticInOut&quot;/&gt;
+&lt;Change ellipse4.Opacity=&quot;1&quot; Duration=&quot;0.5&quot; Easing=&quot;QuinticOut&quot;/&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>The task page</h4
+<p>The task page has no animation but is composed of a few building blocks. The main layout is a <code>Grid</code> with five rows. The first row contain the <code>StatusBarBackground</code>, which is used to compensate for the height of the status bar. The second row contains the top bar, with a title and a familiar hamburger icon (like them or not, they're very common these days).</p>
+<!-- snippet-begin:code/MainView.ux:TopBar -->
+<pre><code>&lt;Grid Columns=&quot;1*,1*,1*&quot; Height=&quot;50&quot; Margin=&quot;20,0&quot;&gt;
+    &lt;Grid Width=&quot;20&quot; RowCount=&quot;2&quot; Height=&quot;15&quot; Alignment=&quot;Left&quot;&gt;
+        &lt;Rectangle Height=&quot;2&quot; Color=&quot;White&quot;/&gt;
+        &lt;Rectangle Height=&quot;2&quot; Color=&quot;White&quot;/&gt;
+    &lt;/Grid&gt;
+    &lt;T Value=&quot;Today&quot; Alignment=&quot;Center&quot;/&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The next two rows contains the mock list of tasks:</p>
+<!-- snippet-begin:code/MainView.ux:TheTaskList -->
+<pre><code>&lt;StackPanel ItemSpacing=&quot;20&quot;&gt;
+    &lt;JavaScript&gt;
+        module.exports = { items: ['The first task', 'The second task', 'The third task'] };
+    &lt;/JavaScript&gt;
+    &lt;Each Items=&quot;{items}&quot;&gt;
+        &lt;Grid Columns=&quot;1*,auto&quot; Margin=&quot;20,0&quot;&gt;
+            &lt;T Alignment=&quot;CenterLeft&quot; Value=&quot;{}&quot; /&gt;
+            &lt;Rectangle Width=&quot;30&quot; Height=&quot;30&quot; Opacity=&quot;0.5&quot;&gt;
+                &lt;Stroke Color=&quot;Gray2&quot; Width=&quot;2&quot;/&gt;
+            &lt;/Rectangle&gt;
+        &lt;/Grid&gt;
+        &lt;Rectangle Height=&quot;1&quot; Color=&quot;Gray2&quot; Opacity=&quot;0.6&quot;/&gt;
+    &lt;/Each&gt;
+&lt;/StackPanel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>and the mock listing of the three task severities:</p>
+<!-- snippet-begin:code/MainView.ux:TaskCounterItems -->
+<pre><code>&lt;Grid ColumnCount=&quot;3&quot;&gt;
+    &lt;Rectangle Color=&quot;Gray2&quot; Height=&quot;2&quot; Layer=&quot;Background&quot; Y=&quot;70%&quot;/&gt;
+    &lt;TaskCounter Severity=&quot;!!!&quot; SeverityColor=&quot;#EF804F&quot;
+                 Count=&quot;3&quot; Text=&quot;IMPORTANT&quot; /&gt;
+    &lt;TaskCounter Severity=&quot;!!&quot; SeverityColor=&quot;#939393&quot;
+                 Count=&quot;2&quot; Text=&quot;REALLY?&quot; /&gt;
+    &lt;TaskCounter Severity=&quot;!&quot; SeverityColor=&quot;#DBDBDB&quot;
+                 Count=&quot;5&quot; Text=&quot;MEH!&quot; /&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The <code>TaskCounter</code> class is defined as follows, and was made just as a convenience.</p>
+<!-- snippet-begin:code/TaskCounter.ux:TaskCounterClass -->
+<pre><code>&lt;Grid ux:Class=&quot;TaskCounter&quot; Rows=&quot;1*,3*,2*&quot;
+      Margin=&quot;10,20&quot; Padding=&quot;10&quot; Color=&quot;White&quot;&gt;
+    &lt;string ux:Property=&quot;Severity&quot; /&gt;
+    &lt;float4 ux:Property=&quot;SeverityColor&quot; /&gt;
+
+    &lt;string ux:Property=&quot;Count&quot; /&gt;
+    &lt;string ux:Property=&quot;Text&quot; /&gt;
+
+    &lt;Panel Alignment=&quot;TopCenter&quot; Y=&quot;-20&quot; Background=&quot;White&quot; Layer=&quot;Overlay&quot;&gt;
+        &lt;Text Value=&quot;{ReadProperty this.Severity}&quot;
+              Color=&quot;{ReadProperty this.SeverityColor}&quot;
+              FontSize=&quot;22&quot; Margin=&quot;3,0&quot;/&gt;
+    &lt;/Panel&gt;
+    &lt;Rectangle Layer=&quot;Background&quot;&gt;
+        &lt;Stroke Width=&quot;2&quot; Color=&quot;Gray2&quot; /&gt;
+    &lt;/Rectangle&gt;
+    &lt;Text Value=&quot;{ReadProperty this.Text}&quot; Alignment=&quot;Center&quot; FontSize=&quot;10&quot;/&gt;
+    &lt;Text Value=&quot;{ReadProperty this.Count}&quot; FontSize=&quot;70&quot; Alignment=&quot;Center&quot;/&gt;
+    &lt;Image File=&quot;Assets/arrowForward.png&quot; Color=&quot;Gray2&quot; Width=&quot;20&quot; Height=&quot;20&quot;/&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>And that's it! Feel free to download the example code and play around.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

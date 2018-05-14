@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Custom toggle control - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/swipe-toggle.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_swipegesture.html">Swipe gesture</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipegesture.html" class="nav-link">SwipeGesture</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipinganimation.html" class="nav-link">SwipingAnimation</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Custom toggle control</h1>
+
+          <div class="example-content-preview example-content-preview-slot-6">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example, we make a custom toggle control using <code>SwipeGesture</code> and <code>SwipingAnimation</code>.</p>
+<pre><code>&lt;App&gt;
+	&lt;Panel ux:Class=&quot;MyToggle&quot; Width=&quot;80&quot; Height=&quot;34&quot; PrimaryColor=&quot;#9b59b6&quot; SecondaryColor=&quot;#fff&quot;&gt;
+		&lt;float4 ux:Property=&quot;PrimaryColor&quot; /&gt;
+		&lt;float4 ux:Property=&quot;SecondaryColor&quot; /&gt;
+		&lt;bool ux:Property=&quot;IsActive&quot; /&gt;
+		
+		&lt;SwipeGesture ux:Name=&quot;swipe&quot; Length=&quot;46&quot; Direction=&quot;Right&quot; Type=&quot;Active&quot; IsActive=&quot;{Property IsActive}&quot; /&gt;
+		&lt;SwipingAnimation Source=&quot;swipe&quot;&gt;
+			&lt;Move Target=&quot;handle&quot; X=&quot;46&quot; /&gt;
+			&lt;Change handle.Color=&quot;{ReadProperty SecondaryColor}&quot; /&gt;
+			&lt;Change background.Color=&quot;{ReadProperty PrimaryColor}&quot; /&gt;
+		&lt;/SwipingAnimation&gt;
+		
+		&lt;Clicked&gt;
+			&lt;ToggleSwipeActive Target=&quot;swipe&quot; /&gt;
+		&lt;/Clicked&gt;
+		
+		&lt;Rectangle ux:Name=&quot;handle&quot; Width=&quot;28&quot; Margin=&quot;3&quot; Alignment=&quot;Left&quot; Color=&quot;{ReadProperty PrimaryColor}&quot; CornerRadius=&quot;2&quot;&gt;
+			&lt;Shadow Size=&quot;1&quot; Distance=&quot;1&quot; Color=&quot;#0004&quot; /&gt;
+		&lt;/Rectangle&gt;
+		
+		&lt;Rectangle ux:Name=&quot;background&quot; Layer=&quot;Background&quot; Color=&quot;{ReadProperty SecondaryColor}&quot; CornerRadius=&quot;4&quot; /&gt;
+	&lt;/Panel&gt;
+	
+	&lt;MyToggle ux:Name=&quot;toggle&quot; /&gt;
+	&lt;WhileTrue Value=&quot;{ReadProperty toggle.IsActive}&quot;&gt;
+		&lt;Change background.Color=&quot;#ecf0f1&quot; Duration=&quot;0.2&quot; /&gt;
+	&lt;/WhileTrue&gt;
+	
+	&lt;Rectangle ux:Name=&quot;background&quot; Color=&quot;#6A397F&quot; /&gt;
+&lt;/App&gt;
+</code></pre>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

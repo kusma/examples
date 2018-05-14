@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Sticky headers - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/sticky-headers.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_cards.html">Cards</a>, <a href="../tag_gesture.html">Gesture</a>, <a href="../tag_layout.html">Layout</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/properties.html" class="nav-link">ux:Property</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/componentization.html#referencing-files-through-properties" class="nav-link">FileSource</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/image.html" class="nav-link">Image</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/imagefill.html" class="nav-link">ImageFill</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/scrollinganimation.html" class="nav-link">ScrollingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/grid.html" class="nav-link">Grid</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle.html" class="nav-link">Rectangle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/expressions.html" class="nav-link">UX Expressions</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Sticky headers</h1>
+
+          <div class="example-content-preview example-content-preview-slot-7">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how we can create sticky headers that hover at the top of the screen as we scroll the content. Pictures for this example are taken from <a href="https://unsplash.com/">unsplash.com</a>. Design inspiration: <a href="https://dribbble.com/shots/3335104-07-Read-App-Interface">Read App Interface</a> by Kun-Li.</p>
+<p>The desired effect can be implemented with the use of the <code>x()</code> and <code>y()</code> UX expression functions. Since in this case we only need a vertical translation, we will use the <code>y()</code> function, which tells us the value of an elements' vertical position.</p>
+<p>The main structure of our app is a <code>ScrollView</code> that holds a list of cards.</p>
+<pre><code>&lt;ScrollView Background=&quot;#f3f4f6&quot;&gt;
+    &lt;StackPanel ItemSpacing=&quot;8&quot;&gt;
+        &lt;Each Items=&quot;{list}&quot;&gt;
+            &lt;ListItem /&gt;
+        &lt;/Each&gt;
+    &lt;/StackPanel&gt;
+&lt;/ScrollView&gt;
+</code></pre>
+<p>The cards are defined as components using <code>ux:Class</code>. We have a separate <code>content</code> element, which holds the large image, and on top of it - our slightly transparent <code>header</code> <code>Panel</code> with author details. Below that, we have the footer section that shows the image title and some icons.</p>
+<pre><code>&lt;StackPanel ux:Class=&quot;ListItem&quot; Background=&quot;#fff&quot;&gt;
+    &lt;StackPanel ux:Name=&quot;content&quot;&gt;
+        &lt;Panel ux:Name=&quot;header&quot; Height=&quot;68&quot; Padding=&quot;24,0&quot; Background=&quot;#fffffff8&quot;&gt;
+            &lt;DockPanel Alignment=&quot;VerticalCenter&quot;&gt;
+                &lt;Icon File=&quot;Assets/Icons/more.png&quot; Size=&quot;24&quot; Dock=&quot;Right&quot; /&gt;
+                &lt;Circle Dock=&quot;Left&quot; Width=&quot;40&quot; Height=&quot;40&quot;&gt;
+                    &lt;ImageFill File=&quot;{authorFile}&quot; /&gt;
+                &lt;/Circle&gt;
+                &lt;StackPanel Padding=&quot;16,0&quot;&gt;
+                    &lt;Text Value=&quot;{authorName}&quot; Color=&quot;#8e979e&quot; FontSize=&quot;16&quot; Alignment=&quot;Left&quot; /&gt;
+                    &lt;Text Value=&quot;{authorPlace}&quot; Color=&quot;#8e979e&quot; FontSize=&quot;12&quot; Alignment=&quot;Left&quot; /&gt;
+                &lt;/StackPanel&gt;
+            &lt;/DockPanel&gt;
+        &lt;/Panel&gt;
+
+        &lt;Image Height=&quot;256&quot; File=&quot;{imageFile}&quot; StretchMode=&quot;UniformToFill&quot; /&gt;
+    &lt;/StackPanel&gt;
+
+    &lt;Panel Height=&quot;56&quot; Padding=&quot;24,0&quot;&gt;
+        &lt;DockPanel Alignment=&quot;VerticalCenter&quot;&gt;
+            &lt;StackPanel Dock=&quot;Right&quot; Orientation=&quot;Horizontal&quot; ItemSpacing=&quot;16&quot;&gt;
+                &lt;Icon File=&quot;Assets/Icons/favorite.png&quot; Size=&quot;18&quot; /&gt;
+                &lt;Icon File=&quot;Assets/Icons/chat.png&quot; Size=&quot;18&quot; /&gt;
+            &lt;/StackPanel&gt;
+            &lt;Text Value=&quot;{imageTitle}&quot; Color=&quot;#8e979e&quot; FontSize=&quot;20&quot; Alignment=&quot;CenterLeft&quot; ClipToBounds=&quot;true&quot; Margin=&quot;0,0,16,0&quot; /&gt;
+        &lt;/DockPanel&gt;
+    &lt;/Panel&gt;
+&lt;/StackPanel&gt;
+</code></pre>
+<p>To make the <code>header</code> items position react to our <code>ScrollView</code> being scrolled, we use a <code>ScrollingAnimation</code> trigger together with a <code>Move</code> animator.
+Since we put the <code>ScrollingAnimation</code> triggers inside of our card class, the position values we get in our UX expression functions are relative to the particular instance of that class.</p>
+<p>The first <code>ScrollingAnimation</code> trigger sticks the <code>header</code> to the top of the <code>ScrollView</code>. As we scroll, the <code>Move</code> animator moves the <code>header</code> vertically, relative to the size of the <code>content</code> area. Since the <code>ScrollingAnimation</code> trigger length matches the height of the <code>content</code> node, it makes the <code>header</code> appear like it's stuck to the top.</p>
+<pre><code>&lt;ScrollingAnimation From=&quot;y(this)&quot; To=&quot;y(this) + height(content)&quot;&gt;
+    &lt;Move Target=&quot;header&quot; Y=&quot;1&quot; RelativeTo=&quot;Size&quot; RelativeNode=&quot;content&quot; /&gt;
+&lt;/ScrollingAnimation&gt;
+</code></pre>
+<p>If we do the math for the first <code>ListItem</code>, the <code>ScrollingAnimation</code> is starting from <code>0</code> and ending with <code>0 + (68 + 256) = 324</code>. For every other <code>ListItem</code>, the <code>y(this)</code> expression translates to the vertical offset of that item relative to the <code>StackPanel</code> that holds the list.</p>
+<p>The second <code>ScrollingAnimation</code> trigger is responsible for moving the <code>header</code> out of the view when it hits the bottom of the card. As we scroll, the <code>Move</code> animator moves the <code>header</code> upwards relative to its size. Since in this case the <code>ScrollingAnimation</code> trigger length matches the height of the <code>header</code> element, it gets smoothly scrolled out of the view.</p>
+<pre><code>&lt;ScrollingAnimation From=&quot;y(this) + height(content) - height(header)&quot; To=&quot;y(this) + height(content)&quot;&gt;
+    &lt;Move Target=&quot;header&quot; Y=&quot;-1&quot; RelativeTo=&quot;Size&quot; /&gt;
+&lt;/ScrollingAnimation&gt;
+</code></pre>
+<p>The expression for the starting point takes into account the position of the card, adds the height of the content area and subtracts the height of the <code>header</code>. The expression for the end point only needs to take into account the position of the card and add the height of the content area.</p>
+<p>Now we have a simple starting point for any sticky header situation. We can't wait to see what you will come up with!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

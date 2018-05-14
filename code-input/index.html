@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Code input - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/code-input.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_javascript.html">JavaScript</a>, <a href="../tag_reusablecomponents.html">Reusable components</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/givefocus.html" class="nav-link">GiveFocus</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle.html" class="nav-link">Rectangle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle/cornerradius.html" class="nav-link">CornerRadius</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/resize.html" class="nav-link">Resize</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/translation.html" class="nav-link">Translation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#map-func-item" class="nav-link">Observable.map</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html#event-binding-to-javascript-functions" class="nav-link">Event handler</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Code input</h1>
+
+          <div class="example-content-preview example-content-preview-slot-8">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how we can create a segmented code input control with neat animations between focused and non-focused states.
+Design inspiration was taken from the clean and attractive <a href="https://dribbble.com/shots/2163930-Code-input-field-concept">Code input field concept</a> by Samuel Kantala.</p>
+<p>Our <code>SegmentedInput</code> is a reusable component and contains both UX code for layout and JavaScript for the logic. Let's take a look at the basic structure of it:</p>
+<pre><code>&lt;StackPanel ux:Class=&quot;SegmentedInput&quot; HitTestMode=&quot;LocalBounds&quot;&gt;
+    &lt;string ux:Property=&quot;Label&quot; /&gt;
+    &lt;string ux:Property=&quot;Code&quot; /&gt;
+
+    &lt;JavaScript&gt;
+        var Observable = require(&quot;FuseJS/Observable&quot;);
+
+        var editMode = Observable(false);
+        function enterEditMode() {
+            editMode.value = true;
+        };
+        function exitEditMode() {
+            editMode.value = false;
+        };
+
+        var codeLength = 5;
+        var code = this.Code;
+
+        module.exports = {
+            code: code,
+            codeLength: codeLength,
+            editMode: editMode,
+            enterEditMode: enterEditMode,
+            exitEditMode: exitEditMode
+        };
+    &lt;/JavaScript&gt;
+
+    &lt;Clicked&gt;
+        &lt;GiveFocus Target=&quot;codeInput&quot; /&gt;
+    &lt;/Clicked&gt;
+
+    &lt;TextInput ux:Name=&quot;codeInput&quot; Value=&quot;{code}&quot; MaxLength=&quot;{codeLength}&quot; InputHint=&quot;Number&quot;
+        Layer=&quot;Background&quot; Visibility=&quot;Hidden&quot; HitTestMode=&quot;None&quot;
+        Focus.Gained=&quot;{enterEditMode}&quot; Focus.Lost=&quot;{exitEditMode}&quot; /&gt;
+
+    &lt;Panel Height=&quot;24&quot;&gt;
+        &lt;Text Value=&quot;{ReadProperty Label}&quot; FontSize=&quot;20&quot; Color=&quot;Highlight&quot; Alignment=&quot;TopLeft&quot; TransformOrigin=&quot;TopLeft&quot;&gt;
+            &lt;Translation ux:Name=&quot;labelTrans&quot; Y=&quot;1&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+            &lt;WhileTrue Value=&quot;{editMode}&quot;&gt;
+                &lt;Change labelTrans.Y=&quot;0&quot; Delay=&quot;0.2&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+                &lt;Scale Factor=&quot;0.8&quot; Delay=&quot;0.2&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+            &lt;/WhileTrue&gt;
+        &lt;/Text&gt;
+    &lt;/Panel&gt;
+
+    &lt;Grid ColumnCount=&quot;{codeLength}&quot; Height=&quot;40&quot;&gt;
+        &lt;Each Items=&quot;{symbols}&quot;&gt;
+            &lt;SymbolBox Symbol=&quot;{symbol}&quot; /&gt;
+        &lt;/Each&gt;
+    &lt;/Grid&gt;
+&lt;/StackPanel&gt;
+</code></pre>
+<p>We put the label in a <code>Panel</code> on top of the <code>Grid</code> that will hold our symbol boxes. We offset the label vertically by the height of its parent so it moves closer to the bottom line:</p>
+<pre><code>&lt;Panel Height=&quot;24&quot;&gt;
+    &lt;Text Value=&quot;{ReadProperty Label}&quot; FontSize=&quot;20&quot; Color=&quot;Highlight&quot; Alignment=&quot;TopLeft&quot; TransformOrigin=&quot;TopLeft&quot;&gt;
+        &lt;Translation ux:Name=&quot;labelTrans&quot; Y=&quot;1&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+    &lt;/Text&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>As we are making a reusable component, we expose two properties that we specify when we use the component: <code>Label</code> and <code>Code</code>. The <code>Code</code> property is implicitly available in our JavaScript as an <code>Observable</code> that we can refer to as <code>this.Code</code>;</p>
+<pre><code>    &lt;string ux:Property=&quot;Label&quot; /&gt;
+    &lt;string ux:Property=&quot;Code&quot; /&gt;
+    &lt;JavaScript&gt;
+        var code = this.Code;
+</code></pre>
+<p>We then add a <code>TextInput</code> and data-bind it to our <code>code</code> Observable in JavaScript. Since the <code>TextInput</code> is only necessary for summoning the on-screen keyboard and gathering user input, we hide it completely. We will later split the <code>code</code> variable in symbols and show them in our symbol boxes instead.</p>
+<p>Since we want the on-screen keyboard to show up whenever user clicks the control, we add a <code>HitTestMode=&quot;LocalBounds&quot;</code> to the whole control, and a <code>Clicked</code> trigger that gives focus to our hidden <code>TextInput</code>.</p>
+<p>The label and symbol boxes will animate when our control gains and loses focus, so we introduce an <code>editMode</code> state in JavaScript. In UX, we data-bind the <code>enterEditMode</code> and <code>exitEditMode</code> functions to <code>Focus.Gained</code> and <code>Focus.Lost</code> properties of our <code>TextInput</code>, so that the functions are called when appropriate.</p>
+<p>To implement the label animation, we make use of the <code>editMode</code> boolean <code>Observable</code>. Note how we specify <code>TransformOrigin=&quot;TopLeft&quot;</code> to ensure that the label travels to the right place:</p>
+<pre><code>&lt;Panel Height=&quot;24&quot;&gt;
+    &lt;Text Value=&quot;{ReadProperty Label}&quot; FontSize=&quot;20&quot; Color=&quot;Highlight&quot; Alignment=&quot;TopLeft&quot; TransformOrigin=&quot;TopLeft&quot;&gt;
+        &lt;Translation ux:Name=&quot;labelTrans&quot; Y=&quot;1&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+        &lt;WhileTrue Value=&quot;{editMode}&quot;&gt;
+            &lt;Change labelTrans.Y=&quot;0&quot; Delay=&quot;0.2&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+            &lt;Scale Factor=&quot;0.8&quot; Delay=&quot;0.2&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+        &lt;/WhileTrue&gt;
+    &lt;/Text&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>Before we go to our symbol boxes, let's split our <code>code</code> variable in pieces so that we have the separate symbols. We <code>.map()</code> on the <code>code</code> variable and return an array that holds the symbols present in <code>code</code>, plus empty strings up to the expected code length. Since we now have an <code>Observable</code> of an array, we use <code>.expand()</code> to get an <code>Observable</code> collection of all the items of the array.</p>
+<pre><code>var codeLength = 5;
+var code = this.Code;
+var splitCode = code.map(function(item) {
+    var entered = item.split(&quot;&quot;);
+    while (entered.length &lt; codeLength) {
+        entered.push(&quot;&quot;);
+    }
+    return entered;
+}).expand();
+</code></pre>
+<p>Since we want to show the user which symbol is about to be entered, we need a way to mark a given symbol as selected. We achieve that by using another <code>.map()</code> on the new <code>splitCode</code> <code>Observable</code> list. For each item in the collection, we check if the index of the item matches the length of our <code>code</code> variable and set a boolean property depending on that. Ultimately, the variable <code>symbols</code> becomes a list of objects that is reactively updated whenever a character is entered in our hidden <code>TextInput</code>.</p>
+<pre><code>var symbols = splitCode.map(function(item, index) {
+    var obj = {symbol: item, selected: false};
+    if (index == code.value.length) {
+        obj.selected = true;
+    }
+    return obj;
+});
+</code></pre>
+<p>With the main control done, let's move on to the symbol boxes. They contain the bottom lines, and are responsible for resizing them as the control transitions to the edit mode. Let's take a look at our <code>SymbolBox</code>:</p>
+<pre><code>&lt;Panel ux:Class=&quot;SymbolBox&quot;&gt;
+    &lt;string ux:Property=&quot;Symbol&quot; /&gt;
+
+    &lt;WhileTrue Value=&quot;{editMode}&quot;&gt;
+        &lt;Change backgroundRect.Margin=&quot;8,0&quot; Delay=&quot;0.2&quot; DelayBack=&quot;0&quot; /&gt;
+        &lt;Change backgroundRect.CornerRadius=&quot;1&quot; Delay=&quot;0.2&quot; DelayBack=&quot;0&quot; /&gt;
+        &lt;Change label.Opacity=&quot;1&quot; Delay=&quot;0.2&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+    &lt;/WhileTrue&gt;
+
+    &lt;WhileTrue Value=&quot;{selected} &amp;&amp; {editMode}&quot;&gt;
+        &lt;Change backgroundRect.Color=&quot;Black&quot; Delay=&quot;0.2&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+    &lt;/WhileTrue&gt;
+
+    &lt;Text ux:Name=&quot;label&quot; Alignment=&quot;Center&quot; Value=&quot;{ReadProperty Symbol}&quot; FontSize=&quot;32&quot; Color=&quot;Highlight&quot; Opacity=&quot;0&quot; /&gt;
+    &lt;Rectangle ux:Name=&quot;backgroundRect&quot; Color=&quot;Highlight&quot; Height=&quot;2&quot; Alignment=&quot;Bottom&quot;&gt;
+        &lt;LayoutAnimation&gt;
+            &lt;Move X=&quot;1&quot; Y=&quot;1&quot; RelativeTo=&quot;PositionChange&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+            &lt;Resize X=&quot;1&quot; Y=&quot;1&quot; RelativeTo=&quot;SizeChange&quot; Duration=&quot;0.42&quot; Easing=&quot;ExponentialOut&quot; EasingBack=&quot;ExponentialIn&quot; /&gt;
+        &lt;/LayoutAnimation&gt;
+    &lt;/Rectangle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<p>When we enter edit mode, we <code>Change</code> the <code>Margin</code> on the <code>backgroundRect</code> to create spacing between symbol boxes. In addition to that, we apply <code>CornerRadius</code> to make them smoother. This triggers the <code>LayoutAnimation</code> on the <code>backgroundRect</code> and it neatly resizes all of the lines. We also <code>Change</code> the <code>Opacity</code> on the label so that the entered symbols become visible while in edit mode.
+To highlight the selected symbol, we add another <code>WhileTrue</code> trigger with a UX expression that combines both <code>editMode</code> and <code>selected</code> JavaScript boolean variables.</p>
+<p>Using our new SegmentedCode component is now fairly straightforward. In our <code>App</code>, we create an <code>Observable</code> variable <code>code</code> that we pass to the component. Now all that remains is implementing a code submit function and we're good to go!</p>
+<pre><code>&lt;App&gt;
+    &lt;float4 ux:Global=&quot;Highlight&quot; ux:Value=&quot;#999&quot; /&gt;
+
+    &lt;JavaScript&gt;
+        var Observable = require(&quot;FuseJS/Observable&quot;);
+        var code = Observable(&quot;&quot;);
+        module.exports = {
+            code: code
+        };
+    &lt;/JavaScript&gt;
+
+    &lt;ClientPanel&gt;
+        &lt;SegmentedInput Label=&quot;Enter Code&quot; Code=&quot;{code}&quot; Alignment=&quot;Top&quot; Margin=&quot;16,64,16,0&quot; /&gt;
+    &lt;/ClientPanel&gt;
+&lt;/App&gt;
+</code></pre>
+<p>Now go ahead, download the example, make your own segmented inputs and hook them up to actual authorization mechanisms!</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

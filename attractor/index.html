@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Attractor - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/attractor.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_physics.html">Physics</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/attractor_1.html" class="nav-link">Attractor</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/clicked.html" class="nav-link">Clicked</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Attractor</h1>
+
+          <div class="example-content-preview example-content-preview-slot-6">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>It is easy to quickly set up interpolation between values using an <code>Attractor</code>. Here is a simple example:</p>
+<p>Here an <code>Attractor</code> is set up to interpolate between the raw <code>Translation</code> and the desired target value of the <code>Rectangle</code>.</p>
+<p>The code is simply:</p>
+<!-- snippet-begin:code/MainView.ux:AppUX -->
+<pre><code>&lt;App&gt;
+    &lt;DockPanel&gt;
+        &lt;StatusBarBackground Dock=&quot;Top&quot; /&gt;
+        &lt;Button ux:Class=&quot;BottomButton&quot; Height=&quot;75&quot; /&gt;
+        &lt;StackPanel Dock=&quot;Bottom&quot;&gt;
+            &lt;Panel&gt;
+                &lt;BottomButton Text=&quot;Center&quot; Alignment=&quot;Center&quot;&gt;
+                    &lt;Clicked&gt;
+                        &lt;Set greenPosition.Value=&quot;0,0,0&quot; /&gt;
+                    &lt;/Clicked&gt;
+                &lt;/BottomButton&gt;
+                &lt;Grid ColumnCount=&quot;2&quot; &gt;
+                    &lt;BottomButton Text=&quot;TopLeft&quot;&gt;
+                        &lt;Clicked&gt;
+                            &lt;Set greenPosition.Value=&quot;-100,-100,0&quot; /&gt;
+                        &lt;/Clicked&gt;
+                    &lt;/BottomButton&gt;
+                    &lt;BottomButton Text=&quot;TopRight&quot;&gt;
+                        &lt;Clicked&gt;
+                            &lt;Set greenPosition.Value=&quot;100,-100,0&quot; /&gt;
+                        &lt;/Clicked&gt;
+                    &lt;/BottomButton&gt;
+                    &lt;BottomButton Text=&quot;BottomLeft&quot;&gt;
+                        &lt;Clicked&gt;
+                            &lt;Set greenPosition.Value=&quot;-100,100,0&quot; /&gt;
+                        &lt;/Clicked&gt;
+                    &lt;/BottomButton&gt;
+                    &lt;BottomButton Text=&quot;BottomRight&quot;&gt;
+                        &lt;Clicked&gt;
+                            &lt;Set greenPosition.Value=&quot;100,100,0&quot; /&gt;
+                        &lt;/Clicked&gt;
+                    &lt;/BottomButton&gt;
+                &lt;/Grid&gt;
+            &lt;/Panel&gt;
+            &lt;BottomFrameBackground /&gt;
+        &lt;/StackPanel&gt;
+
+        &lt;Panel&gt;
+            &lt;Rectangle CornerRadius=&quot;5&quot; Width=&quot;25&quot; Height=&quot;25&quot; Color=&quot;#3f4&quot;&gt;
+                &lt;Translation ux:Name=&quot;rawPosition&quot;/&gt;
+                &lt;Attractor Target=&quot;rawPosition.Vector&quot; ux:Name=&quot;greenPosition&quot; /&gt;
+            &lt;/Rectangle&gt;
+        &lt;/Panel&gt;
+    &lt;/DockPanel&gt;
+&lt;/App&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>A fancier example using Delay</h4
+<p>Let's create a more elaborate example by adding more items and delaying some of them:</p>
+<p>[VIDEO media/preview-delayed.mp4]</p>
+<p>This effect is achieved by simply adding more rectangles, more instances of <code>Attractor</code> and putting a <code>Delay</code> on the triggers, like this:</p>
+<!-- snippet-begin:code/MainView.ux:MoreRectangles -->
+<pre><code>&lt;BottomButton Text=&quot;TopLeft&quot;&gt;
+    &lt;Clicked&gt;
+        &lt;Set GreenPosition1.Value=&quot;-100,-100,0&quot; /&gt;
+        &lt;Set GreenPosition2.Value=&quot;-100,-100,0&quot; Delay=&quot;0.05&quot; /&gt;
+        &lt;Set GreenPosition3.Value=&quot;-100,-100,0&quot; Delay=&quot;0.1&quot; /&gt;
+        &lt;Set GreenPosition4.Value=&quot;-100,-100,0&quot; Delay=&quot;0.15&quot; /&gt;
+        &lt;Set GreenPosition5.Value=&quot;-100,-100,0&quot; Delay=&quot;0.2&quot; /&gt;
+    &lt;/Clicked&gt;
+&lt;/BottomButton&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

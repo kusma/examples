@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Sign up flow - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/signup-concept.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_animation.html">Animation</a>, <a href="../tag_layout.html">Layout</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whileenabled.html" class="nav-link">WhileEnabled</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/resize.html" class="nav-link">Resize</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move/relativeto.html" class="nav-link">Move.RelativeTo</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/layoutcontrol/setlayoutmaster_084fadc8.html" class="nav-link">LayoutMaster</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Sign up flow</h1>
+
+          <div class="example-content-preview example-content-preview-slot-6">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we decided to take on another <a href="https://stories.uplabs.com/can-you-code-this-ui-concept-vol-2-9c9763269640#.abop8q8x6">UpLabs challenge</a> by implementing this very cool <a href="http://www.materialup.com/posts/material-signup-interaction">signup flow animation</a>. You will learn how to animate layout between completely different app states.</p>
+<h3>Defining some colors</h3
+<p>We define all our colors in a separate file called Resources.ux, enclosed in a <code>ux:Resources</code> tag:</p>
+<p>Resources.ux:</p>
+<!-- snippet-begin:code/Resources.ux:SomeColors -->
+<pre><code>&lt;ux:Resources&gt;
+    &lt;float4 ux:Global=&quot;Green&quot;      ux:Value=&quot;#14FFB5&quot;/&gt;
+    &lt;float4 ux:Global=&quot;Purple&quot;     ux:Value=&quot;#5E2E91&quot;/&gt;
+    &lt;float4 ux:Global=&quot;White&quot;      ux:Value=&quot;#FFFFFF&quot;/&gt;
+    &lt;float4 ux:Global=&quot;Gray&quot;       ux:Value=&quot;#999999&quot;/&gt;
+    &lt;float4 ux:Global=&quot;TopGray&quot;    ux:Value=&quot;#9F83BD&quot;/&gt;
+    &lt;float4 ux:Global=&quot;BottomGray&quot; ux:Value=&quot;#7E58A7&quot;/&gt;
+&lt;/ux:Resources&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>Three states</h3
+<p>The app can be divided into three main states:</p>
+<ul>
+<li>The initial state where you only have a logo and a &quot;signup button&quot;.</li>
+<li>The signup form with a &quot;done button&quot;.</li>
+<li>The main view which becomes visible after signing up.</li>
+</ul>
+<p>One thing that makes this animation special is the fact that we don't navigate between pages with completely different content. Instead, we move the same element around based on the current state so that that element can serve different visual purposes. This makes the flow of our app seem very elegant and natural.</p>
+<h3>A convenient Panel</h3
+<p>Since we need to show and hide quite a few different panels based on the state of our app we create a custom <code>Panel</code> class called <code>HidingPanel</code>. It is not much different from a normal <code>Panel</code> except that it fades away when being disabled by setting <code>IsEnabled=&quot;false&quot;</code>.</p>
+<!-- snippet-begin:code/HidingPanel.ux:HidingPanel -->
+<pre><code>&lt;Panel ux:Class=&quot;HidingPanel&quot; Opacity=&quot;0&quot; IsEnabled=&quot;false&quot; HitTestMode=&quot;LocalBoundsAndChildren&quot;&gt;
+    &lt;WhileEnabled&gt;
+        &lt;Change this.Opacity=&quot;1&quot; Duration=&quot;0.4&quot; /&gt;
+    &lt;/WhileEnabled&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The white rectangle</h3
+<p>The white rectangle plays the main role of this animation. It starts of as the signup button, moves on to become the container for our registration form and ends up as the background for our entire app. Defining this kind of animation is a bit different from what we are used to. We usually define our animations as deviations from a rest state, but that implies that we only have two states to care about per animation.</p>
+<p>This time, we have several states, and would like to be able to jump between them. We also dont want to move our white rectangle around using offsets from the start position. An easier approach is to use Fuse' layout system to define the various target positions. We can then use the same <code>Rectangle</code> put in a background layer and move it around from one panel to another based on the current state. We use the <code>LayoutMaster</code> property to make our white <code>Rectangle</code> take on the layout of another <code>Element</code> and the <code>Move</code> and <code>Resize</code> animators to make it animate smoothly between them.</p>
+<!-- snippet-begin:code/MainView.ux:MoveResize -->
+<pre><code>&lt;Move Target=&quot;whiteRect&quot; RelativeTo=&quot;PositionOffset&quot; RelativeNode=&quot;signupButton&quot;
+		Vector=&quot;1&quot; Duration=&quot;0.2&quot; DurationBack=&quot;0&quot; /&gt;
+&lt;Resize Target=&quot;whiteRect&quot; RelativeTo=&quot;Size&quot; RelativeNode=&quot;signupButton&quot;
+		Vector=&quot;1&quot; Duration=&quot;0.2&quot; DurationBack=&quot;0&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>When the animation is finished, we also set the <code>LayoutMaster</code> property to the same node as we used for our <code>RelativeNode</code>, which acts as the target for our animation.</p>
+<!-- snippet-begin:code/MainView.ux:SetLayoutMaster -->
+<pre><code>&lt;Set whiteRect.LayoutMaster=&quot;signupButton&quot; Delay=&quot;0.2&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The rest</h3
+<p>We also have a green rectangle playing a major role in much the same way as the white rectangle, where it moves between layout positions. It works in the exact same way. The rest of the UX is standard Fuse layout and animation.</p>
+<p>And that’s it! Feel free to download the source and play around.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

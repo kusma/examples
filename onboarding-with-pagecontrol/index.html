@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Paged onboarding - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/onboarding-with-pagecontrol.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_navigation.html">Navigation</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/keyframe.html" class="nav-link">Keyframe</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Paged onboarding</h1>
+
+          <div class="example-content-preview example-content-preview-slot-4">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we show how you can use the <code>PageControl</code> in combination with a <code>Timeline</code> to create an animated on-boarding experience. We got inspired by <a href="https://dribbble.com/shots/2629732-Snaplee-App-Interaction">this design</a> by <a href="https://dribbble.com/bearduo">Sumit Chakraborty</a>.</p>
+<h4>The PageControl</h4
+<p>We first set up a <code>PageControl</code> with five child panels to represent the five pages. The <code>PageControl</code> considers all direct children to be pages.</p>
+<p>Each page has some textual content with the same styling. Instead of copying things like <code>Color</code>, <code>FontSize</code> and <code>Margin</code> to all the pages, we create a reusable class:</p>
+<!-- snippet-begin:code/MainView.ux:PageContentClass -->
+<pre><code>&lt;Grid ux:Class=&quot;PageContent&quot; Padding=&quot;45,0&quot; MinHeight=&quot;100&quot;&gt;
+    &lt;string ux:Property=&quot;Title&quot; /&gt;
+    &lt;string ux:Property=&quot;Content&quot; /&gt;
+    &lt;Grid Rows=&quot;2*,3*&quot;&gt;
+        &lt;Text Alignment=&quot;Top&quot; Value=&quot;{ReadProperty this.Title}&quot; FontSize=&quot;20&quot; Color=&quot;#000&quot; TextAlignment=&quot;Center&quot; TextWrapping=&quot;Wrap&quot; Margin=&quot;20,0&quot; /&gt;
+        &lt;Text Alignment=&quot;Top&quot; Value=&quot;{ReadProperty this.Content}&quot; FontSize=&quot;16&quot; Color=&quot;#777&quot; TextAlignment=&quot;Center&quot; TextWrapping=&quot;Wrap&quot;/&gt;
+    &lt;/Grid&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We can then use this class in each of our pages like so:</p>
+<!-- snippet-begin:code/MainView.ux:PageContentInstance -->
+<pre><code>&lt;PageContent ux:Name=&quot;page1Content&quot; Alignment=&quot;Top&quot; Row=&quot;1&quot;
+             Title=&quot;Discover places&quot;
+             Content=&quot;Find out about new cool places that value your feedback by using our Nearby venues feature.&quot; &gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>The icons</h4
+<p>We also make classes for all the icons we need and put them in their own file called Resources.ux.</p>
+<!-- snippet-begin:code/Resources.ux:AllTheIcons -->
+<pre><code>&lt;Image ux:Class=&quot;Chat&quot; File=&quot;Assets/chat.png&quot;/&gt;
+&lt;Image ux:Class=&quot;Feed&quot; File=&quot;Assets/feed.png&quot;/&gt;
+&lt;Image ux:Class=&quot;Marker&quot; File=&quot;Assets/marker.png&quot;/&gt;
+&lt;Image ux:Class=&quot;Mountain&quot; File=&quot;Assets/mountain.png&quot;/&gt;
+&lt;Image ux:Class=&quot;MountainFill&quot; File=&quot;Assets/mountainFill.png&quot; /&gt;
+&lt;Image ux:Class=&quot;Phone&quot; File=&quot;Assets/phone.png&quot;/&gt;
+&lt;Image ux:Class=&quot;PhoneHands&quot; File=&quot;Assets/phoneHands.png&quot;/&gt;
+&lt;Image ux:Class=&quot;Tags&quot; File=&quot;Assets/tags.png&quot;/&gt;
+&lt;Image ux:Class=&quot;Map&quot; File=&quot;Assets/map.png&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Animating the mountain</h4
+<p>Since the mountain moves independently of all the pages, we put it in a layer of its own outside the <code>PageControl</code>.</p>
+<!-- snippet-begin:code/MainView.ux:MountainGrid -->
+<pre><code>&lt;Grid ux:Name=&quot;mountainsGrid&quot; Rows=&quot;3*,1*&quot;&gt;
+    &lt;Panel ux:Name=&quot;mountains&quot; Width=&quot;70%&quot; HitTestMode=&quot;None&quot; Alignment=&quot;Center&quot;&gt;
+        &lt;MountainFill ux:Name=&quot;mountainFill&quot; Width=&quot;50%&quot; Alignment=&quot;Bottom&quot; Offset=&quot;-4.0%,-0.5%&quot;/&gt;
+        &lt;Mountain/&gt;
+        &lt;AddingAnimation&gt;
+            &lt;Move Y=&quot;-2&quot; RelativeTo=&quot;Size&quot; Duration=&quot;0.6&quot; Easing=&quot;QuinticIn&quot; /&gt;
+            &lt;Change  mountains.Opacity=&quot;0&quot; Duration=&quot;0.6&quot; Easing=&quot;QuinticIn&quot; /&gt;
+        &lt;/AddingAnimation&gt;
+    &lt;/Panel&gt;
+&lt;/Grid&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>As our app loads, we want this to animate slightly from the bottom of the screen. We achieve this with an <code>AddingAnimation</code>. <code>AddingAnimation</code> is triggered as an element is rooted to the visual tree. In this case, that happens as soon as the app loads.</p>
+<h4>The Timeline</h4
+<p>We animate the whole thing using a <code>Timeline</code>. A <code>Timeline</code> acts as a normal <code>Trigger</code>, except that we can manually set a progress for it. The progress should be a value between 0 and 1. Since we want the page progress of our <code>PageControl</code> to make our <code>Timeline</code> progress, we put an <code>ActivatingAnimation</code> on the first child of out <code>PageControl</code>. We also set the <code>Scale</code> property to be 0.25, since we want this trigger to activate over all the five pages. The scale of 0.25 gives us the following progression values for the five pages: 0, 0.25, 0.5, 0.75 and 1.0. You can see these values more or less represented in the following code, with just a few tweaks.</p>
+<!-- snippet-begin:code/MainView.ux:TheTimeline -->
+<pre><code>&lt;Timeline ux:Name=&quot;timeline&quot; TargetProgress=&quot;1&quot;&gt;
+    &lt;Move Target=&quot;mountains&quot; RelativeTo=&quot;Size&quot;&gt;
+        &lt;Keyframe Y=&quot;-0.38&quot;         Time=&quot;0.25&quot;/&gt;
+        &lt;Keyframe Y=&quot;-0.2&quot;          Time=&quot;0.5&quot;/&gt;
+        &lt;Keyframe X=&quot;-0.3&quot; Y=&quot;-0&quot;   Time=&quot;0.75&quot;/&gt;
+        &lt;Keyframe X=&quot;0.2&quot;  Y=&quot;-0.2&quot; Time=&quot;0.98&quot;/&gt;
+        &lt;Keyframe X=&quot;0.08&quot; Y=&quot;-0.2&quot; Time=&quot;1.0&quot;/&gt;
+    &lt;/Move&gt;
+
+    &lt;Scale Target=&quot;mountains&quot;&gt;
+        &lt;Keyframe Value=&quot;1&quot;    Time=&quot;0.25&quot;/&gt;
+        &lt;Keyframe Value=&quot;0.65&quot; Time=&quot;0.5&quot;/&gt;
+        &lt;Keyframe Value=&quot;0.2&quot;  Time=&quot;0.75&quot;/&gt;
+        &lt;Keyframe Value=&quot;0.45&quot; Time=&quot;0.98&quot;/&gt;
+    &lt;/Scale&gt;
+
+    &lt;Change Target=&quot;mountainFill.Opacity&quot;&gt;
+        &lt;Keyframe Value=&quot;0.7&quot; Time=&quot;0.0&quot;/&gt;
+        &lt;Keyframe Value=&quot;0&quot;   Time=&quot;0.25&quot;/&gt;
+        &lt;Keyframe Value=&quot;0.7&quot; Time=&quot;0.5&quot;/&gt;
+        &lt;Keyframe Value=&quot;0.7&quot; Time=&quot;0.75&quot;/&gt;
+        &lt;Keyframe Value=&quot;0&quot;   Time=&quot;1.0&quot;/&gt;
+    &lt;/Change&gt;
+
+    &lt;Change Target=&quot;mountains.Opacity&quot;&gt;
+        &lt;Keyframe Value=&quot;0.25&quot; Time=&quot;0.25&quot;/&gt;
+        &lt;Keyframe Value=&quot;1&quot;    Time=&quot;0.5&quot;/&gt;
+        &lt;Keyframe Value=&quot;0&quot;    Time=&quot;0.65&quot;/&gt;
+        &lt;Keyframe Value=&quot;0&quot;    Time=&quot;0.85&quot;/&gt;
+        &lt;Keyframe Value=&quot;1&quot;    Time=&quot;1.0&quot;/&gt;
+    &lt;/Change&gt;
+&lt;/Timeline&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>That's it! Feel free to download and play around with the example code.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

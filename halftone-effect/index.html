@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Halftone effect - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/halftone-effect.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_effects.html">Effects</a>, <a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_camera.html">Camera</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/effects/halftone.html" class="nav-link">Halftone</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">Data-binding</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rangecontrol.html" class="nav-link">RangeControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/linearrangebehavior.html" class="nav-link">LinearRangeBehavior</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/progressanimation.html" class="nav-link">ProgressAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whilefalse.html" class="nav-link">WhileFalse</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/camera/camera.html" class="nav-link">Camera</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Halftone effect</h1>
+
+          <div class="example-content-preview example-content-preview-slot-5">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>Using the JavaScript Camera API, we create a small app that lets you take pictures with a halftone effect. The effect parameters can then be tweaked with some custom styled slider controls.</p>
+<h4>Taking a picture</h4
+<p>We create a function in JavaScript called <code>takePicture</code> which we bind to from UX.</p>
+<!-- snippet-begin:code/MainView.js:TakePicture -->
+<pre><code>var picture = Observable('Icons/background.jpg');
+var filterApplied = Observable(false);
+
+function takePicture(){
+    Camera.takePicture(1000, 1200).then(function(file){
+        picture.value = file;
+        filterApplied.value = false;
+    }).catch(function(e) {
+        console.log(e);
+        filterApplied.value = false;
+    });
+};
+</code></pre>
+<!-- snippet-end -->
+<p>It will open the default camera app on the device, and return the resulting file. We can then put that file in our <code>picture</code> <code>Observable</code> which we bind to from UX.
+In addition to working with the picture, we also change the value of a boolean <code>Observable</code> called <code>filterApplied</code>, so that we can decide to show the picture with or without the halftone filter in UX.</p>
+<h4>Halftone</h4
+<!-- snippet-begin:code/MainView.ux:HalftoneEffect -->
+<pre><code>&lt;Image ux:Name=&quot;picture&quot; File=&quot;{picture}&quot; StretchMode=&quot;UniformToFill&quot;&gt;
+    &lt;WhileTrue Value=&quot;{filterApplied}&quot;&gt;
+        &lt;Halftone ux:Name=&quot;halftone&quot; Intensity=&quot;0&quot; Smoothness=&quot;0&quot; Spacing=&quot;5&quot; PaperTint=&quot;0&quot; DotTint=&quot;0&quot; /&gt;
+    &lt;/WhileTrue&gt;
+    &lt;AddingAnimation&gt;
+        &lt;Change picture.Opacity=&quot;0&quot; Duration=&quot;0.5&quot; /&gt;
+    &lt;/AddingAnimation&gt;
+&lt;/Image&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We data-bind an <code>Image</code> element to the <code>picture</code> <code>Observable</code> and add a <code>Halftone</code> effect to it with some default values.
+We give the effect a name, which we will reference from some sliders. Note how we only enable the filter when the <code>filterApplied</code> boolean <code>Observable</code> is true.</p>
+<h4>Creating a custom slider</h4
+<!-- snippet-begin:code/MySlider.ux:CustomSlider -->
+<pre><code>&lt;RangeControl ux:Class=&quot;MySlider&quot; Focus.IsFocusable=&quot;true&quot; MinHeight=&quot;30&quot; Padding=&quot;5&quot; Margin=&quot;18,4&quot; HitTestMode=&quot;LocalBounds&quot;&gt;
+    &lt;string ux:Property=&quot;Text&quot; /&gt;
+    &lt;float4 ux:Property=&quot;Highlight&quot; /&gt;
+
+    &lt;LinearRangeBehavior /&gt;
+    &lt;StackLayout /&gt;
+
+    &lt;JavaScript&gt;
+        var Observable = require(&quot;FuseJS/Observable&quot;);
+        var sliderValue = Observable(50);
+        var sliderText = Observable(function() { return sliderValue.value.toFixed(2) })
+        module.exports = {
+            sliderValue: sliderValue,
+            sliderText: sliderText
+        };
+    &lt;/JavaScript&gt;
+
+    &lt;Panel Alignment=&quot;Top&quot; Margin=&quot;6,10,0,0&quot;&gt;
+        &lt;DataBinding Target=&quot;this.Value&quot; Key=&quot;sliderValue&quot; /&gt;
+        &lt;Text ux:Name=&quot;currentValue&quot; Value=&quot;{sliderText}&quot; Alignment=&quot;Right&quot; Opacity=&quot;0.7&quot; /&gt;
+        &lt;Panel ux:Name=&quot;thumb&quot; Anchor=&quot;50%,50%&quot; Alignment=&quot;Left&quot; Width=&quot;15&quot; Height=&quot;15&quot; HitTestMode=&quot;LocalBounds&quot;&gt;
+            &lt;Rectangle Color=&quot;{ReadProperty Highlight}&quot; /&gt;
+        &lt;/Panel&gt;
+        &lt;Panel Layer=&quot;Background&quot;&gt;
+            &lt;Rectangle Height=&quot;6&quot; Color=&quot;{ReadProperty Highlight}&quot; Opacity=&quot;0.3&quot; /&gt;
+            &lt;Rectangle Height=&quot;6&quot; Color=&quot;#fff&quot; /&gt;
+        &lt;/Panel&gt;
+    &lt;/Panel&gt;
+    &lt;Text Value=&quot;{ReadProperty Text}&quot; Alignment=&quot;BottomLeft&quot; Margin=&quot;6,0,0,0&quot; /&gt;
+
+    &lt;ProgressAnimation&gt;
+        &lt;Move Target=&quot;thumb&quot; X=&quot;1&quot; RelativeTo=&quot;ParentSize&quot; /&gt;
+    &lt;/ProgressAnimation&gt;
+
+&lt;/RangeControl&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>To create a custom slider, we use the <code>LinearRangeBehavior</code>. This behavior handles everything related to the input of a <code>RangeControl</code>.
+We then use the <code>ProgressAnimation</code> trigger to animate the appearance of our <code>Slider</code> in response to the users input.</p>
+<h4>Tweaking the effect with our sliders</h4
+<p>We can tweak the halftone effect directly from UX using our newly created sliders. We use <code>ux:Property</code> bindings to customize the sliders color and text properties by passing them in from <code>MainView.ux</code>.</p>
+<!-- snippet-begin:code/MainView.ux:TweakingWithSliders -->
+<pre><code>&lt;WhileTrue Value=&quot;{filterApplied}&quot;&gt;
+    &lt;Grid RowCount=&quot;3&quot; Margin=&quot;0,30,0,10&quot;&gt;
+        &lt;FadeInPanel&gt;
+            &lt;MySlider Text=&quot;Intensity&quot; Highlight=&quot;#50D2C2&quot;&gt;
+                &lt;ProgressAnimation&gt;
+                    &lt;Change halftone.Intensity=&quot;2&quot; /&gt;
+                &lt;/ProgressAnimation&gt;
+            &lt;/MySlider&gt;
+            &lt;Rectangle Height=&quot;1&quot; Color=&quot;#eee&quot; Alignment=&quot;Bottom&quot; /&gt;
+        &lt;/FadeInPanel&gt;
+        &lt;FadeInPanel&gt;
+            &lt;MySlider Text=&quot;Smoothness&quot; Highlight=&quot;#FCAB53&quot;&gt;
+                &lt;ProgressAnimation&gt;
+                    &lt;Change halftone.Smoothness=&quot;15&quot; /&gt;
+                &lt;/ProgressAnimation&gt;
+            &lt;/MySlider&gt;
+            &lt;Rectangle Height=&quot;1&quot; Color=&quot;#eee&quot; Alignment=&quot;Bottom&quot; /&gt;
+        &lt;/FadeInPanel&gt;
+        &lt;FadeInPanel&gt;
+            &lt;MySlider Text=&quot;Spacing&quot; Highlight=&quot;#BA77FD&quot;&gt;
+                &lt;ProgressAnimation&gt;
+                    &lt;Change halftone.Spacing=&quot;15&quot; /&gt;
+                &lt;/ProgressAnimation&gt;
+            &lt;/MySlider&gt;
+        &lt;/FadeInPanel&gt;
+    &lt;/Grid&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We use the <code>ProgressAnimation</code> trigger together with <code>Change</code> animators to react to the user sliding.</p>
+<p>Each <code>MySlider</code> is surrounded by a <code>FadeInPanel</code>. This is just a normal <code>Panel</code> with an <code>AddingAnimation</code> which animated the panels <code>Opacity</code>.</p>
+<!-- snippet-begin:code/MainView.ux:FadeInPanel -->
+<pre><code>&lt;Panel ux:Class=&quot;FadeInPanel&quot; ux:Name=&quot;fadeInPanel&quot;&gt;
+    &lt;AddingAnimation&gt;
+        &lt;Change fadeInPanel.Opacity=&quot;0&quot; Duration=&quot;0.5&quot; /&gt;
+    &lt;/AddingAnimation&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

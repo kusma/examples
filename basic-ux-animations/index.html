@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Basic UX animations - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/basic-ux-animations.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_basics.html">Basics</a>, <a href="../tag_animation.html">Animation</a>, <a href="../tag_navigation.html">Navigation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/rotate.html" class="nav-link">Rotate</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/scale.html" class="nav-link">Scale</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/elements/element/transformorigin.html" class="nav-link">TransformOrigin</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle/cornerradius.html" class="nav-link">CornerRadius</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/pagecontrol.html" class="nav-link">PageControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/whilepressed.html" class="nav-link">WhilePressed</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/tapped.html" class="nav-link">Tapped</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Basic UX animations</h1>
+
+          <div class="example-content-preview example-content-preview-slot-4">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>A few simple examples of how to create animations in response to user input with triggers and animators.</p>
+<div class="row">
+    <div class="col-xs-6">
+        [VIDEO media/anchored-preview.mp4]
+    </div>
+    <div class="col-xs-6">
+        [VIDEO media/click-events-preview.mp4]
+    </div>
+</div>
+<h4>Staggered animation</h4
+<p>Here we use the animator's <code>Delay</code> property so that the right rectangle does not begin to rotate until the left one has completed.</p>
+<p>By setting a <code>Target</code> for each of the two animators we can move separate objects (the two rectangles) with just one trigger. If we didn't set the <code>Target</code> properties the animators would instead rotate their parent, the center-aligned stackpanel. In the anchored animation example further down we simpy place our trigger inside the <code>&lt;Rectangle&gt;</code> without explicitly setting a target for the animator.</p>
+<!-- snippet-begin:code/StaggeredAnimation.ux:StaggeredAnimation -->
+<pre><code>&lt;Panel ux:Class=&quot;StaggeredAnimation&quot; Background=&quot;#FF5C3A&quot;&gt;
+
+    &lt;StackPanel Alignment=&quot;Center&quot; Orientation=&quot;Horizontal&quot;&gt;
+        &lt;MyRectangle ux:Name=&quot;rec1&quot;/&gt;
+        &lt;MyRectangle ux:Name=&quot;rec2&quot; /&gt;
+        &lt;WhilePressed&gt;
+            &lt;Rotate Target=&quot;rec1&quot; Degrees=&quot;90&quot; DelayBack=&quot;0.5&quot; Duration=&quot;0.5&quot; Easing=&quot;QuadraticOut&quot; EasingBack=&quot;QuadraticIn&quot; /&gt;
+            &lt;Rotate Target=&quot;rec2&quot; Degrees=&quot;90&quot; Delay=&quot;0.5&quot; Duration=&quot;0.5&quot; EasingBack=&quot;QuadraticIn&quot; Easing=&quot;QuadraticOut&quot; /&gt;
+        &lt;/WhilePressed&gt;
+
+    &lt;/StackPanel&gt;
+
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>[VIDEO media/preview.mp4]</p>
+<h4>Anchored animation</h4
+<p>By default all transformations such as scaling and rotation happen around the center of an element. You can change this by setting the <code>TransformOrigin</code> property of the element.</p>
+<p>Also notice how we're explcitily setting the color of the rectangle here with <code>&lt;SolidColor Color=&quot;#fff&quot; /&gt;</code> as opposed to using the predefined shorthand <code>Color=&quot;White&quot;</code> in the previous example. In this way you can specify any color (although it's of course better to specify them as [resources][Resources] in just one centralized location).</p>
+<!-- snippet-begin:code/AnchoredAnimation.ux:AnchoredAnimation -->
+<pre><code>&lt;Panel ux:Class=&quot;AnchoredAnimation&quot; Background=&quot;#FFC05A&quot;&gt;
+
+    &lt;MyRectangle Alignment=&quot;Center&quot; TransformOrigin=&quot;TopLeft&quot;&gt;
+        &lt;WhilePressed&gt;
+            &lt;Rotate Degrees=&quot;90&quot; Duration=&quot;1&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;BounceIn&quot;/&gt;
+        &lt;/WhilePressed&gt;
+    &lt;/MyRectangle&gt;
+
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>[VIDEO media/anchored-preview.mp4]</p>
+<p>In the UX above we simply used the <code>TopLeft</code> shorthand to move the center of rotation but the real power of this mechanism becomes apparent when you combine it with [Offset and Anchor][Offset and Anchor].</p>
+<p>The following UX shows how TransformOrigin can be set to any position, even outside the element itself. Also notice that we have now placed the rectangle inside an explicitly sized panel since the offset and anchor is set relative to the size of the rectangle's parent.</p>
+<pre><code>&lt;Panel Background=&quot;#FFC05A&quot;&gt;
+
+	&lt;Panel Alignment=&quot;Center&quot; Width=&quot;100&quot; Height=&quot;100&quot;&gt;
+		&lt;Rectangle Width=&quot;100&quot; Height=&quot;100&quot; CornerRadius=&quot;5&quot; TransformOrigin=&quot;Anchor&quot; Color=&quot;White&quot;
+			AnchorUnit=&quot;Percent&quot; Anchor=&quot;180,50&quot; Offset=&quot;180,50&quot; OffsetUnit=&quot;Percent&quot;&gt;
+			&lt;WhilePressed&gt;
+				&lt;Rotate Degrees=&quot;90&quot; Duration=&quot;1&quot; Easing=&quot;BounceOut&quot; EasingBack=&quot;BounceIn&quot;/&gt;
+			&lt;/WhilePressed&gt;
+		&lt;/Rectangle&gt;
+	&lt;/Panel&gt;
+
+&lt;/Panel&gt;
+</code></pre>
+<p>[VIDEO media/anchored-2-preview.mp4]</p>
+<h4>Click events</h4
+<p>This shows how animators respond to different types of input triggers. When the rounded rectangle on the left is <code>Tapped</code> the entire forward and backward animation is run. The circle on the right instead uses a <code>Pressing</code> trigger which reverses the animation as soon as you stop pressing.</p>
+<p>The morphing effect on the circle is achieved simply by animating the corner radius of the element (it was a rectangle in disguise!)</p>
+<!-- snippet-begin:code/ClickEvents.ux:ClickEvents -->
+<pre><code>&lt;Panel ux:Class=&quot;ClickEvents&quot; Background=&quot;#FF8EB4&quot;&gt;
+
+    &lt;StackPanel Orientation=&quot;Horizontal&quot; Alignment=&quot;Center&quot;&gt;
+
+        &lt;MyRectangle&gt;
+            &lt;Tapped&gt;
+                &lt;Scale Factor=&quot;0.8&quot; Duration=&quot;0.3&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+                &lt;Move Y=&quot;0.3&quot; Duration=&quot;0.3&quot; Easing=&quot;QuadraticInOut&quot; RelativeTo=&quot;Size&quot;/&gt;
+            &lt;/Tapped&gt;
+        &lt;/MyRectangle&gt;
+
+        &lt;MyRectangle ux:Name=&quot;fillRectB&quot; CornerRadius=&quot;50&quot;&gt;
+            &lt;WhilePressed&gt;
+                &lt;Rotate Degrees=&quot;180&quot; Duration=&quot;0.5&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+                &lt;Change fillRectB.CornerRadius=&quot;5&quot; Duration=&quot;0.5&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+            &lt;/WhilePressed&gt;
+        &lt;/MyRectangle&gt;
+    &lt;/StackPanel&gt;
+
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>[VIDEO media/click-events-preview.mp4]</p>
+<p>We've bundled these 3 examples together into a small app using a <code>PageControl</code> which you can download in the menu to the left.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

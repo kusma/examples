@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Animated loading buttons - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/loading-button.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/stategroup.html" class="nav-link">StateGroup</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/state.html" class="nav-link">State</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/layouts/circlelayout/startangledegrees.html" class="nav-link">StartAngleDegrees</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/layouts/circlelayout/endangledegrees.html" class="nav-link">EndAngleDegrees</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/addinganimation.html" class="nav-link">AddingAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/removinganimation.html" class="nav-link">RemovingAnimation</a></li>
+</ul>
+
+<h6>JS Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html#event-binding-to-javascript-functions" class="nav-link">Event handler</a></li>
+</ul>
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Animated loading buttons</h1>
+
+          <div class="example-content-preview example-content-preview-slot-4">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>This example shows how to make a neat loading button with different success and error states.</p>
+<h3>The button</h3
+<p>The button uses a <code>StateGroup</code> to animate between four states: defaultState, loadingState, success and error.</p>
+<p>The check and error icons are contained inside <code>WhileTrue</code> triggers, which are activated by their respective states.</p>
+<p>The loading animation is achieved by animating the <code>StartAngleDegrees</code> and <code>EndAngleDegrees</code> properties of an <code>Arc</code>.</p>
+<!-- snippet-begin:code/LoadButton.ux:LoadButton -->
+<pre><code>&lt;Panel ux:Class=&quot;LoadButton&quot; Width=&quot;150&quot; Height=&quot;60&quot;&gt;
+	&lt;Text ux:Name=&quot;text&quot; Alignment=&quot;Center&quot; Value=&quot;Load&quot; Color=&quot;#090&quot; FontSize=&quot;16&quot; Opacity=&quot;1&quot;/&gt;
+	&lt;Panel&gt;
+		&lt;WhileTrue ux:Name=&quot;showCross&quot;&gt;
+			&lt;CrossIcon ux:Name=&quot;crossIcon&quot; Opacity=&quot;0&quot;/&gt;
+			&lt;Change crossIcon.Opacity=&quot;1&quot; Duration=&quot;0.05&quot;/&gt;
+		&lt;/WhileTrue&gt;
+	&lt;/Panel&gt;
+	&lt;Panel&gt;
+		&lt;WhileTrue ux:Name=&quot;showCheck&quot;&gt;
+			&lt;CheckIcon ux:Name=&quot;checkIcon&quot; Opacity=&quot;0&quot;/&gt;
+			&lt;Change checkIcon.Opacity=&quot;1&quot; Duration=&quot;0.05&quot;/&gt;
+		&lt;/WhileTrue&gt;
+	&lt;/Panel&gt;
+
+	&lt;Arc ux:Name=&quot;arc&quot; StartAngleDegrees=&quot;-90&quot; EndAngleDegrees=&quot;-90&quot; Width=&quot;56&quot; Height=&quot;56&quot;&gt;
+		&lt;Stroke ux:Name=&quot;arcStroke&quot; Width=&quot;4&quot; Alignment=&quot;Center&quot; Color=&quot;#090&quot; /&gt;
+	&lt;/Arc&gt;
+
+	&lt;Rectangle ux:Name=&quot;rect&quot; CornerRadius=&quot;30&quot; Width=&quot;146&quot; Height=&quot;56&quot;&gt;
+		&lt;SolidColor ux:Name=&quot;rectColor&quot; Color=&quot;#fff&quot; /&gt;
+		&lt;Stroke ux:Name=&quot;rectStroke&quot; Width=&quot;4&quot; Alignment=&quot;Center&quot;&gt;
+			&lt;SolidColor ux:Name=&quot;rectStrokeColor&quot; Color=&quot;#090&quot;/&gt;
+		&lt;/Stroke&gt;
+	&lt;/Rectangle&gt;
+
+	&lt;WhilePressed&gt;
+		&lt;Scale Target=&quot;text&quot; Factor=&quot;0.9&quot; Duration=&quot;0.05&quot;/&gt;
+	&lt;/WhilePressed&gt;
+	&lt;Clicked&gt;
+		&lt;Callback Handler=&quot;{startLoading}&quot;/&gt;
+	&lt;/Clicked&gt;
+
+
+	&lt;StateGroup Active=&quot;{finishState}&quot; Rest=&quot;defaultState&quot; Transition=&quot;Exclusive&quot;&gt;
+		&lt;State ux:Name=&quot;defaultState&quot;/&gt;
+		&lt;State ux:Name=&quot;loadingState&quot;&gt;
+			&lt;Change DurationBack=&quot;0&quot; rectStrokeColor.Color=&quot;#ddd&quot; Duration=&quot;0.3&quot; /&gt;
+			&lt;Change DurationBack=&quot;0&quot; text.Opacity=&quot;0&quot; Duration=&quot;0.15&quot;/&gt;
+			&lt;Change DurationBack=&quot;0&quot; rect.Width=&quot;56&quot; Duration=&quot;0.4&quot; Easing=&quot;CircularInOut&quot;/&gt;
+			&lt;Change DurationBack=&quot;0&quot; rectColor.Color=&quot;#fff&quot; Duration=&quot;.3&quot;/&gt;
+			&lt;Change DurationBack=&quot;0&quot; arc.EndAngleDegrees=&quot;269.9&quot; Delay=&quot;0.4&quot; Duration=&quot;1&quot; /&gt;
+			&lt;Callback Handler=&quot;{doneLoading}&quot; Delay=&quot;1.4&quot; When=&quot;Forward&quot;/&gt;
+		&lt;/State&gt;
+		&lt;State ux:Name=&quot;success&quot;&gt;
+			&lt;Change text.Opacity=&quot;0&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0.3&quot;/&gt;
+			&lt;Change rect.Width=&quot;56&quot; Duration=&quot;0&quot; DurationBack=&quot;0.4&quot; Easing=&quot;CircularInOut&quot;/&gt;
+			&lt;Change rectStrokeColor.Color=&quot;#090&quot; Duration=&quot;.3&quot;/&gt;
+			&lt;Change rectColor.Color=&quot;#090&quot; Duration=&quot;.3&quot;/&gt;
+			&lt;Change showCheck.Value=&quot;true&quot;/&gt;
+		&lt;/State&gt;
+		&lt;State ux:Name=&quot;error&quot;&gt;
+			&lt;Change text.Opacity=&quot;0&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0.3&quot;/&gt;
+			&lt;Change rect.Width=&quot;56&quot; Duration=&quot;0&quot; DurationBack=&quot;0.4&quot; Easing=&quot;CircularInOut&quot;/&gt;
+			&lt;Change arcStroke.Color=&quot;#900&quot; Duration=&quot;.3&quot;/&gt;
+			&lt;Change rectStrokeColor.Color=&quot;#900&quot; Duration=&quot;.3&quot;/&gt;
+			&lt;Change rectColor.Color=&quot;#900&quot; Duration=&quot;.3&quot;/&gt;
+			&lt;Change showCross.Value=&quot;true&quot;/&gt;
+		&lt;/State&gt;
+	&lt;/StateGroup&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The check icon</h3
+<p>The check icon is made with two rotated rectangles. One of them is half the size of the other and rotated in the opposite direction. It has an <code>AddingAnimation</code> which animates the rectangles <code>Width</code>-properties when the icon is added to the visual tree. We set the <code>TransformOrigin</code> to anchor which allows us to rotate the rectangles based on their <code>Anchor</code> property.</p>
+<!-- snippet-begin:code/CheckIcon.ux:CheckIcon -->
+<pre><code>&lt;Panel ux:Class=&quot;CheckIcon&quot; ux:Name=&quot;self&quot; Width=&quot;25&quot; Height=&quot;25&quot;&gt;
+    &lt;Panel Offset=&quot;-10%,30%&quot;&gt;
+        &lt;Panel Width=&quot;100%&quot; Height=&quot;100%&quot;&gt;
+            &lt;Rotation Degrees=&quot;45&quot; /&gt;
+            &lt;Rectangle ux:Name=&quot;checkRect1&quot; Alignment=&quot;Left&quot; TransformOrigin=&quot;Anchor&quot; Anchor=&quot;0%,50%&quot; Width=&quot;50%&quot; Height=&quot;10%&quot; Color=&quot;White&quot;/&gt;
+        &lt;/Panel&gt;
+        &lt;Rectangle ux:Name=&quot;checkRect2&quot; Offset=&quot;-5%,0%&quot; TransformOrigin=&quot;Anchor&quot; Anchor=&quot;100%,50%&quot; Width=&quot;100%&quot; Height=&quot;10%&quot; Color=&quot;White&quot;&gt;
+
+            &lt;Rotation Degrees=&quot;135&quot;/&gt;
+        &lt;/Rectangle&gt;
+        &lt;AddingAnimation&gt;
+            &lt;Change checkRect2.Width=&quot;0&quot; Duration=&quot;0.5&quot; Easing=&quot;BounceIn&quot;/&gt;
+            &lt;Change checkRect1.Width=&quot;0&quot; Duration=&quot;0.15&quot; Delay=&quot;0.5&quot; Easing=&quot;QuadraticOut&quot;/&gt;
+        &lt;/AddingAnimation&gt;
+        &lt;RemovingAnimation&gt;
+            &lt;Change self.Opacity=&quot;0&quot; Duration=&quot;0.1&quot;/&gt;
+        &lt;/RemovingAnimation&gt;
+    &lt;/Panel&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>The cross icon</h3
+<p>The cross icon is also composed of two rectangles, rotated at 45 and -45 degrees. The <code>Width</code> of the recrangles are animated with an <code>AddingAnimation</code>.</p>
+<!-- snippet-begin:code/CrossIcon.ux:CrossIcon -->
+<pre><code>&lt;Panel Width=&quot;30&quot; Height=&quot;30&quot; ux:Class=&quot;CrossIcon&quot; ux:Name=&quot;self&quot;&gt;
+    &lt;Rectangle ux:Name=&quot;crossRect1&quot; Width=&quot;100%&quot; Height=&quot;10%&quot; Color=&quot;White&quot;&gt;
+        &lt;Rotation Degrees=&quot;-45&quot;/&gt;
+    &lt;/Rectangle&gt;
+    &lt;Rectangle ux:Name=&quot;crossRect2&quot; Width=&quot;100%&quot; Height=&quot;10%&quot; Color=&quot;White&quot;&gt;
+        &lt;Rotation Degrees=&quot;45&quot;/&gt;
+    &lt;/Rectangle&gt;
+    &lt;AddingAnimation&gt;
+        &lt;Change crossRect1.Width=&quot;15&quot; Duration=&quot;0&quot; DurationBack=&quot;0.5&quot; Easing=&quot;BounceIn&quot;/&gt;
+        &lt;Change crossRect2.Width=&quot;15&quot; Duration=&quot;0&quot; DurationBack=&quot;0.5&quot; Easing=&quot;BounceIn&quot;/&gt;
+    &lt;/AddingAnimation&gt;
+    &lt;RemovingAnimation&gt;
+        &lt;Change self.Opacity=&quot;0&quot; Duration=&quot;0.1&quot;/&gt;
+    &lt;/RemovingAnimation&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<h3>JavaScript</h3
+<p>JavaScript is just used to maintain some state per button and allows us to simulate a loading state.</p>
+<!-- snippet-begin:code/MainView.js:ButtonState -->
+<pre><code>function LoadButton(doneLoadingState){
+    this.doneLoadingState = doneLoadingState;
+    this.finishState = Observable(&quot;defaultState&quot;);
+    this.doneLoading = function(){
+        this.finishState.value = this.doneLoadingState;
+    }.bind(this);
+    this.startLoading = function(){
+        if (this.finishState.value === &quot;defaultState&quot;)
+            this.finishState.value = &quot;loadingState&quot;;
+        else
+            this.finishState.value = &quot;defaultState&quot;;
+    }.bind(this);
+}
+</code></pre>
+<!-- snippet-end -->
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

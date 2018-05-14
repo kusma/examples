@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Day-night switch - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/day-night-switch.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_customcontrol.html">Custom control</a>, <a href="../tag_gesture.html">Gesture</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/togglecontrol.html" class="nav-link">ToggleControl</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/trigger/backwardanimation.html" class="nav-link">BackwardAnimation</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/keyframe.html" class="nav-link">Keyframe</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/swipinganimation.html" class="nav-link">SwipingAnimation</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>Day-night switch</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>In this example we'll implement a custom switch control by using the <code>ToggleControl</code>, with separate forward and backward animations. The design was inspired by <a href="https://dribbble.com/shots/1907553-Day-Night-Toggle-Button">this awesome piece</a> by <a href="https://dribbble.com/RamakrishnaUX">Ramakrishna V</a> (which was later animated by <a href="https://dribbble.com/Tsuriel">Tsuriel</a>).</p>
+<p>In this example, we will:</p>
+<ul>
+<li>Define our own <code>ToggleControl</code> with our own custom animation</li>
+<li>Utilize the <code>BackwardAnimation</code> attribute on <code>TriggerAnimation</code> in order to get separate activating and deactivating animations</li>
+<li>Have animations with several steps, using <code>Keyframe</code></li>
+</ul>
+<h3>The classes</h3
+<p>We create clases for the different elements of the switch. The following is the class used for stars:</p>
+<!-- snippet-begin:code/MainView.ux:StarClass -->
+<pre><code>&lt;Circle ux:Class=&quot;Star&quot; Height=&quot;5&quot; Width=&quot;5&quot; Alignment=&quot;Center&quot; Color=&quot;#fff&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>We define our moon craters in the same way:</p>
+<!-- snippet-begin:code/MainView.ux:MoonDotClass -->
+<pre><code>&lt;Circle ux:Class=&quot;MoonDot&quot; Color=&quot;#fff&quot;&gt;
+    &lt;Stroke Width=&quot;5&quot; Color=&quot;#e3e7c7&quot; /&gt;
+&lt;/Circle&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The following is how the background of the switch is made. Note how <code>Offset</code> is used to offset the position of the stars.</p>
+<!-- snippet-begin:code/MainView.ux:Stars -->
+<pre><code>&lt;Panel Layer=&quot;Background&quot;&gt;
+    &lt;Star ux:Name=&quot;star1&quot; Offset=&quot;-5,-20&quot; /&gt;
+    &lt;Star ux:Name=&quot;star2&quot; Offset=&quot;5,20&quot; /&gt;
+    &lt;Star ux:Name=&quot;star3&quot; Offset=&quot;15,-10&quot; /&gt;
+    &lt;Star ux:Name=&quot;star4&quot; Offset=&quot;27,8&quot; /&gt;
+    &lt;Star ux:Name=&quot;star5&quot; Offset=&quot;38,-23&quot; /&gt;
+    &lt;Star ux:Name=&quot;star6&quot; Offset=&quot;48,0&quot; /&gt;
+    &lt;Star ux:Name=&quot;star7&quot; Offset=&quot;45,15&quot; /&gt;
+    &lt;Rectangle ux:Name=&quot;background&quot; CornerRadius=&quot;75&quot; Color=&quot;#3c4145&quot;&gt;
+        &lt;Stroke ux:Name=&quot;backgroundBorder&quot; Color=&quot;#1c1c1c&quot; Width=&quot;5&quot; /&gt;
+    &lt;/Rectangle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The switch thumb is defined as follows:</p>
+<!-- snippet-begin:code/MainView.ux:Thumb -->
+<pre><code>&lt;Panel ux:Name=&quot;thumb&quot; Alignment=&quot;CenterLeft&quot; Margin=&quot;10,0,0,0&quot; Width=&quot;50&quot; Height=&quot;50&quot;&gt;
+    &lt;MoonDot ux:Name=&quot;moonDot1&quot; Width=&quot;17&quot; Height=&quot;17&quot; Alignment=&quot;TopRight&quot; Offset=&quot;-7,3&quot; /&gt;
+    &lt;MoonDot ux:Name=&quot;moonDot2&quot; Width=&quot;11&quot; Height=&quot;11&quot; Alignment=&quot;TopLeft&quot; Offset=&quot;13,8&quot; /&gt;
+    &lt;MoonDot ux:Name=&quot;moonDot3&quot; Width=&quot;12&quot; Height=&quot;12&quot; Alignment=&quot;BottomRight&quot; Offset=&quot;-12,-6&quot; /&gt;
+
+    &lt;Circle Color=&quot;#fff&quot; ux:Name=&quot;thumbCircle&quot;&gt;
+        &lt;Stroke ux:Name=&quot;thumbBorder&quot; Width=&quot;3&quot; Color=&quot;#e3e7c7&quot; /&gt;
+    &lt;/Circle&gt;
+&lt;/Panel&gt;
+&lt;Panel ux:Name=&quot;thumbFollow&quot; Alignment=&quot;CenterLeft&quot; Margin=&quot;10,0,0,0&quot; Width=&quot;50&quot; Height=&quot;50&quot;&gt;
+    &lt;Circle ux:Name=&quot;thumbFollowFill&quot; Color=&quot;#fff&quot; /&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The rest of the UX are mostly animations. As mentioned, this example uses separate forward and backward animations (to give the stars a &quot;bounce&quot; effect when animating backward). It is also used to animate the colors at different speeds depending on the direction of the animation.</p>
+<p>Like so:</p>
+<!-- snippet-begin:code/MainView.ux:SwipingAnimation -->
+<pre><code>&lt;SwipingAnimation Source=&quot;swipe&quot;&gt;
+    ...forward animations go here...
+    &lt;TriggerAnimation ux:Binding=&quot;BackwardAnimation&quot;&gt;
+        ...and backward animations go here...
+    &lt;/TriggerAnimation&gt;
+&lt;/SwipingAnimation&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>It is important to note that when you bind <code>BackwardAnimation</code> to an animation, all the animators lose their default backward animations. This means that they have to be explicitly re-defined in the bound <code>BackwardAnimation</code>.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>

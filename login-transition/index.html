@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-35894681-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-35894681-2');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>A smooth login transition - Fuse Examples</title>
+    <link rel="stylesheet" href="/bootstrap.css">
+    <link rel="stylesheet" href="/prism.css">
+    <link rel="stylesheet" href="/site.css">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap">
+      <a class="navbar-brand" href="/">Fuse: Examples</a>
+    </nav>
+
+    <div class="container-fluid main-content-wrapper">
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <p class="example-back-link">
+&lt; <a href="../index.html">Go back</a>
+</p>
+<p class="example-download-link">
+<a href="../bundles/login-transition.zip" class="btn btn-primary btn-block">Download example</a>
+</p>
+<h6>Tags</h6>
+<p class="example-tags">
+<a href="../tag_transition.html">Transition</a>, <a href="../tag_animation.html">Animation</a>
+</p>
+<h6>UX Concepts</h6>
+<ul class="nav flex-column concepts-nav">
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/toggle.html" class="nav-link">Toggle</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/drawing/stroke.html" class="nav-link">Stroke</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/scaling.html" class="nav-link">Scaling</a></li>
+<li class="nav-item"><a href="https://docs.fusetools.com/fuse/userevent.html" class="nav-link">UserEvent</a></li>
+</ul>
+
+
+
+          </div>
+        </div>
+        <div role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 main-content">
+          <h1>A smooth login transition</h1>
+
+          <div class="example-content-preview example-content-preview-slot-2">
+<video autoplay="true" loop="true"><source src="media/preview.mp4" type="video/mp4"></video>
+</div>
+<div class="example-content-body">
+<p>We saw this cool login transition from <a href="https://dribbble.com/madebyanton">Anton Aheichanka</a> using the free to-do UI kit from <a href="http://www.invisionapp.com/do">InVision</a> and wanted to recreate it in Fuse.</p>
+<p><em>Note: that this example is made to demonstrate the exact animations as shown in the original animated GIF, and is not focused on creating actual functionality in a login screen or calendar.</em></p>
+<h4>The basic structure</h4
+<p>This example has two parts; the &quot;to logged in&quot;-animation, and the &quot;to logged out&quot;-animation.</p>
+<p>We start by defining the two screens separately and make sure the &quot;logged out&quot; screen is layered underneath the &quot;logged in&quot; screen. This allows for a nicer separation of concerns when animating.</p>
+<h4>The first animation</h4
+<p>We activate the &quot;loading&quot; <code>WhileTrue</code> trigger using a <code>Clicked</code> trigger. The &quot;loading&quot; trigger is in charge of coordinating the different aspects of the animation.
+It does nothing more than to activate 4 other <code>WhileTrue</code> triggers with the correct timings.</p>
+<!-- snippet-begin:code/MainView.ux:LoadingWhileTrue -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;loading&quot;&gt;
+    &lt;Change changeWidth.Value=&quot;true&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change loadCircle.Value=&quot;true&quot; DelayBack=&quot;0&quot;/&gt;
+
+    &lt;Change scaleAndFade.Value=&quot;true&quot; Delay=&quot;2.5&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change showLoggedIn.Value=&quot;true&quot; Delay=&quot;2.9&quot; /&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The loading button is composed of a <code>Rectangle</code> with rounded corners. A <code>Circle</code> with a white <code>Stroke</code> is used as the loading indicator. After the loading is complete (in this case just because of a hard coded amount of seconds passing), the loading button is scaled up to fill the screen. This is done by scaling it to the size of an invisible, square <code>Panel</code> that is 5 times the size of the screen's smallest dimension:</p>
+<!-- snippet-begin:code/MainView.ux:TransitionScaleGuide -->
+<pre><code>&lt;Panel ux:Name=&quot;transitionScaleGuide&quot; Width=&quot;500%&quot; Height=&quot;500%&quot; Alignment=&quot;Center&quot; HitTestMode=&quot;None&quot; BoxSizing=&quot;FillAspect&quot; Aspect=&quot;1&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>The animation itself is performed using a <code>Scale</code> animator.</p>
+<!-- snippet-begin:code/MainView.ux:LoadingButtonScaleAnimation -->
+<pre><code>&lt;Scale Target=&quot;loadingButton&quot; Factor=&quot;3&quot; RelativeTo=&quot;SizeFactor&quot; RelativeNode=&quot;transitionScaleGuide&quot;
+       Delay=&quot;0.01&quot; Duration=&quot;0.7&quot; Easing=&quot;ExponentialInOut&quot; DurationBack=&quot;0&quot; /&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>Because of how scaling works, we actually switch between the normal <code>Rectangle</code>, which defines our loading button, to a scaled down 240x240 <code>Circle</code> just as we are about to scale the button. This is to get rid of any ugly aliasing effects up-scaling the button would cause.</p>
+<!-- snippet-begin:code/MainView.ux:LoadingButtonPanel -->
+<pre><code>&lt;Panel Row=&quot;2&quot; Width=&quot;150&quot; Height=&quot;60&quot;&gt;
+    &lt;Text ux:Name=&quot;text&quot; Alignment=&quot;Center&quot; Value=&quot;Sign in&quot; FontSize=&quot;18&quot; Color=&quot;#fff&quot;/&gt;
+    &lt;Panel ux:Name=&quot;loadingCirclePanel&quot;&gt;
+        &lt;Circle ux:Name=&quot;loadingCircle&quot; Width=&quot;70%&quot; Height=&quot;70%&quot; Opacity=&quot;0&quot; StartAngleDegrees=&quot;0&quot; LengthAngleDegrees=&quot;90&quot;&gt;
+            &lt;Stroke Width=&quot;1&quot; Brush=&quot;#fff&quot; /&gt;
+        &lt;/Circle&gt;
+    &lt;/Panel&gt;
+    &lt;Clicked&gt;
+        &lt;Toggle Target=&quot;loading&quot; /&gt;
+    &lt;/Clicked&gt;
+    &lt;Rectangle ux:Name=&quot;rectNormalScale&quot; CornerRadius=&quot;30&quot; Color=&quot;#FF3366&quot; Width=&quot;300&quot; Height=&quot;60&quot;/&gt;
+    &lt;Circle ux:Name=&quot;loadingButton&quot; Opacity=&quot;0&quot; Alignment=&quot;Center&quot; Layer=&quot;Background&quot; Width=&quot;240&quot; Height=&quot;240&quot; Color=&quot;#FF3366&quot;&gt;
+        &lt;Scaling Factor=&quot;0.25&quot; /&gt;
+    &lt;/Circle&gt;
+&lt;/Panel&gt;
+</code></pre>
+<!-- snippet-end -->
+<p>When the <code>Circle</code> fills the entire screen, we fade in the &quot;loggedInView&quot; <code>Panel</code>, along with a whole bunch of other tiny animations.</p>
+<!-- snippet-begin:code/MainView.ux:ShowLoggedInWhileTrue -->
+<pre><code>&lt;WhileTrue ux:Name=&quot;showLoggedIn&quot;&gt;
+    &lt;Change loggedInView.Opacity=&quot;1&quot; Delay=&quot;0.1&quot; Duration=&quot;0.65&quot; DurationBack=&quot;0.35&quot; DelayBack=&quot;0.2&quot; Easing=&quot;CubicInOut&quot;/&gt;
+    &lt;Change plusButton.Opacity=&quot;1&quot; Delay=&quot;0.1&quot; Duration=&quot;0.65&quot; DurationBack=&quot;0.7&quot; DelayBack=&quot;0.3&quot; Easing=&quot;CubicInOut&quot;/&gt;
+
+    &lt;Change goodMorningText.Opacity=&quot;1&quot; Duration=&quot;0.3&quot; Delay=&quot;0.3&quot;/&gt;
+    &lt;Change monthPanel.Opacity=&quot;1&quot; Duration=&quot;0.3&quot; Delay=&quot;0.3&quot;/&gt;
+
+    &lt;Change weekTranslation.Y=&quot;0&quot; Duration=&quot;0.8&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+    &lt;Change weekScaling.Factor=&quot;1&quot; Duration=&quot;0.8&quot; Easing=&quot;QuadraticInOut&quot;/&gt;
+    &lt;Change headerScaling.Factor=&quot;1&quot; Duration=&quot;0.6&quot; Easing=&quot;CircularInOut&quot; /&gt;
+    &lt;Change showPlusButton.Value=&quot;true&quot; /&gt;
+    &lt;RaiseUserEvent EventName=&quot;ToggleLoggedIn&quot; /&gt;
+
+    &lt;Change profile.Opacity=&quot;1&quot; Delay=&quot;0.7&quot; Duration=&quot;0.1&quot; DurationBack=&quot;0.2&quot; DelayBack=&quot;0&quot;/&gt;
+    &lt;Change profileScaling.Factor=&quot;1&quot; Delay=&quot;0.7&quot; Duration=&quot;0.4&quot; Easing=&quot;CircularInOut&quot;/&gt;
+    &lt;Change loggedInView.IsEnabled=&quot;true&quot; /&gt;
+    &lt;Change plusButton.IsEnabled=&quot;true&quot; /&gt;
+&lt;/WhileTrue&gt;
+</code></pre>
+<!-- snippet-end -->
+<h4>Logging out again</h4
+<p>The second animation (going back to the &quot;logged out view&quot;) is quite similar to the first one, but we also make sure to deactivate the &quot;loading&quot; <code>WhileTrue</code> trigger, so as to undo the previous animation.</p>
+<h4>That is it!</h4
+<p>Feel free to download and play with the example.</p>
+
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="/jquery.js"></script>
+    <script type="text/javascript" src="/popper.js"></script>
+    <script type="text/javascript" src="/bootstrap.js"></script>
+    <script type="text/javascript" src="/prism.js"></script>
+    <script type="text/javascript" src="/site.js"></script>
+  </body>
+</html>
