@@ -33,25 +33,25 @@
 </p>
 <h6>UX Concepts</h6>
 <ul class="nav flex-column concepts-nav">
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/released.html" class="nav-link">Released</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/actions/callback.html" class="nav-link">Callback</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/pressed.html" class="nav-link">Pressed</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/each.html" class="nav-link">Each</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/whilehovering.html" class="nav-link">WhileHovering</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/scrollview.html" class="nav-link">ScrollView</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/stackpanel.html" class="nav-link">StackPanel</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/triggers/whiletrue.html" class="nav-link">WhileTrue</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/gestures/released.html" class="nav-link">Released</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/triggers/actions/callback.html" class="nav-link">Callback</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/gestures/pressed.html" class="nav-link">Pressed</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/reactive/each.html" class="nav-link">Each</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/triggers/layoutanimation.html" class="nav-link">LayoutAnimation</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/gestures/whilehovering.html" class="nav-link">WhileHovering</a></li>
 </ul>
 
 <h6>JS Concepts</h6>
 <ul class="nav flex-column concepts-nav">
-<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable-api.html#replaceall-array" class="nav-link">Observable.replaceAll</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fusejs/observable-api.html#replaceall-array" class="nav-link">Observable.replaceAll</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
 </ul>
 
 
@@ -78,7 +78,7 @@
     };
     &lt;/JavaScript&gt;
 </code></pre>
-<p>Am important detail to keep in mind when <a href="https://www.fusetools.com/docs/ux-markup/properties#passing-observables-through-properties">passing Observables through properties</a> is that the property itself is a <a href="https://www.fusetools.com/docs/fusejs/observable-api#state-observables-and-derived-observables">derived Observable</a>, so we need to use <code>.inner()</code> to get access to the Observable list.</p>
+<p>Am important detail to keep in mind when <a href="https://fuse-open.github.io/docs/ux-markup/properties#passing-observables-through-properties">passing Observables through properties</a> is that the property itself is a <a href="https://fuse-open.github.io/docs/fusejs/observable-api#state-observables-and-derived-observables">derived Observable</a>, so we need to use <code>.inner()</code> to get access to the Observable list.</p>
 <p>The visual part of our component is relatively simple: it's a <code>StackPanel</code> that stacks the label and list of items. What's interesting is the <code>Each</code> tag with <code>IdentityKey=&quot;id&quot;</code> property set. When the items in the data-bound list change, <code>Each</code> will check the property <code>id</code> on every item in the list and figure out which items are the same.</p>
 <pre><code>&lt;StackPanel ItemSpacing=&quot;8&quot;&gt;
     &lt;Text Value=&quot;{ReadProperty Label}&quot; TextColor=&quot;#777&quot; FontSize=&quot;18&quot; Font=&quot;Bold&quot; Margin=&quot;8,0&quot; Alignment=&quot;CenterLeft&quot; /&gt;

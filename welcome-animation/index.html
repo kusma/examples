@@ -33,13 +33,13 @@
 </p>
 <h6>UX Concepts</h6>
 <ul class="nav flex-column concepts-nav">
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/resources/fileimagesource.html" class="nav-link">FileImageSource</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/scaling.html" class="nav-link">Scaling</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/translation.html" class="nav-link">Translation</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/rotation.html" class="nav-link">Rotation</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/easing.html" class="nav-link">Easing</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/resources/fileimagesource.html" class="nav-link">FileImageSource</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/scaling.html" class="nav-link">Scaling</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/translation.html" class="nav-link">Translation</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/rotation.html" class="nav-link">Rotation</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/triggers/timeline.html" class="nav-link">Timeline</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/animations/easing.html" class="nav-link">Easing</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/animations/change_1.html" class="nav-link">Change</a></li>
 </ul>
 
 
@@ -99,7 +99,7 @@
 </code></pre>
 <!-- snippet-end -->
 <h4>Animating with Timeline</h4
-<p>We use a <code>Timeline</code> to define all our animation. The <code>Timeline</code> can be played by changing its <code>TargetProgress</code> property from 0 to 1. We do this when the <code>Page</code> becomes active using the <a href="https://www.fusetools.com/learn/fuse#whileactive"><code>WhileActive</code></a> trigger.</p>
+<p>We use a <code>Timeline</code> to define all our animation. The <code>Timeline</code> can be played by changing its <code>TargetProgress</code> property from 0 to 1. We do this when the <code>Page</code> becomes active using the <a href="https://fuse-open.github.io/docs/fuse/navigation/whileactive.html"><code>WhileActive</code></a> trigger.</p>
 <!-- snippet-begin:code/MainView.ux:Timeline -->
 <pre><code>&lt;Timeline ux:Name=&quot;timeline&quot;&gt;
     &lt;Change camera.Opacity=&quot;1&quot;     Duration=&quot;1&quot; /&gt;
@@ -130,7 +130,7 @@
 &lt;/Timeline&gt;
 </code></pre>
 <!-- snippet-end -->
-<p>Since we do use some absolute values in our animation, we surround the entire thing in a <a href="https://www.fusetools.com/learn/fuse#viewbox"><code>Viewbox</code></a>. This lets us scale the content to different screen sizes without layout making our absolute values invalid.</p>
+<p>Since we do use some absolute values in our animation, we surround the entire thing in a <a href="https://fuse-open.github.io/docs/fuse/controls/viewbox.html"><code>Viewbox</code></a>. This lets us scale the content to different screen sizes without layout making our absolute values invalid.</p>
 <p>That's it!</p>
 
 </div>

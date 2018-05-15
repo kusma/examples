@@ -33,26 +33,26 @@
 </p>
 <h6>UX Concepts</h6>
 <ul class="nav flex-column concepts-nav">
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/attractorconfig.html" class="nav-link">AttractorConfig</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/clientpanel.html" class="nav-link">ClientPanel</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/properties.html" class="nav-link">ux:Property</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rectangle.html" class="nav-link">Rectangle</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/rangecontrol.html" class="nav-link">RangeControl</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/linearrangebehavior.html" class="nav-link">LinearRangeBehavior</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/circle.html" class="nav-link">Circle</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/curve.html" class="nav-link">Curve</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/controls/curvepoint.html" class="nav-link">CurvePoint</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/gestures/whilepressed.html" class="nav-link">WhilePressed</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/move.html" class="nav-link">Move</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/animations/change_1.html" class="nav-link">Change</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/animations/attractorconfig.html" class="nav-link">AttractorConfig</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/clientpanel.html" class="nav-link">ClientPanel</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/dockpanel.html" class="nav-link">DockPanel</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/ux-markup/properties.html" class="nav-link">ux:Property</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/ux-markup/classes.html" class="nav-link">ux:Class</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/rectangle.html" class="nav-link">Rectangle</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/rangecontrol.html" class="nav-link">RangeControl</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/gestures/linearrangebehavior.html" class="nav-link">LinearRangeBehavior</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/circle.html" class="nav-link">Circle</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/curve.html" class="nav-link">Curve</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/controls/curvepoint.html" class="nav-link">CurvePoint</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/gestures/whilepressed.html" class="nav-link">WhilePressed</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/animations/move.html" class="nav-link">Move</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/animations/change_1.html" class="nav-link">Change</a></li>
 </ul>
 
 <h6>JS Concepts</h6>
 <ul class="nav flex-column concepts-nav">
-<li class="nav-item"><a href="https://docs.fusetools.com/fusejs/observable.html" class="nav-link">Observable</a></li>
-<li class="nav-item"><a href="https://docs.fusetools.com/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fusejs/observable.html" class="nav-link">Observable</a></li>
+<li class="nav-item"><a href="https://fuse-open.github.io/docs/fuse/reactive/databinding.html" class="nav-link">data-binding</a></li>
 </ul>
 
 
@@ -66,7 +66,7 @@
 </div>
 <div class="example-content-body">
 <p>In this example, we're creating a custom slider component, inspired by this beautifully designed <a href="https://dribbble.com/shots/3868232-ios-Fluid-Slider-ui-ux">Fluid Slider</a> by <a href="https://dribbble.com/virgilpana">Virgil Pana</a>.</p>
-<p>The last time we published custom sliders was in our <a href="https://www.fusetools.com/examples/halftone-effect">Halftone effect</a> example, so it's time for a re-do. With this new one we especially liked the gooey animation when the circle leaves the slider. Since we've introduced the <code>Curve</code> element in Fuse, we can make it work almost exactly like that. Let's dive in!</p>
+<p>The last time we published custom sliders was in our <a href="https://fuse-open.github.io/examples/halftone-effect">Halftone effect</a> example, so it's time for a re-do. With this new one we especially liked the gooey animation when the circle leaves the slider. Since we've introduced the <code>Curve</code> element in Fuse, we can make it work almost exactly like that. Let's dive in!</p>
 <h3>Create the slider component</h3
 <p>We start out by creating a <code>ux:Class</code> with a set of properties that allows us to configure our new slider component.</p>
 <pre><code>&lt;DockPanel ux:Class=&quot;GooeySlider&quot;&gt;
@@ -83,7 +83,7 @@
 
 &lt;/DockPanel&gt;
 </code></pre>
-<p>Next, we add labels on the left and right sides of the slider component to show the <code>Min</code> and <code>Max</code> values. In the middle, we put a <code>RangeControl</code> that occupies the remaining available space between the two labels. You can see how we take advantage of <a href="https://www.fusetools.com/docs/ux-markup/expressions">UX expressions</a> to dynamically calculate the <code>Margin</code> for the <code>RangeControl</code>: <code>Margin=&quot;{ReadProperty SliderHeight}/2,0&quot;</code>.</p>
+<p>Next, we add labels on the left and right sides of the slider component to show the <code>Min</code> and <code>Max</code> values. In the middle, we put a <code>RangeControl</code> that occupies the remaining available space between the two labels. You can see how we take advantage of <a href="https://fuse-open.github.io/docs/ux-markup/expressions">UX expressions</a> to dynamically calculate the <code>Margin</code> for the <code>RangeControl</code>: <code>Margin=&quot;{ReadProperty SliderHeight}/2,0&quot;</code>.</p>
 <pre><code>&lt;DockPanel Dock=&quot;Bottom&quot; Height=&quot;{ReadProperty SliderHeight}&quot;&gt;
     &lt;Panel Dock=&quot;Left&quot; Width=&quot;60&quot;&gt;
         &lt;Text Value=&quot;{ReadProperty Min}&quot; Alignment=&quot;Center&quot; TextColor=&quot;{ReadProperty FaceColor}&quot; /&gt;
@@ -122,7 +122,7 @@
 
 &lt;/RangeControl&gt;
 </code></pre>
-<p>The interesting bit on the handle is how we set the <code>X</code> position of it to a UX expression: <code>X=&quot;attract({Property range.RelativeValue}, RangeSnap) * 100%&quot;</code>. As the docs state, the <a href="https://www.fusetools.com/docs/ux-markup/expressions#misc">attract() UX expression</a> <em>animates the change in a value by using an <code>AttractorConfig</code> to define the animation style</em>. In our use-case, this means that whenever the <code>Value</code> of our <code>RangeControl</code> changes by an increment of 10, the <code>RelativeValue</code> of it is updated too. This in turn changes the <code>X</code> coordinate of the handle with a smooth, snappy animation defined by the <code>AttractorConfig</code> that we have in our <code>MainView.ux</code>:</p>
+<p>The interesting bit on the handle is how we set the <code>X</code> position of it to a UX expression: <code>X=&quot;attract({Property range.RelativeValue}, RangeSnap) * 100%&quot;</code>. As the docs state, the <a href="https://fuse-open.github.io/docs/ux-markup/expressions#misc">attract() UX expression</a> <em>animates the change in a value by using an <code>AttractorConfig</code> to define the animation style</em>. In our use-case, this means that whenever the <code>Value</code> of our <code>RangeControl</code> changes by an increment of 10, the <code>RelativeValue</code> of it is updated too. This in turn changes the <code>X</code> coordinate of the handle with a smooth, snappy animation defined by the <code>AttractorConfig</code> that we have in our <code>MainView.ux</code>:</p>
 <pre><code>&lt;AttractorConfig ux:Global=&quot;RangeSnap&quot; Unit=&quot;Normalized&quot; Type=&quot;SmoothSnap&quot; /&gt;
 </code></pre>
 <h3>Bend the Curve</h3
